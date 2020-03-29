@@ -1,15 +1,25 @@
 package com.example.streetlity_android;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -23,6 +33,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
     }
 
 
@@ -38,10 +50,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        ArrayList<MarkerOptions> markList = new ArrayList<MarkerOptions>();
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        MarkerOptions option = new MarkerOptions();
+        MarkerOptions option2 = new MarkerOptions();
+        MarkerOptions option3 = new MarkerOptions();
+
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        option.title("Marker in Sydney");
+        option.position(sydney);
+        markList.add(option);
+
+        sydney = new LatLng(-34, 161);
+        option2.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        option2.title("Marker in awaswa");
+        option2.position(sydney);
+        markList.add(option2);
+
+        sydney = new LatLng(-54, 161);
+        option3.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        option3.title("Marker in awaswa");
+        option3.position(sydney);
+        markList.add(option3);
+
+        for (int i = 0; i < markList.size(); i++) {
+            mMap.addMarker(markList.get(i));
+            Log.e("abc", "aa" );
+        }
+
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }
