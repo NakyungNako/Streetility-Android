@@ -2,8 +2,16 @@ package com.example.streetlity_android;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -43,6 +51,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+
+        String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+        if (!hasPermissions(this, Permissions)) {
+            ActivityCompat.requestPermissions(this, Permissions, 4);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            this.finish();
+            return;
+        }
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -64,8 +91,82 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        ArrayList<MarkerOptions> markList = new ArrayList<MarkerOptions>();
+        //ArrayList<MarkerOptions> markList = new ArrayList<MarkerOptions>();
 
+        LocationManager locationManager = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+        double latitude = 0;
+        double longitude = 0;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Location location = locationManager.getLastKnownLocation(locationManager
+                    .GPS_PROVIDER);
+            if(location == null){
+                Log.e("", "onMapReady: MULL");
+            }
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
+
+        callFuel();
+
+        // Add a marker in Sydney and move the camera
+            LatLng sydney = new LatLng(10, 10);
+//        MarkerOptions option = new MarkerOptions();
+//        MarkerOptions option2 = new MarkerOptions();
+//        MarkerOptions option3 = new MarkerOptions();
+//
+//        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+//        option.title("Marker in Sydney");
+//        option.position(sydney);
+//        markList.add(option);
+//
+//        sydney = new LatLng(-34, 161);
+//        option2.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+//        option2.title("Marker in awaswa");
+//        option2.position(sydney);
+//        markList.add(option2);
+//
+//        sydney = new LatLng(-54, 161);
+//        option3.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+//        option3.title("Marker in awaswa");
+//        option3.position(sydney);
+//        markList.add(option3);
+//
+//        for (int i = 0; i < markList.size(); i++) {
+//            mMap.addMarker(markList.get(i));
+//            Log.e("abc", "aa" );
+//        }
+
+
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 15.0f ) );
+    }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void addFuelMarkerToList(float lat, float lon){
+        LatLng pos = new LatLng(lat,lon);
+        MarkerOptions option = new MarkerOptions();
+        option.title("Fuel");
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        option.position(pos);
+        fMarkers.add(option);
+    }
+
+    public void callFuel(){
         Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
@@ -103,46 +204,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.e("", "onFailure: " + t.toString());
             }
         });
-
-        // Add a marker in Sydney and move the camera
-            LatLng sydney = new LatLng(10, 10);
-//        MarkerOptions option = new MarkerOptions();
-//        MarkerOptions option2 = new MarkerOptions();
-//        MarkerOptions option3 = new MarkerOptions();
-//
-//        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option.title("Marker in Sydney");
-//        option.position(sydney);
-//        markList.add(option);
-//
-//        sydney = new LatLng(-34, 161);
-//        option2.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option2.title("Marker in awaswa");
-//        option2.position(sydney);
-//        markList.add(option2);
-//
-//        sydney = new LatLng(-54, 161);
-//        option3.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option3.title("Marker in awaswa");
-//        option3.position(sydney);
-//        markList.add(option3);
-//
-//        for (int i = 0; i < markList.size(); i++) {
-//            mMap.addMarker(markList.get(i));
-//            Log.e("abc", "aa" );
-//        }
-
-
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
-
-    public void addFuelMarkerToList(float lat, float lon){
-        LatLng pos = new LatLng(lat,lon);
-        MarkerOptions option = new MarkerOptions();
-        option.title("Fuel");
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-        option.position(pos);
-        fMarkers.add(option);
     }
 }
