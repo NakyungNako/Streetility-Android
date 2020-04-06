@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -204,5 +205,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.e("", "onFailure: " + t.toString());
             }
         });
+    }
+
+    public void onLocationChanged(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15.0f);
+        mMap.animateCamera(cameraUpdate);
     }
 }
