@@ -1,13 +1,12 @@
 package com.example.streetlity_android;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -28,12 +27,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -46,7 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
 
-    ArrayList<MarkerOptions> fMarkers = new ArrayList<MarkerOptions>();;
+    ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,9 +102,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             latitude = location.getLatitude();
             longitude = location.getLongitude();
+            Log.e("", "onMapReady: " + latitude+" , " + longitude );
         }
+        Intent oldIntent = this.getIntent();
+        int type = oldIntent.getIntExtra("type", -1);
 
-        callFuel();
+        if (type == 1) {
+            callFuel(latitude,longitude);
+        }
+        else if (type == 2) {
+            callFuel(latitude,longitude);
+        }
+        else if (type == 3) {
+            callFuel(latitude,longitude);
+        }
+        else if (type == 4) {
+            callFuel(latitude,longitude);
+        }
 
         // Add a marker in Sydney and move the camera
             LatLng sydney = new LatLng(10, 10);
@@ -144,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 15.0f ) );
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 12.0f ) );
     }
 
     public static boolean hasPermissions(Context context, String... permissions) {
@@ -164,10 +171,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         option.title("Fuel");
         option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
         option.position(pos);
-        fMarkers.add(option);
+        mMarkers.add(option);
     }
 
-    public void callFuel(){
+    public void addATMMarkerToList(float lat, float lon, String type){
+        LatLng pos = new LatLng(lat,lon);
+        MarkerOptions option = new MarkerOptions();
+        option.title(type);
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        option.position(pos);
+        mMarkers.add(option);
+    }
+
+    public void addMaintenanceMarkerToList(float lat, float lon, String name){
+        LatLng pos = new LatLng(lat,lon);
+        MarkerOptions option = new MarkerOptions();
+        option.title(name);
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        option.position(pos);
+        mMarkers.add(option);
+    }
+
+    public void addWCMarkerToList(float lat, float lon){
+        LatLng pos = new LatLng(lat,lon);
+        MarkerOptions option = new MarkerOptions();
+        option.title("WC");
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        option.position(pos);
+        mMarkers.add(option);
+    }
+
+    public void callFuel(double lat, double lon){
         Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
@@ -190,9 +224,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     (float)jsonObject1.getDouble("Lon"));
                         }
 
-                        for (int i = 0; i < fMarkers.size(); i++){
-                            Log.e("", fMarkers.get(i).getTitle());
-                            mMap.addMarker(fMarkers.get(i));
+                        for (int i = 0; i < mMarkers.size(); i++){
+                            Log.e("", mMarkers.get(i).getTitle());
+                            mMap.addMarker(mMarkers.get(i));
                         }
                     } catch (Exception e){
                         e.printStackTrace();
@@ -207,9 +241,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    public void callATM(double lat, double lon){
+
+    }
+
+    public void callMaintenance(double lat, double lon){
+
+    }
+
+    public void callWC(double lat, double lon){
+
+    }
+
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15.0f);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12.0f);
         mMap.animateCamera(cameraUpdate);
     }
 }

@@ -2,4 +2,11 @@
     <string name="app_name">Streetlity-Android</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
+    <string name="contribute">Contribute</string>
+    <string name="title_activity_service_selection">ServiceSelection</string>
+    <string name="service_selection">Service Selection</string>
+    <string name="fix">Maintenance</string>
+    <string name="atm">ATM</string>
+    <string name="wc">Public Toilet</string>
+    <string name="fuel">Fuel Station</string>
 </resources>
