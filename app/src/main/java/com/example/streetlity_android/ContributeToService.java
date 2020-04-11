@@ -2,20 +2,19 @@ package com.example.streetlity_android;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-public class ServiceSelection extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+public class ContributeToService extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_service_selection);
+        setContentView(R.layout.activity_contribute_to_service);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -30,7 +29,7 @@ public class ServiceSelection extends AppCompatActivity {
         btnFuel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent t = new Intent(ServiceSelection.this, MapsActivity.class);
+                Intent t = new Intent(ContributeToService.this, SelectFromMap.class);
                 t.putExtra("type", 1);
                 startActivity(t);
             }
@@ -39,8 +38,7 @@ public class ServiceSelection extends AppCompatActivity {
         btnATM.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent t = new Intent(ServiceSelection.this, MapsActivity.class);
-                //todo new bank selection activity
+                Intent t = new Intent(ContributeToService.this, AddAnATM.class);
                 startActivity(t);
             }
         });
@@ -48,8 +46,7 @@ public class ServiceSelection extends AppCompatActivity {
         btnMaintenance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent t = new Intent(ServiceSelection.this, MapsActivity.class);
-                t.putExtra("type", 3);
+                Intent t = new Intent(ContributeToService.this, AddAMaintenance.class);
                 startActivity(t);
             }
         });
@@ -57,8 +54,7 @@ public class ServiceSelection extends AppCompatActivity {
         btnWC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent t = new Intent(ServiceSelection.this, MapsActivity.class);
-                t.putExtra("type", 4);
+                Intent t = new Intent(ContributeToService.this, SelectFromMap.class);
                 startActivity(t);
             }
         });

@@ -9,4 +9,16 @@
     <string name="atm">ATM</string>
     <string name="wc">Public Toilet</string>
     <string name="fuel">Fuel Station</string>
+    <string name="location_confirmation">Help confirming a location</string>
+    <string name="add_maintenance">Add a Maintenace</string>
+    <string name="add_atm">Add an ATM</string>
+    <string name="name">Name: </string>
+    <string name="lat">Latitude:</string>
+    <string name="lon">Longtitude:</string>
+    <string name="select_fr_map">Select from map</string>
+    <string name="confirm">Confirm</string>
+    <string name="type">Type:</string>
+    <string name="other">Other:</string>
+    <string name="name_of_place">Name of the place</string>
+    <string name="name_of_bank">Name of the bank</string>
 </resources>
