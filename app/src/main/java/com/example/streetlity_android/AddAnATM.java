@@ -9,7 +9,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,10 +23,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
+    boolean firstClick = false;
+
+    double latToAdd;
+    double lonToAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +98,32 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 12.0f ) );
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                MarkerOptions opt = new MarkerOptions().position(latLng).title("Here");
+
+                if (firstClick == true) {
+                    mMap.clear();
+                }
+
+                mMap.addMarker(opt);
+
+                if (firstClick == false) {
+                    firstClick = true;
+                }
+
+                EditText edtLat = findViewById(R.id.edt_lat);
+                EditText edtLon = findViewById(R.id.edt_lon);
+
+                edtLat.setText(Double.toString(latLng.latitude));
+                edtLon.setText(Double.toString(latLng.longitude));
+
+                latToAdd = latLng.latitude;
+                lonToAdd = latLng.longitude;
+            }
+        });
     }
 
     public static boolean hasPermissions(Context context, String... permissions) {

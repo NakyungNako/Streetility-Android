@@ -25,6 +25,7 @@ public class ContributeToService extends AppCompatActivity {
         Button btnATM = findViewById(R.id.btn_atm);
         Button btnMaintenance = findViewById(R.id.btn_maintenance);
         Button btnWC = findViewById(R.id.btn_wc);
+        Button btnConfirming = findViewById(R.id.btn_confirm_location);
 
         btnFuel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +56,7 @@ public class ContributeToService extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent t = new Intent(ContributeToService.this, SelectFromMap.class);
+                t.putExtra("type", 2);
                 startActivity(t);
             }
         });

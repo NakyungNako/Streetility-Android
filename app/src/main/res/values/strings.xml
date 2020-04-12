@@ -21,4 +21,8 @@
     <string name="other">Other:</string>
     <string name="name_of_place">Name of the place</string>
     <string name="name_of_bank">Name of the bank</string>
+    <string name="title_activity_contribute">ContributeToService</string>
+    <string name="title_activity_select_from_map">SelectFromMap</string>
+    <string name="title_activity_add_maintenance">AddAMaintenance</string>
+    <string name="title_activity_add_atm">AddAnATM</string>
 </resources>

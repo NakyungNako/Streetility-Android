@@ -38,8 +38,32 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
-
         </activity>
+
+        <activity
+            android:name=".ContributeToService"
+            android:label="@string/title_activity_contribute"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".SelectFromMap"
+            android:label="@string/title_activity_select_from_map"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".AddAMaintenance"
+            android:label="@string/title_activity_add_maintenance"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".AddAnATM"
+            android:label="@string/title_activity_add_atm"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

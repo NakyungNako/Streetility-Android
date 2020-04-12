@@ -153,6 +153,7 @@
                     android:ems="10"
                     android:focusable="false"
                     android:hint="@string/select_fr_map"
+                    android:maxLines="1"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp" />
 
@@ -166,6 +167,7 @@
                     android:ems="10"
                     android:focusable="false"
                     android:hint="@string/select_fr_map"
+                    android:maxLines="1"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp" />
             </LinearLayout>

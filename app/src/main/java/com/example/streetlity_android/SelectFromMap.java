@@ -9,6 +9,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -39,7 +41,10 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
 
-    ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();;
+    boolean firstClick = false;
+
+    double latToAdd;
+    double lonToAdd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +112,28 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 12.0f ) );
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                MarkerOptions opt = new MarkerOptions().position(latLng).title("Here");
+
+                if (firstClick == true) {
+                    mMap.clear();
+                }
+
+                mMap.addMarker(opt);
+
+                if (firstClick == false) {
+                    firstClick = true;
+                    Button confirm = findViewById(R.id.btn_confirm_adding);
+                    confirm.setVisibility(View.VISIBLE);
+                }
+
+                latToAdd = latLng.latitude;
+                lonToAdd = latLng.longitude;
+            }
+        });
     }
 
     public static boolean hasPermissions(Context context, String... permissions) {
