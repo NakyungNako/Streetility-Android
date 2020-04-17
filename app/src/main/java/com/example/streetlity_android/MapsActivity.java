@@ -5,14 +5,20 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.widget.ListView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,7 +27,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,9 +43,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener  {
 
     private GoogleMap mMap;
+
+    Marker currentPosition;
 
     ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();;
 
@@ -85,6 +95,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
         //ArrayList<MarkerOptions> markList = new ArrayList<MarkerOptions>();
 
         LocationManager locationManager = (LocationManager)
@@ -121,7 +132,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         // Add a marker in Sydney and move the camera
-            LatLng sydney = new LatLng(10, 10);
 //        MarkerOptions option = new MarkerOptions();
 //        MarkerOptions option2 = new MarkerOptions();
 //        MarkerOptions option3 = new MarkerOptions();
@@ -148,7 +158,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //            Log.e("abc", "aa" );
 //        }
 
+        MarkerOptions curPositionMark = new MarkerOptions();
+        curPositionMark.position(new LatLng(latitude,longitude));
+        curPositionMark.title("You are here");
 
+        currentPosition = mMap.addMarker(curPositionMark);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 12.0f ) );
@@ -257,5 +271,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12.0f);
         mMap.animateCamera(cameraUpdate);
+    }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+        if(!marker.equals(currentPosition)) {
+
+            final LayoutInflater inflater = LayoutInflater.from(this.getApplicationContext());
+
+            final android.view.View dialogView = inflater.inflate(R.layout.dialog_point_info, null);
+
+            ListView lv = dialogView.findViewById(R.id.lv_review);
+
+            ArrayList<Review> items = new ArrayList<Review>();
+
+            items.add(new Review("nhut", "i donek know kaahfeeefffffffeijkla jkl ja klj akljfklajj kajkljw klj lkaj eklwaj elkjwa kljela ej l", (float)2.5));
+
+            final ReviewAdapter adapter = new ReviewAdapter(this, R.layout.review_item, items);
+
+            lv.setAdapter(adapter);
+
+            Log.e("", "onMarkerClick: mapclick");
+            marker.showInfoWindow();
+
+            BottomSheetDialog dialog = new BottomSheetDialog(MapsActivity.this, android.R.style.Theme_Black_NoTitleBar);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+            dialog.setContentView(dialogView);
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.setCancelable(true);
+
+            dialog.show();
+
+        }
+
+        marker.showInfoWindow();
+
+        return true;
     }
 }

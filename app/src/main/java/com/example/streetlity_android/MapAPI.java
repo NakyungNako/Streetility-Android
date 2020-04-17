@@ -7,7 +7,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Query;
 
 public interface MapAPI {
-    @GET("fuel/all")
+    @GET("service/fuel/all")
     Call<ResponseBody> getAllFuel();
 
     @GET("atm/all")
@@ -18,4 +18,8 @@ public interface MapAPI {
 
     @GET("fuel/all")
     Call<ResponseBody> getAllStings();
+
+    @GET("service/range")
+    Call<ResponseBody> getServiceInRange(@Query("location") float lat, @Query("location") float lon,
+                                         @Query("range") float range);
 }

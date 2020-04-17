@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:maxWidth="250dp"
+        android:maxLines="1"
+        android:paddingLeft="15dp"
+        android:text="AWIOLHALSHALKDSJKLWADKJA"
+        android:textColor="#000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tv_username"
+        android:text=":"
+        android:textStyle="bold"
+        tools:layout_marginTop="10dp"
+        tools:textColor="#000" />
+
+    <RatingBar
+        android:id="@+id/ratingBar2"
+        style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_toRightOf="@id/tv_username"
+        android:isIndicator="true"
+        android:max="5"
+        android:progressBackgroundTint="#000000"
+        android:progressTint="#CCB002"
+        android:rating="5"
+        android:secondaryProgressTint="#B7FFFFFF" />
+
+    <TextView
+        android:id="@+id/tv_body_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_username"
+        android:padding="15dp"
+        android:text="lakjrwikljakfajajwpapwifiafoioiaisidsaidaisasaiadpiadpaidapaipi"
+        android:textColor="#000" />
+</RelativeLayout>

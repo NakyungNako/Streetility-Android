@@ -39,8 +39,7 @@ public class ServiceSelection extends AppCompatActivity {
         btnATM.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent t = new Intent(ServiceSelection.this, MapsActivity.class);
-                //todo new bank selection activity
+                Intent t = new Intent(ServiceSelection.this, BankSelection.class);
                 startActivity(t);
             }
         });

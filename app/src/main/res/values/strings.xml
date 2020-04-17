@@ -25,4 +25,8 @@
     <string name="title_activity_select_from_map">SelectFromMap</string>
     <string name="title_activity_add_maintenance">AddAMaintenance</string>
     <string name="title_activity_add_atm">AddAnATM</string>
+    <string name="title_activity_bank_selection">BankSelection</string>
+    <string name="search">Search for a bank</string>
+    <string name="select_bank">Select your bank</string>
+    <string name="review">Reviews:</string>
 </resources>
