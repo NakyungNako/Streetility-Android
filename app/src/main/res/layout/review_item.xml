@@ -12,7 +12,7 @@
         android:layout_marginTop="10dp"
         android:maxWidth="250dp"
         android:maxLines="1"
-        android:paddingLeft="15dp"
+        android:paddingLeft="25dp"
         android:text="AWIOLHALSHALKDSJKLWADKJA"
         android:textColor="#000"
         android:textStyle="bold" />
@@ -47,7 +47,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_username"
-        android:padding="15dp"
+        android:paddingLeft="35dp"
+        android:paddingTop="10dp"
+        android:paddingRight="35dp"
         android:text="lakjrwikljakfajajwpapwifiafoioiaisidsaidaisasaiadpiadpaidapaipi"
         android:textColor="#000" />
 </RelativeLayout>

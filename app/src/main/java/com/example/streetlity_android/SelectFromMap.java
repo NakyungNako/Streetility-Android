@@ -69,6 +69,53 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
             return;
         }
 
+        Button confirm = findViewById(R.id.btn_confirm_adding);
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent t = getIntent();
+                int type = t.getIntExtra("type", -1);
+
+                if (type == 1){
+                    Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+                            .addConverterFactory(GsonConverterFactory.create()).build();
+                    final MapAPI tour = retro.create(MapAPI.class);
+                    Call<ResponseBody> call = tour.addFuel((float)latToAdd,(float)lonToAdd);
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if(response.code() == 200) {
+                                final JSONObject jsonObject;
+                                JSONArray jsonArray;
+                                try {
+                                    jsonObject = new JSONObject(response.body().string());
+                                    Log.e("", "onResponse: " + jsonObject.toString());
+
+                                    finish();
+                                } catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                            else{
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                                    Log.e("", "onResponse: " + jsonObject.toString());
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Log.e("", "onFailure: " + t.toString());
+                        }
+                    });
+                }
+            }
+        });
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
