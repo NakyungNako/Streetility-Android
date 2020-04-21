@@ -49,6 +49,7 @@ public class BankSelection extends AppCompatActivity {
                 Intent t = new Intent(BankSelection.this, MapsActivity.class);
                 t.putExtra("type", 2);
                 t.putExtra("bank",items.get(i));
+                startActivity(t);
             }
         });
 

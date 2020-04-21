@@ -10,8 +10,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,6 +29,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import java.util.ArrayList;
 
 public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -61,6 +67,42 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
             this.finish();
             return;
         }
+
+        final Spinner atmType= findViewById(R.id.spinner_type);
+
+        String[] arraySpinner = new String[] {
+                "Agribank", "BIDV", "VietcomBank", "Other"
+        };
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item,
+                 arraySpinner);
+
+        spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+
+        atmType.setAdapter(spinnerAdapter);
+
+        atmType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(atmType.getSelectedItem().toString() == "Other"){
+                    LinearLayout other = findViewById(R.id.layout_other);
+                    other.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        Button confirm = findViewById(R.id.btn_confirm_adding);
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -112,6 +154,8 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
                 if (firstClick == false) {
                     firstClick = true;
+                    Button confirm = findViewById(R.id.btn_confirm_adding);
+                    confirm.setVisibility(View.VISIBLE);
                 }
 
                 EditText edtLat = findViewById(R.id.edt_lat);

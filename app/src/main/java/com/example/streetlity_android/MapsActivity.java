@@ -122,13 +122,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             callFuel(latitude,longitude);
         }
         else if (type == 2) {
-            callFuel(latitude,longitude);
+            callATM(latitude,longitude);
         }
         else if (type == 3) {
-            callFuel(latitude,longitude);
+            //callFuel(latitude,longitude);
         }
         else if (type == 4) {
-            callFuel(latitude,longitude);
+            callWC(latitude,longitude);
         }
 
         // Add a marker in Sydney and move the camera
@@ -165,7 +165,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         currentPosition = mMap.addMarker(curPositionMark);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 12.0f ) );
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 10.0f ) );
     }
 
     public static boolean hasPermissions(Context context, String... permissions) {
@@ -192,7 +192,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title(type);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.atm_icon));
         option.position(pos);
         mMarkers.add(option);
     }
@@ -201,7 +201,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title(name);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.fix_icon));
         option.position(pos);
         mMarkers.add(option);
     }
@@ -210,7 +210,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title("WC");
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.wc_icon));
         option.position(pos);
         mMarkers.add(option);
     }
@@ -229,13 +229,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     try {
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
+                        if(jsonObject.getJSONArray("Fuels") != null) {
+                            jsonArray = jsonObject.getJSONArray("Fuels");
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                Log.e("", "onResponse: " + jsonObject1.toString());
+                                addFuelMarkerToList((float) jsonObject1.getDouble("Lat"),
+                                        (float) jsonObject1.getDouble("Lon"));
+                            }
+
+                            for (int i = 0; i < mMarkers.size(); i++) {
+                                Log.e("", mMarkers.get(i).getTitle());
+                                mMap.addMarker(mMarkers.get(i));
+                            }
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
+    }
+
+    public void callATM(double lat, double lon){
+        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+        //Call<ResponseBody> call = tour.getATMInRange((float)lat,(float)lon,(float)0.1);
+        Call<ResponseBody> call = tour.getAllATM();
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    JSONArray jsonArray;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
                         jsonArray = jsonObject.getJSONArray("Fuels");
 
                         for (int i = 0; i< jsonArray.length();i++){
                             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                             Log.e("", "onResponse: " + jsonObject1.toString());
-                            addFuelMarkerToList((float)jsonObject1.getDouble("Lat"),
-                                    (float)jsonObject1.getDouble("Lon"));
+                            addATMMarkerToList((float)jsonObject1.getDouble("Lat"),
+                                    (float)jsonObject1.getDouble("Lon"),"atm type here");
                         }
 
                         for (int i = 0; i < mMarkers.size(); i++){
@@ -255,16 +298,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    public void callATM(double lat, double lon){
-
-    }
-
     public void callMaintenance(double lat, double lon){
 
     }
 
     public void callWC(double lat, double lon){
+        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+        //Call<ResponseBody> call = tour.getWCInRange((float)lat,(float)lon,(float)0.1);
+        Call<ResponseBody> call = tour.getAllWC();
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    JSONArray jsonArray;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+                        jsonArray = jsonObject.getJSONArray("Fuels");
 
+                        for (int i = 0; i< jsonArray.length();i++){
+                            JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                            Log.e("", "onResponse: " + jsonObject1.toString());
+                            addWCMarkerToList((float)jsonObject1.getDouble("Lat"),
+                                    (float)jsonObject1.getDouble("Lon"));
+                        }
+
+                        for (int i = 0; i < mMarkers.size(); i++){
+                            Log.e("", mMarkers.get(i).getTitle());
+                            mMap.addMarker(mMarkers.get(i));
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
     }
 
     public void onLocationChanged(Location location) {

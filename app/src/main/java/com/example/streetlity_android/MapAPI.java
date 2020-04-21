@@ -13,14 +13,23 @@ public interface MapAPI {
     @GET("service/fuel/all")
     Call<ResponseBody> getAllFuel();
 
-    @GET("atm/all")
+    @GET("service/atm/all")
     Call<ResponseBody> getAllATM();
 
-    @GET("toilet/all")
-    Call<ResponseBody> getAllToilet();
+    @GET("service/toilet/all")
+    Call<ResponseBody> getAllWC();
 
-    @GET("fuel/all")
-    Call<ResponseBody> getAllStings();
+    @GET("service/fuel/range")
+    Call<ResponseBody> getFuelInRange(@Query("location") float lat, @Query("location") float lon,
+                                      @Query("range") float range);
+
+    @GET("service/atm/range")
+    Call<ResponseBody> getATMInRange(@Query("location") float lat, @Query("location") float lon,
+                                      @Query("range") float range);
+
+    @GET("service/toilet/range")
+    Call<ResponseBody> getWCInRange(@Query("location") float lat, @Query("location") float lon,
+                                      @Query("range") float range);
 
     @GET("service/range")
     Call<ResponseBody> getServiceInRange(@Query("location") float lat, @Query("location") float lon,
@@ -29,4 +38,12 @@ public interface MapAPI {
     @FormUrlEncoded
     @POST("service/fuel/add")
     Call<ResponseBody> addFuel(@Field("location") float lat, @Field("location" )float lon);
+
+    @FormUrlEncoded
+    @POST("service/atm/add")
+    Call<ResponseBody> addATM(@Field("location") float lat, @Field("location" )float lon);
+
+    @FormUrlEncoded
+    @POST("service/toilet/add")
+    Call<ResponseBody> addWC(@Field("location") float lat, @Field("location" )float lon);
 }

@@ -78,41 +78,12 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
                 int type = t.getIntExtra("type", -1);
 
                 if (type == 1){
-                    Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
-                            .addConverterFactory(GsonConverterFactory.create()).build();
-                    final MapAPI tour = retro.create(MapAPI.class);
-                    Call<ResponseBody> call = tour.addFuel((float)latToAdd,(float)lonToAdd);
-                    call.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            if(response.code() == 200) {
-                                final JSONObject jsonObject;
-                                JSONArray jsonArray;
-                                try {
-                                    jsonObject = new JSONObject(response.body().string());
-                                    Log.e("", "onResponse: " + jsonObject.toString());
-
-                                    finish();
-                                } catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                            }
-                            else{
-                                try {
-                                    JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                                    Log.e("", "onResponse: " + jsonObject.toString());
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Log.e("", "onFailure: " + t.toString());
-                        }
-                    });
+                    addFuel();
                 }
+                if (type == 2){
+                    addWC();
+                }
+
             }
         });
 
@@ -158,7 +129,7 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
         }
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 12.0f ) );
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 10.0f ) );
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -192,5 +163,79 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
             }
         }
         return true;
+    }
+
+    public void addFuel(){
+        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+        Call<ResponseBody> call = tour.addFuel((float)latToAdd,(float)lonToAdd);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    JSONArray jsonArray;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+
+                        finish();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    try {
+
+                        Log.e("", "onResponse: " + response.errorBody().toString());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
+    }
+
+    public void addWC(){
+        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+        Call<ResponseBody> call = tour.addWC((float)latToAdd,(float)lonToAdd);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    JSONArray jsonArray;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+
+                        finish();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    try {
+                        Log.e(", ",response.errorBody().toString());
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
     }
 }
