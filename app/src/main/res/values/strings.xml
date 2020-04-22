@@ -29,4 +29,9 @@
     <string name="search">Search for a bank</string>
     <string name="select_bank">Select your bank</string>
     <string name="review">Reviews:</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="forgotpass">Forgot password?</string>
+    <string name="signup">Sign Up</string>
 </resources>

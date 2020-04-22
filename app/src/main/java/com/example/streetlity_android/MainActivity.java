@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton btnFind = findViewById(R.id.btn_find);
         Button btnContribute = findViewById(R.id.btn_contribute);
+
+        ImageView imgUser = findViewById(R.id.img_user_avatar);
+        imgUser.setClipToOutline(true);
 
         btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
