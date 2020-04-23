@@ -83,7 +83,7 @@
                         android:layout_height="50dp"
                         android:background="@drawable/round_outline"
                         android:scaleType="centerCrop"
-                        tools:srcCompat="@tools:sample/avatars[3]"
+                        android:src="@drawable/temp_avatar"
                         />
                 </androidx.cardview.widget.CardView>
 

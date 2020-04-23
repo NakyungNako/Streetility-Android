@@ -43,15 +43,15 @@ public class BankSelection extends AppCompatActivity {
         lv = (ListView) findViewById(R.id.listview);
         lv.setAdapter(adapter);
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent t = new Intent(BankSelection.this, MapsActivity.class);
-                t.putExtra("type", 2);
-                t.putExtra("bank",items.get(i));
-                startActivity(t);
-            }
-        });
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Intent t = new Intent(BankSelection.this, MapsActivity.class);
+//                t.putExtra("type", 2);
+//                t.putExtra("bank",items.get(i));
+//                startActivity(t);
+//            }
+//        });
 
         lv.setTextFilterEnabled(true);
 

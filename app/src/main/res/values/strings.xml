@@ -34,4 +34,8 @@
     <string name="password">Password</string>
     <string name="forgotpass">Forgot password?</string>
     <string name="signup">Sign Up</string>
+    <string name="input_bank_name">Input bank name here</string>
+    <string name="go_to_addr">Go to address</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
