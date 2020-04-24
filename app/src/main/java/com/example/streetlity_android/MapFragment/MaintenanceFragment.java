@@ -19,7 +19,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SeekBar;
 
 import com.example.streetlity_android.MapAPI;
 import com.example.streetlity_android.R;
@@ -58,6 +60,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MaintenanceFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
+
+    double latitude = 0;
+    double longitude = 0;
 
     Marker currentPosition;
 
@@ -118,6 +123,17 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
         fragmentTransaction.commit();
 
         mapFragment.getMapAsync(this);
+
+        ImageButton imgConfirmRange = rootView.findViewById(R.id.img_btn_confirm_range);
+        final SeekBar sbRange = rootView.findViewById((R.id.sb_range));
+
+        imgConfirmRange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callMaintenance(latitude,longitude,(float)sbRange.getProgress());
+                Log.e("", "onClick: " +  sbRange.getProgress());
+            }
+        });
 
         return rootView;
 
@@ -192,8 +208,7 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
         LocationManager locationManager = (LocationManager)
                 getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        double latitude = 0;
-        double longitude = 0;
+
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Location location = locationManager.getLastKnownLocation(locationManager
@@ -207,7 +222,7 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
         }
 
 //        if (type == 1) {
-        callMaintenance(latitude,longitude);
+        callMaintenance(latitude,longitude,1);
 //        }
 //        else if (type == 2) {
 //            callATM(latitude,longitude);
@@ -313,7 +328,7 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
         mMarkers.add(option);
     }
 
-        public void callMaintenance(double lat, double lon){
+        public void callMaintenance(double lat, double lon, float range){
 
     }
 }

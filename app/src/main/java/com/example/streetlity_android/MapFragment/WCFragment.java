@@ -19,7 +19,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SeekBar;
 
 import com.example.streetlity_android.MapAPI;
 import com.example.streetlity_android.R;
@@ -57,6 +59,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
     private GoogleMap mMap;
+
+    double latitude = 0;
+    double longitude = 0;
 
     Marker currentPosition;
 
@@ -117,6 +122,17 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
         fragmentTransaction.commit();
 
         mapFragment.getMapAsync(this);
+
+        ImageButton imgConfirmRange = rootView.findViewById(R.id.img_btn_confirm_range);
+        final SeekBar sbRange = rootView.findViewById((R.id.sb_range));
+
+        imgConfirmRange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callWC(latitude,longitude,(float)sbRange.getProgress());
+                Log.e("", "onClick: " +  sbRange.getProgress());
+            }
+        });
 
         return rootView;
 
@@ -191,8 +207,6 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
         LocationManager locationManager = (LocationManager)
                 getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        double latitude = 0;
-        double longitude = 0;
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Location location = locationManager.getLastKnownLocation(locationManager
@@ -206,7 +220,7 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
         }
 
 //        if (type == 1) {
-        callWC(latitude,longitude);
+        callWC(latitude,longitude,1);
 //        }
 //        else if (type == 2) {
 //            callATM(latitude,longitude);
@@ -312,7 +326,8 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
         mMarkers.add(option);
     }
 
-    public void callWC(double lat, double lon){
+    public void callWC(double lat, double lon, float range){
+        mMap.clear();
         Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);

@@ -238,7 +238,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SeekBar;
 
 import com.example.streetlity_android.MapAPI;
 import com.example.streetlity_android.R;
@@ -278,6 +280,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class FuelFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
+    double latitude = 0;
+    double longitude = 0;
 
     Marker currentPosition;
 
@@ -342,6 +346,17 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 
         mapFragment.getMapAsync(this);
 
+        ImageButton imgConfirmRange = rootView.findViewById(R.id.img_btn_confirm_range);
+        final SeekBar sbRange = rootView.findViewById((R.id.sb_range));
+
+        imgConfirmRange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callFuel(latitude,longitude,(float)sbRange.getProgress());
+                Log.e("", "onClick: " +  sbRange.getProgress());
+            }
+        });
+
         return rootView;
 
     }
@@ -375,6 +390,8 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
             getActivity().finish();
             return;
         }
+
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
@@ -413,8 +430,7 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
         LocationManager locationManager = (LocationManager)
                 getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        double latitude = 0;
-        double longitude = 0;
+
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Location location = locationManager.getLastKnownLocation(locationManager
@@ -428,7 +444,7 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
         }
 
 //        if (type == 1) {
-        callFuel(latitude,longitude);
+        callFuel(latitude,longitude,30);
 //        }
 //        else if (type == 2) {
 //            callATM(latitude,longitude);
@@ -467,11 +483,7 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 //            Log.e("abc", "aa" );
 //        }
 
-        MarkerOptions curPositionMark = new MarkerOptions();
-        curPositionMark.position(new LatLng(latitude,longitude));
-        curPositionMark.title("You are here");
 
-        currentPosition = mMap.addMarker(curPositionMark);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 10.0f ) );
@@ -534,11 +546,13 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
         mMarkers.add(option);
     }
 
-        public void callFuel(double lat, double lon){
+        public void callFuel(double lat, double lon, float range){
+            mMap.clear();
         Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.getFuelInRange((float)lat, (float)lon,2);
+        Call<ResponseBody> call = tour.getFuelInRange((float)lat, (float)lon,range);
+        //Call<ResponseBody> call = tour.getAllFuel();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -562,6 +576,12 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
                                 Log.e("", mMarkers.get(i).getTitle());
                                 mMap.addMarker(mMarkers.get(i));
                             }
+
+                            MarkerOptions curPositionMark = new MarkerOptions();
+                            curPositionMark.position(new LatLng(latitude,longitude));
+                            curPositionMark.title("You are here");
+
+                            currentPosition = mMap.addMarker(curPositionMark);
                         }
                     } catch (Exception e){
                         e.printStackTrace();

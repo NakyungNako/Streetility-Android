@@ -17,10 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".User.SignUp"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".User.Login"
             android:label="@string/login"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".BankSelection"
             android:label="@string/title_activity_bank_selection"

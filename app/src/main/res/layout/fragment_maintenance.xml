@@ -18,17 +18,50 @@
         android:layout_height="match_parent"
         />
 
-    <SeekBar
-        android:id="@+id/seekBar"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:max="15"
-        android:progress="5"
-        android:progressBackgroundTint="#000"
-        android:progressTint="#2F6840"
-        android:thumbTint="#2F6840"
-        tools:layout_marginBottom="15dp" />
+        android:background="#EEEEEE"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="30dp"
+            android:text="@string/range"
+            android:textColor="#000" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="15dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <SeekBar
+                android:id="@+id/sb_range"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_weight="0.9"
+                android:max="15"
+                android:progress="5"
+                android:progressBackgroundTint="#000"
+                android:progressTint="#2F6840"
+                android:thumbTint="#2F6840" />
+
+            <ImageButton
+                android:id="@+id/img_btn_confirm_range"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:padding="10dp"
+                android:src="@drawable/checkbox_icon" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 </RelativeLayout>

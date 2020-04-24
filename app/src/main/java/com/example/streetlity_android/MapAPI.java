@@ -46,4 +46,7 @@ public interface MapAPI {
     @FormUrlEncoded
     @POST("service/toilet/add")
     Call<ResponseBody> addWC(@Field("location") float lat, @Field("location" )float lon);
+
+    @GET("json")
+    Call<ResponseBody> geocode(@Query("address") String address, @Query("key") String key);
 }
