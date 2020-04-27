@@ -1,18 +1,30 @@
 package com.example.streetlity_android;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.streetlity_android.User.Login;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -44,33 +56,36 @@ public class MainActivity extends AppCompatActivity {
         btnContribute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ContributeToService.class));
+                Intent t = new Intent(MainActivity.this, Login.class);
+                startActivityForResult(t, 1);
+                //startActivity(new Intent(MainActivity.this, ContributeToService.class));
             }
         });
+    }
 
-        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
-                .addConverterFactory(GsonConverterFactory.create()).build();
-        final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.getServiceInRange((float)10,(float)10, (float)10);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.code() == 200) {
-                    final JSONObject jsonObject;
-                    JSONArray jsonArray;
-                    try {
-                        jsonObject = new JSONObject(response.body().string());
-                        Log.e("", "onResponse: " + jsonObject.toString());
-                    } catch (Exception e){
-                        e.printStackTrace();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
+                Button btnContribute = findViewById(R.id.btn_contribute);
+
+                btnContribute.setText(getString(R.string.contribute));
+                btnContribute.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MainActivity.this, ContributeToService.class));
                     }
-                }
-            }
+                });
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("", "onFailure: " + t.toString());
+                TextView tvUsername = findViewById(R.id.tv_username);
+                tvUsername.setText(data.getStringExtra("username"));
+
+                LinearLayout lo = findViewById(R.id.layout_user);
+                lo.setVisibility(View.VISIBLE);
             }
-        });
+        } catch (Exception e) {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+        }
+
     }
 }

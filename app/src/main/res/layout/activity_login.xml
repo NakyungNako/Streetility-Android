@@ -80,7 +80,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/forgot_button"
+                android:id="@+id/btn_to_forgot"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:background="@null"
@@ -97,7 +97,7 @@
                 android:layout_weight="1" />
 
             <Button
-                android:id="@+id/signup_button"
+                android:id="@+id/btn_to_signup"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:background="@null"

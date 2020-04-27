@@ -65,11 +65,13 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/layout_user"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="15dp"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
@@ -83,8 +85,7 @@
                         android:layout_height="50dp"
                         android:background="@drawable/round_outline"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/temp_avatar"
-                        />
+                        android:src="@drawable/temp_avatar" />
                 </androidx.cardview.widget.CardView>
 
                 <TextView
@@ -92,7 +93,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:text="Hi, User"
+                    android:text="Hi, "
+                    android:textColor="#000"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tv_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:textColor="#000"
                     android:textSize="18sp" />
             </LinearLayout>
@@ -106,7 +114,7 @@
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/button_background"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:text="@string/contribute" />
+                android:text="@string/main_login" />
         </LinearLayout>
     </RelativeLayout>
 

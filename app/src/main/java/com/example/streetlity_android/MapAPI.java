@@ -49,4 +49,13 @@ public interface MapAPI {
 
     @GET("json")
     Call<ResponseBody> geocode(@Query("address") String address, @Query("key") String key);
+
+    @FormUrlEncoded
+    @POST("user/login")
+    Call<ResponseBody> login(@Field("username") String username, @Field("passwd") String password);
+
+    @FormUrlEncoded
+    @POST("user/register")
+    Call<ResponseBody> signup(@Field("username") String username, @Field("passwd") String password,
+                              @Field("email") String email);
 }

@@ -178,7 +178,7 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
     }
 
     public void addFuel(){
-        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+        Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
         Call<ResponseBody> call = tour.addFuel((float)latToAdd,(float)lonToAdd);
@@ -215,7 +215,7 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
     }
 
     public void addWC(){
-        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+        Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
         Call<ResponseBody> call = tour.addWC((float)latToAdd,(float)lonToAdd);

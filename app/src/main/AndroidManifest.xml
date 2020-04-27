@@ -24,7 +24,13 @@
             android:name=".User.Login"
             android:label="@string/login"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+            <intent-filter>
+                <action android:name="com.example.streetly_android.User.Login" />
+
+                <category android:name="android.intent.catego   ry.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".BankSelection"
             android:label="@string/title_activity_bank_selection"
