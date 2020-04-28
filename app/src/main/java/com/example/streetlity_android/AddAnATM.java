@@ -3,6 +3,7 @@ package com.example.streetlity_android;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -17,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -51,6 +54,8 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
     double latToAdd;
     double lonToAdd;
+
+    EditText edtAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +125,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
 
         ImageButton imgSearch = findViewById(R.id.img_btn_search_address);
-        final EditText edtAddress = findViewById(R.id.edt_address);
+        edtAddress = findViewById(R.id.edt_address);
 
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,7 +222,42 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
 
-                        finish();
+                        if(jsonObject.getString("status").equals("ZERO_RESULTS")){
+                            Toast toast = Toast.makeText(AddAnATM.this, "Address not found", Toast.LENGTH_LONG);
+                            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                            tv.setTextColor(Color.RED);
+
+                            toast.show();
+                        }
+                        else{
+                            mMap.clear();
+
+                            jsonArray = jsonObject.getJSONArray("results");
+
+                            JSONObject jsonObject1;
+                            jsonObject1 = jsonArray.getJSONObject(0);
+
+                            JSONObject jsonObjectGeomertry = jsonObject1.getJSONObject("geometry");
+                            JSONObject jsonLatLng = jsonObjectGeomertry.getJSONObject("location");
+
+                            latToAdd = jsonLatLng.getDouble("lat");
+                            lonToAdd = jsonLatLng.getDouble("lng");
+
+                            LatLng location = new LatLng(latToAdd,lonToAdd);
+
+                            MarkerOptions opt = new MarkerOptions().position(location).title("Here");
+
+                            edtAddress.setText(jsonObject1.getString("formatted_address"));
+
+                            if(firstClick == false){
+                                firstClick =true;
+                                Button confirm = findViewById(R.id.btn_confirm_adding);
+                                confirm.setVisibility(View.VISIBLE);
+                            }
+
+                            mMap.addMarker(opt);
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+                        }
                     } catch (Exception e){
                         e.printStackTrace();
                     }

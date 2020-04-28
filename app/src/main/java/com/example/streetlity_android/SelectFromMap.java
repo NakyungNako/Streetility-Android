@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -13,11 +14,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.streetlity_android.User.SignUp;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,6 +51,8 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
 
     double latToAdd;
     double lonToAdd;
+
+    EditText edtAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +103,7 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         ImageButton imgSearch = findViewById(R.id.img_btn_search_address);
-        final EditText edtAddress = findViewById(R.id.edt_address);
+        edtAddress = findViewById(R.id.edt_address);
 
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -267,7 +273,42 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
 
-                        finish();
+                        if(jsonObject.getString("status").equals("ZERO_RESULTS")){
+                            Toast toast = Toast.makeText(SelectFromMap.this, "Address not found", Toast.LENGTH_LONG);
+                            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                            tv.setTextColor(Color.RED);
+
+                            toast.show();
+                        }
+                        else{
+                            mMap.clear();
+
+                            jsonArray = jsonObject.getJSONArray("results");
+
+                            JSONObject jsonObject1;
+                            jsonObject1 = jsonArray.getJSONObject(0);
+
+                            JSONObject jsonObjectGeomertry = jsonObject1.getJSONObject("geometry");
+                            JSONObject jsonLatLng = jsonObjectGeomertry.getJSONObject("location");
+
+                            latToAdd = jsonLatLng.getDouble("lat");
+                            lonToAdd = jsonLatLng.getDouble("lng");
+
+                            LatLng location = new LatLng(latToAdd,lonToAdd);
+
+                            MarkerOptions opt = new MarkerOptions().position(location).title("Here");
+
+                            edtAddress.setText(jsonObject1.getString("formatted_address"));
+
+                            if(firstClick == false){
+                                firstClick =true;
+                                Button confirm = findViewById(R.id.btn_confirm_adding);
+                                confirm.setVisibility(View.VISIBLE);
+                            }
+
+                            mMap.addMarker(opt);
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+                        }
                     } catch (Exception e){
                         e.printStackTrace();
                     }
