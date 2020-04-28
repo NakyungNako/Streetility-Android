@@ -89,6 +89,13 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
             }
         });
 
+
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         ImageButton imgSearch = findViewById(R.id.img_btn_search_address);
         final EditText edtAddress = findViewById(R.id.edt_address);
 
@@ -98,13 +105,6 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
                 callGeocoding(edtAddress.getText().toString());
             }
         });
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-
     }
 
 

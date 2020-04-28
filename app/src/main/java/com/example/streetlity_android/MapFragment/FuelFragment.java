@@ -220,6 +220,7 @@
 package com.example.streetlity_android.MapFragment;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -238,8 +239,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.SeekBar;
 
 import com.example.streetlity_android.MapAPI;
@@ -519,10 +523,14 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 
             lv.setAdapter(adapter);
 
+            final Button btnLeaveComment = dialogView.findViewById(R.id.btn_leave_comment);
+
+
+
             Log.e("", "onMarkerClick: mapclick");
             marker.showInfoWindow();
 
-            BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
+            final BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
             dialog.setContentView(dialogView);
             dialog.setCanceledOnTouchOutside(true);
@@ -530,6 +538,34 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 
             dialog.show();
 
+            btnLeaveComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.cancel();
+
+                    Dialog dialogComment = new Dialog(getActivity());
+
+                    final LayoutInflater inflater2 = LayoutInflater.from(getActivity().getApplicationContext());
+
+                    final android.view.View dialogView2 = inflater.inflate(R.layout.dialog_review, null);
+
+                    EditText edtComment = dialogView2.findViewById(R.id.edt_comment);
+                    RatingBar rtReview = dialogView2.findViewById(R.id.rating_review);
+
+                    Button confirmReview = dialogView2.findViewById(R.id.btn_confrim_review);
+
+                    confirmReview.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+                    dialogComment.setContentView(dialogView2);
+
+                    dialogComment.show();
+                }
+            });
         }
 
         marker.showInfoWindow();

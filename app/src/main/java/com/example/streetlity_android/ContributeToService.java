@@ -61,6 +61,13 @@ public class ContributeToService extends AppCompatActivity {
             }
         });
 
+        btnConfirming.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent t = new Intent(ContributeToService.this, ConfirmLocations.class);
+                startActivity(t);
+            }
+        });
     }
 
     public boolean onOptionsItemSelected(MenuItem item){

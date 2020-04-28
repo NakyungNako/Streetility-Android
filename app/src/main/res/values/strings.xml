@@ -42,4 +42,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="range">Range:</string>
     <string name="main_login">Join us</string>
+    <string name="leave_review">Leave a review</string>
+    <string name="your_comment">Leave your comment here</string>
+    <string name="exist">Exist</string>
+    <string name="non_exist">Doesn\'t exist</string>
 </resources>

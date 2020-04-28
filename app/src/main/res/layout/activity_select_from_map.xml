@@ -42,7 +42,7 @@
             android:background="@null"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:src="@android:drawable/ic_search_category_default" />
+            android:src="@android:drawable/ic_menu_search" />
 
     </LinearLayout>
 
