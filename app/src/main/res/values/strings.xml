@@ -46,4 +46,20 @@
     <string name="your_comment">Leave your comment here</string>
     <string name="exist">Exist</string>
     <string name="non_exist">Doesn\'t exist</string>
+    <string name="logout">Logout</string>
+    <string name="user_info">User Info</string>
+    <string name="username_info">Username:</string>
+    <string name="email_info">Email:</string>
+    <string name="change_password">Change Password</string>
+    <string name="change_email">Change Email</string>
+    <string name="change_pass">Change password</string>
+    <string name="old_pass">Old password</string>
+    <string name="new_pass">New password</string>
+    <string name="cf_new_pass">Confirm new password</string>
+    <string name="change">Change</string>
+    <string name="title_activity_forgot_password">ForgotPassword</string>
+    <string name="send">Send</string>
+    <string name="OTP">OTP</string>
+    <string name="forgot_pass">Forgot password</string>
+    <string name="reset_pass">Reset password</string>
 </resources>

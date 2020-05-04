@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.streetlity_android.User.Login;
+import com.example.streetlity_android.User.UserInfo;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -77,11 +78,36 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                TextView tvUsername = findViewById(R.id.tv_username);
+                final TextView tvUsername = findViewById(R.id.tv_username);
                 tvUsername.setText(data.getStringExtra("username"));
 
                 LinearLayout lo = findViewById(R.id.layout_user);
                 lo.setVisibility(View.VISIBLE);
+
+                lo.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Intent t = new Intent(MainActivity.this, UserInfo.class);
+                        t.putExtra("username", tvUsername.getText().toString());
+                        startActivityForResult(t, 2);
+                    }
+                });
+            }else if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
+                Button btnContribute = findViewById(R.id.btn_contribute);
+
+                btnContribute.setText(getString(R.string.main_login));
+                btnContribute.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MainActivity.this, Login.class));
+                    }
+                });
+
+                LinearLayout lo = findViewById(R.id.layout_user);
+                lo.setVisibility(View.GONE);
+
+                Toast toast = Toast.makeText(MainActivity.this, "Logged out", Toast.LENGTH_LONG);
+                toast.show();
             }
         } catch (Exception e) {
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();

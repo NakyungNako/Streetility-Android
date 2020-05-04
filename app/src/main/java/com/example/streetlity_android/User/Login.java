@@ -79,6 +79,15 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        Button btnForgot = findViewById(R.id.btn_to_forgot);
+        btnForgot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent t = new Intent(Login.this, ForgotPassword.class);
+                startActivityForResult(t, 2);
+            }
+        });
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -98,7 +107,8 @@ public class Login extends AppCompatActivity {
                 if (response.code() == 200) {
                     try {
                         JSONObject jsonObject = new JSONObject(response.body().string());
-                        ((MyApplication) Login.this.getApplication()).setToken(jsonObject.getString("token"));
+                        Log.e("", "onResponse: " + jsonObject);
+                        ((MyApplication) Login.this.getApplication()).setToken(jsonObject.getString("AccessToken"));
                     } catch (Exception e){
                         e.printStackTrace();
                     }
@@ -133,6 +143,10 @@ public class Login extends AppCompatActivity {
         try {
             if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
                 Toast toast = Toast.makeText(Login.this, "Sign up successfully", Toast.LENGTH_LONG);
+                toast.show();
+            }
+            if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
+                Toast toast = Toast.makeText(Login.this, "Password resetted", Toast.LENGTH_LONG);
                 toast.show();
             }
         } catch (Exception e) {

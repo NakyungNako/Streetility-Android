@@ -37,7 +37,7 @@ public interface MapAPI {
 
     @FormUrlEncoded
     @POST("service/fuel/add")
-    Call<ResponseBody> addFuel(@Field("location") float lat, @Field("location" )float lon);
+    Call<ResponseBody> addFuel(@Field("rtoken") String token, @Field("location") float lat, @Field("location" )float lon);
 
     @FormUrlEncoded
     @POST("service/atm/add")
@@ -58,4 +58,8 @@ public interface MapAPI {
     @POST("user/register")
     Call<ResponseBody> signup(@Field("username") String username, @Field("passwd") String password,
                               @Field("email") String email);
+
+    @FormUrlEncoded
+    @POST("user/logout")
+    Call<ResponseBody> logout(@Field("rtoken") String token, @Field("username") String username);
 }

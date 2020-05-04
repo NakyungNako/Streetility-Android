@@ -187,7 +187,8 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
         Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.addFuel((float)latToAdd,(float)lonToAdd);
+        Call<ResponseBody> call = tour.addFuel(((MyApplication) this.getApplication()).getToken(),
+                (float)latToAdd,(float)lonToAdd);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
