@@ -98,6 +98,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/button_background"
+            android:foreground="?android:attr/selectableItemBackground"
             android:text="@string/change_password" />
 
     </LinearLayout>
@@ -115,6 +116,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@null"
+        android:foreground="?android:attr/selectableItemBackground"
         android:text="@string/logout"
         android:textColor="#CA2C2C"
         android:textSize="18sp" />

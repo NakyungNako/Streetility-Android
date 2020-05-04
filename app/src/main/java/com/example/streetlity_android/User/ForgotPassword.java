@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.example.streetlity_android.R;
 
@@ -26,8 +27,12 @@ public class ForgotPassword extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
+
         Button btnSendOTP = findViewById(R.id.btn_send);
         final Button btnResetPassword = findViewById(R.id.btn_reset_pass);
+        final LinearLayout resetLayout = findViewById(R.id.layout_reset_pass);
 
         EditText edtMail = findViewById(R.id.edt_email);
         EditText edtOTP = findViewById(R.id.edt_OTP);
@@ -37,7 +42,7 @@ public class ForgotPassword extends AppCompatActivity {
         btnSendOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnResetPassword.setVisibility(View.VISIBLE);
+                resetLayout.setVisibility(View.VISIBLE);
             }
         });
     }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    android:orientation="vertical">
 
     <RatingBar
         android:id="@+id/rating_review"
@@ -10,7 +12,10 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
-        android:numStars="5" />
+        android:numStars="5"
+        android:progressBackgroundTint="#C9C9C9"
+        android:progressTint="#CCB002"
+        android:rating="3" />
 
     <EditText
         android:id="@+id/edt_comment"
@@ -22,7 +27,9 @@
         android:inputType="textMultiLine|textPersonName"
         android:maxLines="5"
         android:paddingLeft="5dp"
-        android:paddingRight="5dp" />
+        android:paddingRight="5dp"
+        android:textColor="#000"
+        android:textColorHint="#8D8D8D" />
 
     <Button
         android:id="@+id/btn_confrim_review"
@@ -31,6 +38,8 @@
         android:layout_gravity="end"
         android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/button_background"
+        android:foreground="?android:attr/selectableItemBackground"
         android:text="@string/confirm" />
 </LinearLayout>

@@ -247,6 +247,7 @@ import android.widget.RatingBar;
 import android.widget.SeekBar;
 
 import com.example.streetlity_android.MapAPI;
+import com.example.streetlity_android.MyApplication;
 import com.example.streetlity_android.R;
 import com.example.streetlity_android.Review;
 import com.example.streetlity_android.ReviewAdapter;
@@ -448,7 +449,7 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
         }
 
 //        if (type == 1) {
-        callFuel(latitude,longitude,30);
+        callFuel(latitude,longitude,1);
 //        }
 //        else if (type == 2) {
 //            callATM(latitude,longitude);
@@ -525,6 +526,9 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 
             final Button btnLeaveComment = dialogView.findViewById(R.id.btn_leave_comment);
 
+            if(((MyApplication)getActivity().getApplication()).getToken() != ""){
+                btnLeaveComment.setVisibility(View.VISIBLE);
+            }
 
 
             Log.e("", "onMarkerClick: mapclick");
@@ -541,7 +545,7 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
             btnLeaveComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.cancel();
+                    //dialog.cancel();
 
                     Dialog dialogComment = new Dialog(getActivity());
 
@@ -584,6 +588,7 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 
         public void callFuel(double lat, double lon, float range){
             mMap.clear();
+            mMarkers.removeAll(mMarkers);
         Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
