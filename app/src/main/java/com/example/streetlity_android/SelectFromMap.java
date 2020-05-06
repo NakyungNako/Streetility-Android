@@ -10,13 +10,17 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -43,7 +47,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SelectFromMap extends FragmentActivity implements OnMapReadyCallback {
+public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -59,6 +63,22 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_from_map);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
+
+        Intent t = getIntent();
+        final int type = t.getIntExtra("type", -1);
+        TextView tvToolbar = findViewById(R.id.tv_toolbar_tittle);
+
+        if (type == 1){
+            tvToolbar.setText(getString(R.string.add_fuel));
+        }
+        else if (type == 2){
+            tvToolbar.setText(getString(R.string.add_wc));
+        }
 
         String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
         if (!hasPermissions(this, Permissions)) {
@@ -77,21 +97,19 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
             return;
         }
 
+        EditText edtNote = findViewById(R.id.edt_note);
+
         Button confirm = findViewById(R.id.btn_confirm_adding);
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent t = getIntent();
-                int type = t.getIntExtra("type", -1);
-
                 if (type == 1){
                     addFuel();
                 }
                 if (type == 2){
                     addWC();
                 }
-
             }
         });
 
@@ -109,6 +127,10 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 callGeocoding(edtAddress.getText().toString());
+                if (getCurrentFocus() != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
             }
         });
     }
@@ -309,6 +331,7 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
 
                             mMap.addMarker(opt);
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+                            mMap.animateCamera( CameraUpdateFactory.zoomTo( 18.0f ));
                         }
                     } catch (Exception e){
                         e.printStackTrace();
@@ -331,4 +354,14 @@ public class SelectFromMap extends FragmentActivity implements OnMapReadyCallbac
             }
         });
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
 }

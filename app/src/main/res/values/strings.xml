@@ -10,11 +10,11 @@
     <string name="wc">Public Toilet</string>
     <string name="fuel">Fuel Station</string>
     <string name="location_confirmation">Help confirming a location</string>
-    <string name="add_maintenance">Add a Maintenace</string>
-    <string name="add_atm">Add an ATM</string>
+    <string name="add_maintenance">Add Maintenance</string>
+    <string name="add_atm">Add ATM</string>
     <string name="name">Name: </string>
     <string name="lat">Latitude:</string>
-    <string name="lon">Longtitude:</string>
+    <string name="lon">Longitude:</string>
     <string name="select_fr_map">Select from map</string>
     <string name="confirm">Confirm</string>
     <string name="type">Type:</string>
@@ -62,4 +62,8 @@
     <string name="OTP">OTP</string>
     <string name="forgot_pass">Forgot password</string>
     <string name="reset_pass">Reset password</string>
+    <string name="add_wc">Add public toilet</string>
+    <string name="add_fuel">Add fuel station</string>
+    <string name="note">Note:</string>
+    <string name="note_hint">How to recognize the place</string>
 </resources>

@@ -84,6 +84,8 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        EditText edtNote = findViewById(R.id.edt_note);
+        EditText edtName = findViewById(R.id.edt_name);
 
         ImageButton imgSearch = findViewById(R.id.img_btn_search_address);
         edtAddress = findViewById(R.id.edt_address);
@@ -91,9 +93,15 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callGeocoding(edtAddress.getText().toString());
+                //callGeocoding(edtAddress.getText().toString());
+                if (getCurrentFocus() != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
             }
         });
+
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -213,6 +221,12 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
                             latToAdd = jsonLatLng.getDouble("lat");
                             lonToAdd = jsonLatLng.getDouble("lng");
 
+                            EditText edtLat = findViewById(R.id.edt_lat);
+                            EditText edtLon = findViewById(R.id.edt_lon);
+
+                            edtLat.setText(Double.toString(latToAdd));
+                            edtLon.setText(Double.toString(lonToAdd));
+
                             LatLng location = new LatLng(latToAdd,lonToAdd);
 
                             MarkerOptions opt = new MarkerOptions().position(location).title("Here");
@@ -227,6 +241,7 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
 
                             mMap.addMarker(opt);
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+                            mMap.animateCamera( CameraUpdateFactory.zoomTo( 18.0f ));
                         }
                     } catch (Exception e){
                         e.printStackTrace();

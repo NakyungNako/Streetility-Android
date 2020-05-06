@@ -10,7 +10,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -84,6 +86,8 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
             return;
         }
 
+        EditText edtNote = findViewById(R.id.edt_note);
+
         final Spinner atmType= findViewById(R.id.spinner_type);
 
         String[] arraySpinner = new String[] {
@@ -100,7 +104,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
         atmType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(atmType.getSelectedItem().toString() == "Other"){
+                if(atmType.getSelectedItem().toString().equals("Other")){
                     LinearLayout other = findViewById(R.id.layout_other);
                     other.setVisibility(View.VISIBLE);
                 }
@@ -130,7 +134,11 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callGeocoding(edtAddress.getText().toString());
+                //callGeocoding(edtAddress.getText().toString());
+                if (getCurrentFocus() != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
             }
         });
     }
@@ -243,6 +251,12 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
                             latToAdd = jsonLatLng.getDouble("lat");
                             lonToAdd = jsonLatLng.getDouble("lng");
 
+                            EditText edtLat = findViewById(R.id.edt_lat);
+                            EditText edtLon = findViewById(R.id.edt_lon);
+
+                            edtLat.setText(Double.toString(latToAdd));
+                            edtLon.setText(Double.toString(lonToAdd));
+
                             LatLng location = new LatLng(latToAdd,lonToAdd);
 
                             MarkerOptions opt = new MarkerOptions().position(location).title("Here");
@@ -257,6 +271,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
                             mMap.addMarker(opt);
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+                            mMap.animateCamera( CameraUpdateFactory.zoomTo( 18.0f ));
                         }
                     } catch (Exception e){
                         e.printStackTrace();
@@ -278,5 +293,14 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
             }
         });
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }
