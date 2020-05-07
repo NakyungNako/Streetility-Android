@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -17,17 +18,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".User.Login"
-            android:label="@string/login"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
+            android:name=".User.EditProfile"
+            android:label="@string/title_activity_edit_profile"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".BankSelection"
-            android:label="@string/title_activity_bank_selection"
+            android:name=".User.SignupAsMaintainer"
+            android:label="@string/signup_as_maintain"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ServiceSelection"
-            android:label="@string/title_activity_service_selection"
+            android:name=".User.ForgotPassword"
+            android:label="@string/title_activity_forgot_password"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".User.ChangePassword"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".User.UserInfo"
+            android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -40,13 +48,38 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".ConfirmLocations"
+            android:label="" />
+        <activity
+            android:name=".User.SignUpAsCommon"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".User.Login"
+            android:label="@string/login"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible|adjustResize">
+            <intent-filter>
+                <action android:name="com.example.streetly_android.User.Login" />
+
+                <category android:name="android.intent.catego   ry.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".BankSelection"
+            android:label="@string/title_activity_bank_selection"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MapNavigationHolder"
+            android:label="@string/title_activity_service_selection"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" />
         <activity
             android:name=".ContributeToService"
             android:label="@string/title_activity_contribute"

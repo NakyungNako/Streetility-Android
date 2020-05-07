@@ -9,9 +9,10 @@
         android:id="@+id/btn_go_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/button_background"
+        android:foreground="?android:attr/selectableItemBackground"
         android:text="Go to"
         android:textColor="#000"
         app:layout_anchor="@+id/layout_main_infos"
@@ -33,17 +34,26 @@
             android:layout_marginRight="115dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="Place Holeder AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
             android:textColor="#000"
             android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_name_of_place"
+            android:layout_marginTop="15dp"
+            android:paddingLeft="15dp"
+            android:textColor="#000" />
 
         <RatingBar
             android:id="@+id/ratingBar"
             style="?android:attr/ratingBarStyleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_name_of_place"
+            android:layout_below="@id/tv_address"
             android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
             android:isIndicator="true"
             android:max="5"
             android:numStars="5"
@@ -56,7 +66,7 @@
             android:id="@+id/tv_average_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_name_of_place"
+            android:layout_below="@id/tv_address"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="6dp"
             android:layout_toRightOf="@id/ratingBar"
@@ -68,7 +78,7 @@
             android:id="@+id/tv_num_of_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_name_of_place"
+            android:layout_below="@id/tv_address"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="6dp"
             android:layout_toRightOf="@id/tv_average_rating"
@@ -100,16 +110,18 @@
                     android:textSize="24sp" />
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/btn_leave_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:layout_gravity="right"
                     android:layout_marginRight="15dp"
                     android:background="@drawable/button_background"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:padding="5dp"
-                    android:text="Leave a review"
+                    android:text="@string/leave_review"
                     android:textAllCaps="false"
-                    android:textColor="#000" />
+                    android:textColor="#000"
+                    android:visibility="invisible" />
             </LinearLayout>
 
             <ListView

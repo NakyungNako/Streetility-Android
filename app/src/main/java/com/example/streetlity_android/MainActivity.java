@@ -1,6 +1,13 @@
 package com.example.streetlity_android;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -12,18 +19,23 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.streetlity_android.User.Login;
+import com.example.streetlity_android.User.UserInfo;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -45,46 +57,57 @@ public class MainActivity extends AppCompatActivity {
         ImageView imgUser = findViewById(R.id.img_user_avatar);
         imgUser.setClipToOutline(true);
 
-        btnFind.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ServiceSelection.class));
-            }
-        });
+        SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
+        if (s.contains("token")){
 
-        btnContribute.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ContributeToService.class));
-            }
-        });
+            ((MyApplication) this.getApplication()).setToken(s.getString("token",""));
+            ((MyApplication) this.getApplication()).setRefreshToken(s.getString("refreshToken",""));
+            ((MyApplication) this.getApplication()).setToken(s.getString("username",""));
 
-        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
-                .addConverterFactory(GsonConverterFactory.create()).build();
-        final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.getServiceInRange((float)10,(float)10, (float)10);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.code() == 200) {
-                    final JSONObject jsonObject;
-                    JSONArray jsonArray;
-                    try {
-                        jsonObject = new JSONObject(response.body().string());
-                        Log.e("", "onResponse: " + jsonObject.toString());
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
+            btnContribute = findViewById(R.id.btn_contribute);
+
+            btnContribute.setText(getString(R.string.contribute));
+            btnContribute.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, ContributeToService.class));
                 }
-            }
+            });
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("", "onFailure: " + t.toString());
-            }
-        });
+            final TextView tvUsername = findViewById(R.id.tv_username);
+            tvUsername.setText(s.getString("username", ""));
 
-        FirebaseInstanceId.getInstance().getInstanceId()
+            LinearLayout lo = findViewById(R.id.layout_user);
+            lo.setVisibility(View.VISIBLE);
+
+            lo.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent t = new Intent(MainActivity.this, UserInfo.class);
+                    t.putExtra("username", tvUsername.getText().toString());
+                    startActivityForResult(t, 2);
+                }
+            });
+        }else {
+
+            btnFind.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, MapNavigationHolder.class));
+                }
+            });
+
+            btnContribute.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent t = new Intent(MainActivity.this, Login.class);
+                    startActivityForResult(t, 1);
+                    //startActivity(new Intent(MainActivity.this, ContributeToService.class));
+                }
+            });
+        }
+
+                FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
@@ -103,5 +126,59 @@ public class MainActivity extends AppCompatActivity {
 //
 //        String token = FirebaseInstanceId.getInstance().getInstanceId().getResult().getToken();
         Log.println(Log.INFO, "", "hi mom");
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
+                Button btnContribute = findViewById(R.id.btn_contribute);
+
+                btnContribute.setText(getString(R.string.contribute));
+                btnContribute.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MainActivity.this, ContributeToService.class));
+                    }
+                });
+
+                final TextView tvUsername = findViewById(R.id.tv_username);
+                tvUsername.setText(data.getStringExtra("username"));
+
+                LinearLayout lo = findViewById(R.id.layout_user);
+                lo.setVisibility(View.VISIBLE);
+
+                lo.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Intent t = new Intent(MainActivity.this, UserInfo.class);
+                        t.putExtra("username", tvUsername.getText().toString());
+                        startActivityForResult(t, 2);
+                    }
+                });
+            }else if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
+                Button btnContribute = findViewById(R.id.btn_contribute);
+
+                btnContribute.setText(getString(R.string.main_login));
+                btnContribute.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MainActivity.this, Login.class));
+                    }
+                });
+
+                LinearLayout lo = findViewById(R.id.layout_user);
+                lo.setVisibility(View.GONE);
+
+                Toast toast = Toast.makeText(MainActivity.this, "Logged out", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+        }
+
     }
 }
