@@ -1,6 +1,8 @@
 package com.example.streetlity_android.User;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -63,6 +65,14 @@ public class UserInfo extends AppCompatActivity {
                                 JSONObject jsonObject = new JSONObject(response.body().string());
                                 Log.e("", "onResponse: " + jsonObject );
                                 ((MyApplication) UserInfo.this.getApplication()).setToken("");
+                                ((MyApplication) UserInfo.this.getApplication()).setRefreshToken("");
+                                ((MyApplication) UserInfo.this.getApplication()).setUsername("");
+
+                                SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor e = s.edit();
+                                e.clear();
+                                e.apply();
+
                             } catch (Exception e){
                                 e.printStackTrace();
                             }
@@ -100,6 +110,15 @@ public class UserInfo extends AppCompatActivity {
             }
         });
 
+        Button btnEditProfile = findViewById(R.id.btn_edit_profile);
+        btnChangePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent t = new Intent(UserInfo.this, EditProfile.class);
+                startActivityForResult(t,2);
+            }
+        });
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -113,6 +132,10 @@ public class UserInfo extends AppCompatActivity {
         try {
             if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
                 Toast toast = Toast.makeText(UserInfo.this, "Password changed", Toast.LENGTH_LONG);
+                toast.show();
+            }
+            if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
+                Toast toast = Toast.makeText(UserInfo.this, "Profile updated", Toast.LENGTH_LONG);
                 toast.show();
             }
         } catch (Exception e) {

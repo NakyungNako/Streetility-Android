@@ -1,6 +1,8 @@
 package com.example.streetlity_android;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -47,21 +49,55 @@ public class MainActivity extends AppCompatActivity {
         ImageView imgUser = findViewById(R.id.img_user_avatar);
         imgUser.setClipToOutline(true);
 
-        btnFind.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, MapNavigationHolder.class));
-            }
-        });
+        SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
+        if (s.contains("token")){
 
-        btnContribute.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent t = new Intent(MainActivity.this, Login.class);
-                startActivityForResult(t, 1);
-                //startActivity(new Intent(MainActivity.this, ContributeToService.class));
-            }
-        });
+            ((MyApplication) this.getApplication()).setToken(s.getString("token",""));
+            ((MyApplication) this.getApplication()).setRefreshToken(s.getString("refreshToken",""));
+            ((MyApplication) this.getApplication()).setToken(s.getString("username",""));
+
+            btnContribute = findViewById(R.id.btn_contribute);
+
+            btnContribute.setText(getString(R.string.contribute));
+            btnContribute.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, ContributeToService.class));
+                }
+            });
+
+            final TextView tvUsername = findViewById(R.id.tv_username);
+            tvUsername.setText(s.getString("username", ""));
+
+            LinearLayout lo = findViewById(R.id.layout_user);
+            lo.setVisibility(View.VISIBLE);
+
+            lo.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent t = new Intent(MainActivity.this, UserInfo.class);
+                    t.putExtra("username", tvUsername.getText().toString());
+                    startActivityForResult(t, 2);
+                }
+            });
+        }else {
+
+            btnFind.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, MapNavigationHolder.class));
+                }
+            });
+
+            btnContribute.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent t = new Intent(MainActivity.this, Login.class);
+                    startActivityForResult(t, 1);
+                    //startActivity(new Intent(MainActivity.this, ContributeToService.class));
+                }
+            });
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

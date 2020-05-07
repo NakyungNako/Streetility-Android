@@ -18,9 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".User.EditProfile"
+            android:label="@string/title_activity_edit_profile"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".User.SignupAsMaintainer"
+            android:label="@string/signup_as_maintain"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".User.ForgotPassword"
             android:label="@string/title_activity_forgot_password"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".User.ChangePassword"
             android:label=""
@@ -45,7 +53,7 @@
             android:name=".ConfirmLocations"
             android:label="" />
         <activity
-            android:name=".User.SignUp"
+            android:name=".User.SignUpAsCommon"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

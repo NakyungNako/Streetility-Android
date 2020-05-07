@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "588301906057",
+    "firebase_url": "https://hardy-moon-270302.firebaseio.com",
+    "project_id": "hardy-moon-270302",
+    "storage_bucket": "hardy-moon-270302.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:588301906057:android:22cef6744d490d7fbd5658",
+        "android_client_info": {
+          "package_name": "com.example.streetlity_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "588301906057-jnu46csibbb3vqt4994okgtuj9t6g48u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDN7iX42Xed7LNZULrAqn4Lf-knyao50Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "588301906057-jnu46csibbb3vqt4994okgtuj9t6g48u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

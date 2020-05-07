@@ -33,81 +33,157 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/appBarLayout"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/edt_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:hint="@string/username"
-            android:inputType="textPersonName"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
-
-        <EditText
-            android:id="@+id/edt_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:ems="10"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/button_background"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:text="@string/login" />
+        android:layout_below="@id/appBarLayout">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:orientation="horizontal">
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edt_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:hint="@string/username"
+                android:inputType="textPersonName"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
+
+            <EditText
+                android:id="@+id/edt_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ems="10"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
 
             <Button
-                android:id="@+id/btn_to_forgot"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:background="@null"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="@string/forgotpass"
-                android:textAllCaps="false"
-                android:textColor="#126100" />
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/button_background"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:text="@string/login" />
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_to_forgot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:background="@null"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="@string/forgotpass"
+                    android:textAllCaps="false"
+                    android:textColor="#126100" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="80dp"
+                    android:layout_height="2dp"
+                    android:background="#60757575"
+                    android:minWidth="50dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:text="@string/not_user" />
+
+                <View
+                    android:id="@+id/divider3"
+                    android:layout_width="80dp"
+                    android:layout_height="2dp"
+                    android:background="#60757575"
+                    android:minWidth="50dp" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_to_signup"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:background="@null"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/button_background"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="@string/signup"
-                android:textAllCaps="false"
-                android:textColor="#126100" />
+                android:textAllCaps="true"
+                android:textColor="#000000" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="25dp"
+                    android:layout_height="2dp"
+                    android:background="#60757575"
+                    android:minWidth="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center"
+                    android:text="@string/or" />
+
+                <View
+                    android:layout_width="25dp"
+                    android:layout_height="2dp"
+                    android:background="#60757575"
+                    android:minWidth="20dp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_to_signup_as_maintainer"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/button_background"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/signup_as_maintain"
+                android:textAllCaps="true"
+                android:textColor="#000000" />
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

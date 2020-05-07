@@ -2,6 +2,7 @@ package com.example.streetlity_android.User;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -66,6 +67,11 @@ public class Login extends AppCompatActivity {
                 } else {
                     login(edtUser.getText().toString(),edtPass.getText().toString());
                 }
+
+                if (getCurrentFocus() != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
             }
         });
 
@@ -74,7 +80,11 @@ public class Login extends AppCompatActivity {
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent t = new Intent(Login.this, SignUp.class);
+                if (getCurrentFocus() != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
+                Intent t = new Intent(Login.this, SignUpAsCommon.class);
                 startActivityForResult(t, 1);
             }
         });
@@ -83,8 +93,25 @@ public class Login extends AppCompatActivity {
         btnForgot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (getCurrentFocus() != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
                 Intent t = new Intent(Login.this, ForgotPassword.class);
                 startActivityForResult(t, 2);
+            }
+        });
+
+        Button btnSignupMaintainer = findViewById(R.id.btn_to_signup_as_maintainer);
+        btnSignupMaintainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getCurrentFocus() != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
+                Intent t = new Intent(Login.this, SignupAsMaintainer.class);
+                startActivityForResult(t, 3);
             }
         });
 
@@ -109,12 +136,25 @@ public class Login extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject);
                         ((MyApplication) Login.this.getApplication()).setToken(jsonObject.getString("AccessToken"));
+                        ((MyApplication) Login.this.getApplication()).setRefreshToken(jsonObject.getString("RefreshToken"));
+                        ((MyApplication) Login.this.getApplication()).setUsername(username);
+
+                        SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor e = s.edit();
+                        e.clear();
+                        e.commit();
+                        e.putString("username", username);
+                        e.putString("token",((MyApplication) Login.this.getApplication()).getToken());
+                        e.putString("refreshToken",((MyApplication) Login.this.getApplication()).getRefreshToken());
+                        e.commit();
+
                     } catch (Exception e){
                         e.printStackTrace();
                     }
 
                     Intent data = new Intent();
                     data.putExtra("username", username);
+
                     setResult(RESULT_OK, data);
                     finish();
                 } else {
@@ -147,6 +187,10 @@ public class Login extends AppCompatActivity {
             }
             if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
                 Toast toast = Toast.makeText(Login.this, "Password resetted", Toast.LENGTH_LONG);
+                toast.show();
+            }
+            if (requestCode == 3 && resultCode == RESULT_OK && null != data) {
+                Toast toast = Toast.makeText(Login.this, "Sign up successfully, please wait for verification", Toast.LENGTH_LONG);
                 toast.show();
             }
         } catch (Exception e) {

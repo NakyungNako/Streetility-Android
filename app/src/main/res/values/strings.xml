@@ -66,4 +66,19 @@
     <string name="add_fuel">Add fuel station</string>
     <string name="note">Note:</string>
     <string name="note_hint">How to recognize the place</string>
+    <string name="phone">Phone number</string>
+    <string name="title_activity_edit_profile">EditProfile</string>
+    <string name="address">Your address</string>
+    <string name="work_address">Your work address</string>
+    <string name="not_user">Not a user?</string>
+    <string name="or">Or</string>
+    <string name="signup_as_maintain">Sign up as Maintainer</string>
+    <string name="address_short">Address</string>
+    <string name="phone_short">Phone</string>
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
+    <string name="address_short_with">Address:</string>
+    <string name="phone_short_with">Phone:</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="maintainer_signup">Maintainer Signup</string>
 </resources>

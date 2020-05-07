@@ -6,8 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.streetlity_android.MapAPI;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -31,7 +29,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SignUp extends AppCompatActivity {
+public class SignUpAsCommon extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +45,21 @@ public class SignUp extends AppCompatActivity {
         final EditText edtPassword = findViewById(R.id.edt_password);
         final EditText edtCFPassword = findViewById(R.id.edt_cfpassword);
         final EditText edtMail = findViewById(R.id.edt_email);
+        final EditText edtPhone = findViewById(R.id.edt_phone);
+        final EditText edtAddress = findViewById(R.id.edt_address);
 
         Button btnSighUp = findViewById(R.id.btn_signup);
         btnSighUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (getCurrentFocus() != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
+
                 if(checkFields(edtUsername.getText().toString(), edtPassword.getText().toString(),
-                        edtCFPassword.getText().toString(),edtMail.getText().toString())){
+                        edtCFPassword.getText().toString(),edtMail.getText().toString(),edtPhone.getText().toString()
+                ,edtAddress.getText().toString())){
 
                     Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.232.218/")
                             .addConverterFactory(GsonConverterFactory.create()).build();
@@ -71,7 +77,7 @@ public class SignUp extends AppCompatActivity {
                                 finish();
                             } else {
                                 try {
-                                    Toast toast = Toast.makeText(SignUp.this, "Username or Email existed", Toast.LENGTH_LONG);
+                                    Toast toast = Toast.makeText(SignUpAsCommon.this, "Username or Email existed", Toast.LENGTH_LONG);
                                     TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                                     tv.setTextColor(Color.RED);
 
@@ -100,9 +106,9 @@ public class SignUp extends AppCompatActivity {
         return true;
     }
 
-    public boolean checkFields(String username, String pass, String cfPass, String email){
+    public boolean checkFields(String username, String pass, String cfPass, String email, String phoneNumber, String address){
         if(username.equals("")){
-            Toast toast = Toast.makeText(SignUp.this, "Username is empty", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUpAsCommon.this, "Username is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
@@ -110,7 +116,7 @@ public class SignUp extends AppCompatActivity {
             return false;
         }
         else if(pass.equals("")){
-            Toast toast = Toast.makeText(SignUp.this, "Password is empty", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUpAsCommon.this, "Password is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
@@ -118,7 +124,7 @@ public class SignUp extends AppCompatActivity {
             return false;
         }
         else if(cfPass.equals("")){
-            Toast toast = Toast.makeText(SignUp.this, "Confirm password is empty", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUpAsCommon.this, "Confirm password is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
@@ -126,7 +132,7 @@ public class SignUp extends AppCompatActivity {
             return false;
         }
         else if(email.equals("")){
-            Toast toast = Toast.makeText(SignUp.this, "Email is empty", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUpAsCommon.this, "Email is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
@@ -134,7 +140,23 @@ public class SignUp extends AppCompatActivity {
             return false;
         }
         else if(!pass.equals(cfPass)){
-            Toast toast = Toast.makeText(SignUp.this, "Password mismatch", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUpAsCommon.this, "Password mismatch", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+        else if(phoneNumber.equals("")){
+            Toast toast = Toast.makeText(SignUpAsCommon.this, "Phone number is empty", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+        else if(address.equals("")){
+            Toast toast = Toast.makeText(SignUpAsCommon.this, "Address is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
