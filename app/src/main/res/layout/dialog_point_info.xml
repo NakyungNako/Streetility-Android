@@ -5,20 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btn_go_to"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/button_background"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:text="Go to"
-        android:textColor="#000"
-        app:layout_anchor="@+id/layout_main_infos"
-        app:layout_anchorGravity="top|end"
-        app:srcCompat="@drawable/icon_google_direction" />
-
 
     <RelativeLayout
         android:id="@+id/layout_main_infos"
@@ -27,11 +13,38 @@
         android:background="#FFFFFF"
         android:paddingTop="10dp">
 
+        <Button
+            android:id="@+id/btn_go_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/button_background"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:textColor="#000"
+            android:visibility="visible"
+            android:text="@string/go"/>
+
+        <Button
+            android:id="@+id/btn_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_toStartOf="@id/btn_go_to"
+            android:background="@drawable/button_background"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:text="@string/order"
+            android:textColor="#000"
+            android:visibility="visible" />
+
         <TextView
             android:id="@+id/tv_name_of_place"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="115dp"
+            android:layout_below="@id/btn_go_to"
+            android:layout_marginTop="10dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:textColor="#000"

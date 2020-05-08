@@ -526,10 +526,49 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 
             final Button btnLeaveComment = dialogView.findViewById(R.id.btn_leave_comment);
 
-            if(((MyApplication)getActivity().getApplication()).getToken() != ""){
+            if(!((MyApplication)getActivity().getApplication()).getToken().equals("")){
                 btnLeaveComment.setVisibility(View.VISIBLE);
             }
 
+            final Button btnOrder = dialogView.findViewById(R.id.btn_order);
+            btnOrder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog dialogOrder = new Dialog(getActivity());
+
+                    final LayoutInflater inflater2 = LayoutInflater.from(getActivity().getApplicationContext());
+
+                    final android.view.View dialogView2 = inflater2.inflate(R.layout.dialog_order, null);
+
+                    EditText edtName = dialogView2.findViewById(R.id.edt_name);
+                    EditText edtPhone = dialogView2.findViewById(R.id.edt_phone);
+                    EditText edtAddress = dialogView2.findViewById(R.id.edt_address);
+                    EditText edtNote = dialogView2.findViewById(R.id.edt_note);
+                    EditText edtTime = dialogView2.findViewById(R.id.edt_time);
+
+                    Button btnConfirm = dialogView2.findViewById(R.id.btn_order);
+
+                    btnConfirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+                    Button btnCancel = dialogView2.findViewById(R.id.btn_cancel);
+
+                    btnCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialogOrder.cancel();
+                        }
+                    });
+
+                    dialogOrder.setContentView(dialogView2);
+
+                    dialogOrder.show();
+                }
+            });
 
             Log.e("", "onMarkerClick: mapclick");
             marker.showInfoWindow();
@@ -551,7 +590,7 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 
                     final LayoutInflater inflater2 = LayoutInflater.from(getActivity().getApplicationContext());
 
-                    final android.view.View dialogView2 = inflater.inflate(R.layout.dialog_review, null);
+                    final android.view.View dialogView2 = inflater2.inflate(R.layout.dialog_review, null);
 
                     EditText edtComment = dialogView2.findViewById(R.id.edt_comment);
                     RatingBar rtReview = dialogView2.findViewById(R.id.rating_review);

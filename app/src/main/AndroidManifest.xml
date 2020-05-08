@@ -18,9 +18,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".User.Maintainer.Works"
+            android:label="@string/title_activity_works"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".User.EditProfile"
             android:label="@string/title_activity_edit_profile"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".User.SignupAsMaintainer"
             android:label="@string/signup_as_maintain"
@@ -106,15 +110,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".Firebase.StreetlityFirebaseMessagingService"
             android:exported="false">
-
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
     </application>
-
 
 </manifest>

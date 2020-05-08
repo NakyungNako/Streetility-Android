@@ -38,6 +38,7 @@
     <string name="signup">Sign Up</string>
     <string name="input_bank_name">Input bank name here</string>
     <string name="go_to_addr">Go to address</string>
+    <string name="go">Go</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="range">Range:</string>
@@ -81,4 +82,16 @@
     <string name="phone_short_with">Phone:</string>
     <string name="edit_profile">Edit profile</string>
     <string name="maintainer_signup">Maintainer Signup</string>
+    <string name="title_activity_works">Works</string>
+    <string name="order">Order</string>
+    <string name="name_order">Name</string>
+    <string name="prefer_time">Prefer time</string>
+    <string name="note_without">Note</string>
+    <string name="alert">Alert! This will notify nearby maintenance stores about your location. ONLY USE IN CASE OF EMERGENCY</string>
+    <string name="reason">Reason</string>
+    <string name="broadcast">Broadcast</string>
+    <string name="my_works">My works</string>
+    <string name="normal_order">Normal orders</string>
+    <string name="Emergency_order">Emergency orders</string>
+    <string name="no_order">No order</string>
 </resources>

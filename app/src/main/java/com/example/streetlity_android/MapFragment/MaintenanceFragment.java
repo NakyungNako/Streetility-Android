@@ -1,6 +1,7 @@
 package com.example.streetlity_android.MapFragment;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -19,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -36,6 +39,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -132,6 +136,47 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
             public void onClick(View v) {
                 callMaintenance(latitude,longitude,(float)sbRange.getProgress());
                 Log.e("", "onClick: " +  sbRange.getProgress());
+            }
+        });
+
+        FloatingActionButton fabBroadcast = rootView.findViewById(R.id.fab_broadcast);
+
+        fabBroadcast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialogOrder = new Dialog(getActivity());
+
+                final LayoutInflater inflater2 = LayoutInflater.from(getActivity().getApplicationContext());
+
+                final android.view.View dialogView2 = inflater2.inflate(R.layout.dialog_broadcast, null);
+
+                EditText edtName = dialogView2.findViewById(R.id.edt_name);
+                EditText edtPhone = dialogView2.findViewById(R.id.edt_phone);
+                EditText edtAddress = dialogView2.findViewById(R.id.edt_address);
+                EditText edtNote = dialogView2.findViewById(R.id.edt_note);
+                EditText edtTime = dialogView2.findViewById(R.id.edt_time);
+
+                Button btnConfirm = dialogView2.findViewById(R.id.btn_broadcast);
+
+                btnConfirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+                Button btnCancel = dialogView2.findViewById(R.id.btn_cancel);
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialogOrder.cancel();
+                    }
+                });
+
+                dialogOrder.setContentView(dialogView2);
+
+                dialogOrder.show();
             }
         });
 

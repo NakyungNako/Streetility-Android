@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.example.streetlity_android.User.Maintainer.Works;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -89,14 +90,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }else {
-
-            btnFind.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(MainActivity.this, MapNavigationHolder.class));
-                }
-            });
-
             btnContribute.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -106,6 +99,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        btnFind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, MapNavigationHolder.class));
+            }
+        });
 
                 FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -133,6 +133,15 @@ public class MainActivity extends AppCompatActivity {
         try {
             if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
                 Button btnContribute = findViewById(R.id.btn_contribute);
+
+                Button btnWork = findViewById(R.id.btn_works);
+                btnWork.setVisibility(View.VISIBLE);
+                btnWork.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MainActivity.this, Works.class));
+                    }
+                });
 
                 btnContribute.setText(getString(R.string.contribute));
                 btnContribute.setOnClickListener(new View.OnClickListener() {
@@ -173,8 +182,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast toast = Toast.makeText(MainActivity.this, "Logged out", Toast.LENGTH_LONG);
                 toast.show();
             }
-        });
-
 
         } catch (Exception e) {
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
