@@ -94,4 +94,14 @@
     <string name="normal_order">Normal orders</string>
     <string name="Emergency_order">Emergency orders</string>
     <string name="no_order">No order</string>
+    <string name="my_order">My order</string>
+    <string name="history">History</string>
+    <string name="title_activity_order_info">OrderInfo</string>
+    <string name="order_info">Order info</string>
+    <string name="prefer_time_with">Prefer time:</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="decline_order">Decline order?</string>
+    <string name="why">Why?</string>
+    <string name="cancel">Cancel</string>
 </resources>

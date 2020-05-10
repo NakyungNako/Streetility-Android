@@ -61,6 +61,15 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
         if (s.contains("token")){
 
+            Button btnWork = findViewById(R.id.btn_works);
+            btnWork.setVisibility(View.VISIBLE);
+            btnWork.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, Works.class));
+                }
+            });
+
             ((MyApplication) this.getApplication()).setToken(s.getString("token",""));
             ((MyApplication) this.getApplication()).setRefreshToken(s.getString("refreshToken",""));
             ((MyApplication) this.getApplication()).setToken(s.getString("username",""));
@@ -172,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 btnContribute.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(MainActivity.this, Login.class));
+                        startActivityForResult(new Intent(MainActivity.this, Login.class),1);
                     }
                 });
 

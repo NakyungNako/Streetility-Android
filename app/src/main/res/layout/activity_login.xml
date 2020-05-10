@@ -131,7 +131,7 @@
             <Button
                 android:id="@+id/btn_to_signup"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="20dp"
@@ -173,10 +173,11 @@
             <Button
                 android:id="@+id/btn_to_signup_as_maintainer"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/button_background"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
