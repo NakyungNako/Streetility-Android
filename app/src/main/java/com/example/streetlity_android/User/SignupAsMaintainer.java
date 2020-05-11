@@ -1,22 +1,33 @@
 package com.example.streetlity_android.User;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.streetlity_android.MapAPI;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.streetlity_android.R;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SignupAsMaintainer extends AppCompatActivity {
 
@@ -45,6 +56,44 @@ public class SignupAsMaintainer extends AppCompatActivity {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 }
+
+                if(checkFields(edtUsername.getText().toString(), edtPassword.getText().toString(), edtCFPassword.getText().toString(),
+                        edtMail.getText().toString(),edtPhone.getText().toString(),edtAddress.getText().toString())){
+
+                    Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.232.218/")
+                            .addConverterFactory(GsonConverterFactory.create()).build();
+                    final MapAPI tour = retro.create(MapAPI.class);
+
+                    Call<ResponseBody> call = tour.signupMaintainer(edtUsername.getText().toString(), edtPassword.getText().toString(),
+                            edtMail.getText().toString(), edtPhone.getText().toString(), edtAddress.getText().toString());
+
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.code() == 200) {
+                                Intent data = new Intent();
+                                setResult(RESULT_OK, data);
+                                finish();
+                            } else {
+                                try {
+                                    Toast toast = Toast.makeText(SignupAsMaintainer.this, "Username or Email existed", Toast.LENGTH_LONG);
+                                    TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                                    tv.setTextColor(Color.RED);
+
+                                    toast.show();
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Log.e("", "onFailure: " + t.toString());
+                        }
+                    });
+                }
             }
         });
     }
@@ -62,5 +111,66 @@ public class SignupAsMaintainer extends AppCompatActivity {
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    public boolean checkFields(String username, String pass, String cfPass, String email, String phoneNumber, String address){
+        if(username.equals("")){
+            Toast toast = Toast.makeText(SignupAsMaintainer.this, "Username is empty", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+        else if(pass.equals("")){
+            Toast toast = Toast.makeText(SignupAsMaintainer.this, "Password is empty", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+        else if(cfPass.equals("")){
+            Toast toast = Toast.makeText(SignupAsMaintainer.this, "Confirm password is empty", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+        else if(email.equals("")){
+            Toast toast = Toast.makeText(SignupAsMaintainer.this, "Email is empty", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+        else if(!pass.equals(cfPass)){
+            Toast toast = Toast.makeText(SignupAsMaintainer.this, "Password mismatch", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+        else if(phoneNumber.equals("")){
+            Toast toast = Toast.makeText(SignupAsMaintainer.this, "Phone number is empty", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+        else if(address.equals("")){
+            Toast toast = Toast.makeText(SignupAsMaintainer.this, "Address is empty", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+
+        return true;
     }
 }

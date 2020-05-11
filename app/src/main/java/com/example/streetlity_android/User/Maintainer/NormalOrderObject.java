@@ -1,6 +1,6 @@
 package com.example.streetlity_android.User.Maintainer;
 
-public class OrderObject {
+public class NormalOrderObject {
     private int id;
     private String name;
     private String address;
@@ -8,7 +8,7 @@ public class OrderObject {
     private String note;
     private String time;
 
-    public OrderObject(int id, String name, String address, String phone, String note, String time) {
+    public NormalOrderObject(int id, String name, String address, String phone, String note, String time) {
         this.id = id;
         this.name = name;
         this.address = address;

@@ -134,7 +134,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //callGeocoding(edtAddress.getText().toString());
+                callGeocoding(edtAddress.getText().toString());
                 if (getCurrentFocus() != null) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
@@ -302,5 +302,45 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    public void addATM(){
+        Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+
+        String token = ((MyApplication) this.getApplication()).getToken();
+
+        Call<ResponseBody> call = tour.addATM(token,(float)latToAdd,(float)lonToAdd);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    JSONArray jsonArray;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+
+                        finish();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    try {
+                        Log.e(", ",response.errorBody().toString());
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
     }
 }

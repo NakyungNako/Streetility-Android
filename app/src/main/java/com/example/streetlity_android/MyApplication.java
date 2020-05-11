@@ -16,6 +16,12 @@ public class MyApplication extends Application { //35.240.232.218 auth server
 
     private String username="";
 
+    private int userId;
+
+    public int getUserId() {
+        return userId;
+    }
+
     public String getToken() {
         return token;
     }
@@ -58,5 +64,9 @@ public class MyApplication extends Application { //35.240.232.218 auth server
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

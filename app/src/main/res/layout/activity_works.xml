@@ -7,13 +7,6 @@
     android:background="#BDBDBD"
     tools:context=".User.Maintainer.Works">
 
-    <FrameLayout
-        android:id="@+id/frame_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/navigation"
-        android:layout_below="@id/appbarayout" />
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarayout"
         android:layout_width="match_parent"
@@ -41,6 +34,13 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <FrameLayout
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/navigation"
+        android:layout_below="@id/appbarayout" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
@@ -51,8 +51,7 @@
         app:itemIconTint="@drawable/navigationitem"
         app:itemTextColor="#2F6840"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/menu_works">
+        app:menu="@menu/menu_works" />
 
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </RelativeLayout>

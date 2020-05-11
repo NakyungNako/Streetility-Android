@@ -65,7 +65,7 @@ public class SignUpAsCommon extends AppCompatActivity {
                             .addConverterFactory(GsonConverterFactory.create()).build();
                     final MapAPI tour = retro.create(MapAPI.class);
 
-                    Call<ResponseBody> call = tour.signup(edtUsername.getText().toString(), edtPassword.getText().toString(),
+                    Call<ResponseBody> call = tour.signupCommon(edtUsername.getText().toString(), edtPassword.getText().toString(),
                             edtMail.getText().toString());
 
                     call.enqueue(new Callback<ResponseBody>() {

@@ -19,9 +19,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.streetlity_android.MapAPI;
 import com.example.streetlity_android.R;
@@ -65,7 +67,9 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
 
     Marker currentPosition;
 
-    ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();;
+    ArrayList<WCFragment> items = new ArrayList<>();
+
+    ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -287,29 +291,26 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
 
             final LayoutInflater inflater = LayoutInflater.from(getActivity().getApplicationContext());
 
-            final android.view.View dialogView = inflater.inflate(R.layout.dialog_point_info, null);
+            final android.view.View dialogView = inflater.inflate(R.layout.dialog_simple_goto, null);
 
-            ListView lv = dialogView.findViewById(R.id.lv_review);
+            Button btnGo = dialogView.findViewById(R.id.btn_go);
 
-            ArrayList<Review> items = new ArrayList<Review>();
+            TextView tvNote = dialogView.findViewById(R.id.tv_note);
 
-            items.add(new Review("nhut", "i donek know kaahfeeefffffffeijkla jkl ja klj akljfklajj kajkljw klj lkaj eklwaj elkjwa kljela ej l", (float)2.5));
+            btnGo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-            final ReviewAdapter adapter = new ReviewAdapter(getActivity(), R.layout.review_item, items);
+                }
+            });
 
-            lv.setAdapter(adapter);
-
-            Log.e("", "onMarkerClick: mapclick");
-            marker.showInfoWindow();
-
-            BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
+            final BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
             dialog.setContentView(dialogView);
             dialog.setCanceledOnTouchOutside(true);
             dialog.setCancelable(true);
 
             dialog.show();
-
         }
 
         marker.showInfoWindow();
@@ -328,11 +329,12 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
 
     public void callWC(double lat, double lon, float range){
         mMap.clear();
+        mMarkers.removeAll(mMarkers);
         Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
-        //Call<ResponseBody> call = tour.getWCInRange((float)lat,(float)lon,(float)0.1);
-        Call<ResponseBody> call = tour.getAllWC();
+        Call<ResponseBody> call = tour.getWCInRange((float)lat,(float)lon,(float)range + 1);
+        //Call<ResponseBody> call = tour.getAllWC();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

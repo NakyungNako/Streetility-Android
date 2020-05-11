@@ -188,6 +188,9 @@ public class MainActivity extends AppCompatActivity {
                 LinearLayout lo = findViewById(R.id.layout_user);
                 lo.setVisibility(View.GONE);
 
+                Button btnWork = findViewById(R.id.btn_works);
+                btnWork.setVisibility(View.GONE);
+
                 Toast toast = Toast.makeText(MainActivity.this, "Logged out", Toast.LENGTH_LONG);
                 toast.show();
             }

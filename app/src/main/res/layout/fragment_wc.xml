@@ -47,8 +47,8 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_weight="0.9"
-                android:max="15"
-                android:progress="5"
+                android:max="14"
+                android:progress="0"
                 android:progressBackgroundTint="#000"
                 android:progressTint="#2F6840"
                 android:thumbTint="#2F6840" />

@@ -24,9 +24,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.SeekBar;
 
 import com.example.streetlity_android.MapAPI;
+import com.example.streetlity_android.MyApplication;
 import com.example.streetlity_android.R;
 import com.example.streetlity_android.Review;
 import com.example.streetlity_android.ReviewAdapter;
@@ -70,7 +72,9 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
 
     Marker currentPosition;
 
-    ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();;
+    ArrayList<FuelObject> items = new ArrayList<>();
+
+    ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -346,10 +350,56 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
 
             lv.setAdapter(adapter);
 
+            final Button btnLeaveComment = dialogView.findViewById(R.id.btn_leave_comment);
+
+            if(!((MyApplication)getActivity().getApplication()).getToken().equals("")){
+                btnLeaveComment.setVisibility(View.VISIBLE);
+            }
+
+            final Button btnOrder = dialogView.findViewById(R.id.btn_order);
+            btnOrder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog dialogOrder = new Dialog(getActivity());
+
+                    final LayoutInflater inflater2 = LayoutInflater.from(getActivity().getApplicationContext());
+
+                    final android.view.View dialogView2 = inflater2.inflate(R.layout.dialog_order, null);
+
+                    EditText edtName = dialogView2.findViewById(R.id.edt_name);
+                    EditText edtPhone = dialogView2.findViewById(R.id.edt_phone);
+                    EditText edtAddress = dialogView2.findViewById(R.id.edt_address);
+                    EditText edtNote = dialogView2.findViewById(R.id.edt_note);
+                    EditText edtTime = dialogView2.findViewById(R.id.edt_time);
+
+                    Button btnConfirm = dialogView2.findViewById(R.id.btn_order);
+
+                    btnConfirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+                    Button btnCancel = dialogView2.findViewById(R.id.btn_cancel);
+
+                    btnCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialogOrder.cancel();
+                        }
+                    });
+
+                    dialogOrder.setContentView(dialogView2);
+
+                    dialogOrder.show();
+                }
+            });
+
             Log.e("", "onMarkerClick: mapclick");
             marker.showInfoWindow();
 
-            BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
+            final BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
             dialog.setContentView(dialogView);
             dialog.setCanceledOnTouchOutside(true);
@@ -357,6 +407,34 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
 
             dialog.show();
 
+            btnLeaveComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //dialog.cancel();
+
+                    Dialog dialogComment = new Dialog(getActivity());
+
+                    final LayoutInflater inflater2 = LayoutInflater.from(getActivity().getApplicationContext());
+
+                    final android.view.View dialogView2 = inflater2.inflate(R.layout.dialog_review, null);
+
+                    EditText edtComment = dialogView2.findViewById(R.id.edt_comment);
+                    RatingBar rtReview = dialogView2.findViewById(R.id.rating_review);
+
+                    Button confirmReview = dialogView2.findViewById(R.id.btn_confrim_review);
+
+                    confirmReview.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+                    dialogComment.setContentView(dialogView2);
+
+                    dialogComment.show();
+                }
+            });
         }
 
         marker.showInfoWindow();
@@ -373,7 +451,7 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
         mMarkers.add(option);
     }
 
-        public void callMaintenance(double lat, double lon, float range){
+    public void callMaintenance(double lat, double lon, float range){
 
     }
 }

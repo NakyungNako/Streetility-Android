@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.example.streetlity_android.R;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -32,6 +34,9 @@ public class MyOrders extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    ArrayList<NormalOrderObject> itemNormal = new ArrayList<>();
+    ArrayList<EmergencyOrderObject> itemEmer = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -80,6 +85,16 @@ public class MyOrders extends Fragment {
         ListView lvNormal = rootView.findViewById(R.id.lv_normal_order);
         ListView lvEmergency = rootView.findViewById(R.id.lv_emergency);
 
+        NormalOrderApdater normalOrderAdapter = new NormalOrderApdater(getActivity(), R.layout.lv_item_order,
+                itemNormal);
+
+        lvNormal.setAdapter(normalOrderAdapter);
+
+        EmergencyOrderApdater emerOrderAdapter = new EmergencyOrderApdater(getActivity(), R.layout.lv_item_order,
+                itemEmer);
+
+        lvEmergency.setAdapter(emerOrderAdapter);
+
         lvNormal.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -94,13 +109,13 @@ public class MyOrders extends Fragment {
             }
         });
 
-//        if(lvNormal.getAdapter().getCount()==0){
-//            tvNoOrderEmer.setVisibility(View.VISIBLE);
-//        }
-//
-//        if(lvEmergency.getAdapter().getCount()==0){
-//            tvNoOrderEmer.setVisibility(View.VISIBLE);
-//        }
+        if(lvNormal.getAdapter().getCount()==0){
+            tvNoOrderNorm.setVisibility(View.VISIBLE);
+        }
+
+        if(lvEmergency.getAdapter().getCount()==0){
+            tvNoOrderEmer.setVisibility(View.VISIBLE);
+        }
 
         return rootView;
     }

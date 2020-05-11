@@ -245,6 +245,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.streetlity_android.MapAPI;
 import com.example.streetlity_android.MyApplication;
@@ -290,7 +291,9 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 
     Marker currentPosition;
 
-    ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();;
+    ArrayList<FuelFragment> items = new ArrayList<>();
+
+    ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -429,7 +432,7 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 
         public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
+        //mMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
         //ArrayList<MarkerOptions> markList = new ArrayList<MarkerOptions>();
 
         LocationManager locationManager = (LocationManager)
@@ -512,66 +515,18 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
 
             final LayoutInflater inflater = LayoutInflater.from(getActivity().getApplicationContext());
 
-            final android.view.View dialogView = inflater.inflate(R.layout.dialog_point_info, null);
+            final android.view.View dialogView = inflater.inflate(R.layout.dialog_simple_goto, null);
 
-            ListView lv = dialogView.findViewById(R.id.lv_review);
+            Button btnGo = dialogView.findViewById(R.id.btn_go);
 
-            ArrayList<Review> items = new ArrayList<Review>();
+            TextView tvNote = dialogView.findViewById(R.id.tv_note);
 
-            items.add(new Review("nhut", "i donek know kaahfeeefffffffeijkla jkl ja klj akljfklajj kajkljw klj lkaj eklwaj elkjwa kljela ej l", (float)2.5));
-
-            final ReviewAdapter adapter = new ReviewAdapter(getActivity(), R.layout.review_item, items);
-
-            lv.setAdapter(adapter);
-
-            final Button btnLeaveComment = dialogView.findViewById(R.id.btn_leave_comment);
-
-            if(!((MyApplication)getActivity().getApplication()).getToken().equals("")){
-                btnLeaveComment.setVisibility(View.VISIBLE);
-            }
-
-            final Button btnOrder = dialogView.findViewById(R.id.btn_order);
-            btnOrder.setOnClickListener(new View.OnClickListener() {
+            btnGo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final Dialog dialogOrder = new Dialog(getActivity());
 
-                    final LayoutInflater inflater2 = LayoutInflater.from(getActivity().getApplicationContext());
-
-                    final android.view.View dialogView2 = inflater2.inflate(R.layout.dialog_order, null);
-
-                    EditText edtName = dialogView2.findViewById(R.id.edt_name);
-                    EditText edtPhone = dialogView2.findViewById(R.id.edt_phone);
-                    EditText edtAddress = dialogView2.findViewById(R.id.edt_address);
-                    EditText edtNote = dialogView2.findViewById(R.id.edt_note);
-                    EditText edtTime = dialogView2.findViewById(R.id.edt_time);
-
-                    Button btnConfirm = dialogView2.findViewById(R.id.btn_order);
-
-                    btnConfirm.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-
-                    Button btnCancel = dialogView2.findViewById(R.id.btn_cancel);
-
-                    btnCancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialogOrder.cancel();
-                        }
-                    });
-
-                    dialogOrder.setContentView(dialogView2);
-
-                    dialogOrder.show();
                 }
             });
-
-            Log.e("", "onMarkerClick: mapclick");
-            marker.showInfoWindow();
 
             final BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
@@ -580,35 +535,6 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
             dialog.setCancelable(true);
 
             dialog.show();
-
-            btnLeaveComment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //dialog.cancel();
-
-                    Dialog dialogComment = new Dialog(getActivity());
-
-                    final LayoutInflater inflater2 = LayoutInflater.from(getActivity().getApplicationContext());
-
-                    final android.view.View dialogView2 = inflater2.inflate(R.layout.dialog_review, null);
-
-                    EditText edtComment = dialogView2.findViewById(R.id.edt_comment);
-                    RatingBar rtReview = dialogView2.findViewById(R.id.rating_review);
-
-                    Button confirmReview = dialogView2.findViewById(R.id.btn_confrim_review);
-
-                    confirmReview.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-
-                    dialogComment.setContentView(dialogView2);
-
-                    dialogComment.show();
-                }
-            });
         }
 
         marker.showInfoWindow();
@@ -631,7 +557,7 @@ public class FuelFragment extends Fragment implements OnMapReadyCallback, Google
         Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.getFuelInRange((float)lat, (float)lon,range);
+        Call<ResponseBody> call = tour.getFuelInRange((float)lat, (float)lon,range+1);
         //Call<ResponseBody> call = tour.getAllFuel();
         call.enqueue(new Callback<ResponseBody>() {
             @Override

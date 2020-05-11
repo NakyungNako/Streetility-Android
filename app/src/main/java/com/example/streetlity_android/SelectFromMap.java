@@ -241,7 +241,10 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
         Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.addWC((float)latToAdd,(float)lonToAdd);
+
+        String token = ((MyApplication) this.getApplication()).getToken();
+
+        Call<ResponseBody> call = tour.addWC(token,(float)latToAdd,(float)lonToAdd);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

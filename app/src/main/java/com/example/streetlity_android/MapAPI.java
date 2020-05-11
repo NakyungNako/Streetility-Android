@@ -19,6 +19,9 @@ public interface MapAPI {
     @GET("service/toilet/all")
     Call<ResponseBody> getAllWC();
 
+    @GET("service/maintenance/all")
+    Call<ResponseBody> getAllMaintenance();
+
     @GET("service/fuel/range")
     Call<ResponseBody> getFuelInRange(@Query("location") float lat, @Query("location") float lon,
                                       @Query("range") float range);
@@ -31,6 +34,10 @@ public interface MapAPI {
     Call<ResponseBody> getWCInRange(@Query("location") float lat, @Query("location") float lon,
                                       @Query("range") float range);
 
+    @GET("service/maintenance/range")
+    Call<ResponseBody> getMaintenanceInRange(@Query("location") float lat, @Query("location") float lon,
+                                    @Query("range") float range);
+
     @GET("service/range")
     Call<ResponseBody> getServiceInRange(@Query("location") float lat, @Query("location") float lon,
                                          @Query("range") float range);
@@ -41,11 +48,15 @@ public interface MapAPI {
 
     @FormUrlEncoded
     @POST("service/atm/add")
-    Call<ResponseBody> addATM(@Field("location") float lat, @Field("location" )float lon);
+    Call<ResponseBody> addATM(@Field("rtoken") String token,@Field("location") float lat, @Field("location" )float lon);
 
     @FormUrlEncoded
     @POST("service/toilet/add")
-    Call<ResponseBody> addWC(@Field("location") float lat, @Field("location" )float lon);
+    Call<ResponseBody> addWC(@Field("rtoken") String token,@Field("location") float lat, @Field("location" )float lon);
+
+    @FormUrlEncoded
+    @POST("service/maintenance/add")
+    Call<ResponseBody> addMaintenance(@Field("rtoken") String token,@Field("location") float lat, @Field("location" )float lon);
 
     @GET("json")
     Call<ResponseBody> geocode(@Query("address") String address, @Query("key") String key);
@@ -56,8 +67,14 @@ public interface MapAPI {
 
     @FormUrlEncoded
     @POST("user/register")
-    Call<ResponseBody> signup(@Field("username") String username, @Field("passwd") String password,
-                              @Field("email") String email);
+    Call<ResponseBody> signupCommon(@Field("username") String username, @Field("passwd") String password,
+                                    @Field("email") String email);
+
+    @FormUrlEncoded
+    @POST("user/register")
+    Call<ResponseBody> signupMaintainer(@Field("username") String username, @Field("passwd") String password,
+                                    @Field("email") String email, @Field("phone") String phone,
+                                    @Field("address") String address);
 
     @FormUrlEncoded
     @POST("user/logout")
