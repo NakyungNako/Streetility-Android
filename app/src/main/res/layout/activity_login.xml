@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#BDBDBD"
-    tools:context=".User.Login">
+    tools:context=".User.Login"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -43,7 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
             <EditText
                 android:id="@+id/edt_username"

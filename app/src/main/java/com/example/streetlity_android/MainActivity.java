@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.example.streetlity_android.User.Maintainer.MyOrders;
 import com.example.streetlity_android.User.Maintainer.Works;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,6 +53,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        FirebaseInstanceId.getInstance().getInstanceId()
+//                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+//                        if (!task.isSuccessful()) {
+//                            Log.w("" ,"getInstanceId failed", task.getException());
+//                            return;
+//                        }
+//
+//                        // Get new Instance ID token
+//                        String token = task.getResult().getToken();
+//
+//                        Log.e("", token);
+//                    }
+//                });
+
         ImageButton btnFind = findViewById(R.id.btn_find);
         Button btnContribute = findViewById(R.id.btn_contribute);
 
@@ -61,14 +78,16 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
         if (s.contains("token")){
 
-            Button btnWork = findViewById(R.id.btn_works);
-            btnWork.setVisibility(View.VISIBLE);
-            btnWork.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(MainActivity.this, Works.class));
-                }
-            });
+            if(s.getInt("userType",0) == 7) {
+                Button btnWork = findViewById(R.id.btn_works);
+                btnWork.setVisibility(View.VISIBLE);
+                btnWork.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(MainActivity.this, Works.class));
+                    }
+                });
+            }
 
             ((MyApplication) this.getApplication()).setToken(s.getString("token",""));
             ((MyApplication) this.getApplication()).setRefreshToken(s.getString("refreshToken",""));
@@ -143,14 +162,16 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
                 Button btnContribute = findViewById(R.id.btn_contribute);
 
-                Button btnWork = findViewById(R.id.btn_works);
-                btnWork.setVisibility(View.VISIBLE);
-                btnWork.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(MainActivity.this, Works.class));
-                    }
-                });
+                if(((MyApplication) this.getApplication()).getUserType() == 7) {
+                    Button btnWork = findViewById(R.id.btn_works);
+                    btnWork.setVisibility(View.VISIBLE);
+                    btnWork.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(MainActivity.this, Works.class));
+                        }
+                    });
+                }
 
                 btnContribute.setText(getString(R.string.contribute));
                 btnContribute.setOnClickListener(new View.OnClickListener() {

@@ -7,13 +7,15 @@ public class MaintenanceObject {
     float lat;
     float lon;
     String note;
+    String address;
 
-    public MaintenanceObject(int id, String name, float lat, float lon, String note) {
+    public MaintenanceObject(int id, String name, float lat, float lon, String note, String address) {
         this.id = id;
         this.name = name;
         this.lat = lat;
         this.lon = lon;
         this.note = note;
+        this.address = address;
     }
 
     public int getId() {
@@ -36,6 +38,10 @@ public class MaintenanceObject {
         return note;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -54,5 +60,9 @@ public class MaintenanceObject {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

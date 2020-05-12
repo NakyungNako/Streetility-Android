@@ -311,7 +311,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
         String token = ((MyApplication) this.getApplication()).getToken();
 
-        Call<ResponseBody> call = tour.addATM(token,(float)latToAdd,(float)lonToAdd);
+        Call<ResponseBody> call = tour.addATM("1.0.0",token,(float)latToAdd,(float)lonToAdd);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

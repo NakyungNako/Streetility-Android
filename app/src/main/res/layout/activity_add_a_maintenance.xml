@@ -56,12 +56,16 @@
             android:layout_height="match_parent"
             android:layout_below="@id/appbarlayout"
             android:layout_marginTop="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
                 <TextView
                     android:id="@+id/textView3"
@@ -212,7 +216,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0.8"
                         android:ems="10"
-                        android:hint="Go to address"
+                        android:hint="@string/address_short"
                         android:inputType="textPersonName"
                         android:maxLines="1"
                         android:paddingLeft="10dp"

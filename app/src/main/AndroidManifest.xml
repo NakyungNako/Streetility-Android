@@ -36,7 +36,8 @@
         <activity
             android:name=".User.SignupAsMaintainer"
             android:label="@string/signup_as_maintain"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".User.ForgotPassword"
             android:label="@string/title_activity_forgot_password"
@@ -67,16 +68,17 @@
         <activity
             android:name=".User.SignUpAsCommon"
             android:label=""
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".User.Login"
             android:label="@string/login"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustResize">
+            android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter>
                 <action android:name="com.example.streetly_android.User.Login" />
 
-                <category android:name="android.intent.catego   ry.DEFAULT" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
@@ -103,7 +105,8 @@
         <activity
             android:name=".AddAMaintenance"
             android:label="@string/title_activity_add_maintenance"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".AddAnATM"
             android:label="@string/title_activity_add_atm"

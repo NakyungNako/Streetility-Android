@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.example.streetlity_android.MyApplication;
 import com.example.streetlity_android.R;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import okhttp3.ResponseBody;
@@ -127,7 +128,7 @@ public class Login extends AppCompatActivity {
         Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.232.218/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.login(username, password);
+        Call<ResponseBody> call = tour.login(username, password, ((MyApplication) getApplication()).getDeviceToken());
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -135,30 +136,47 @@ public class Login extends AppCompatActivity {
                     try {
                         JSONObject jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject);
-                        ((MyApplication) Login.this.getApplication()).setToken(jsonObject.getString("AccessToken"));
-                        ((MyApplication) Login.this.getApplication()).setRefreshToken(jsonObject.getString("RefreshToken"));
-                        ((MyApplication) Login.this.getApplication()).setUsername(username);
+                        if(jsonObject.getBoolean("Status")) {
+                            //((MyApplication) Login.this.getApplication()).setToken(jsonObject.getString("AccessToken"));
+                            ((MyApplication) Login.this.getApplication()).setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTQ0NDUzMzIsImlkIjoibXJYWVpaemFidiJ9.0Hd4SpIELulSuTxGAeuCPl_A33X-KoPUpRmgK4dTphk");
+                            ((MyApplication) Login.this.getApplication()).setRefreshToken(jsonObject.getString("RefreshToken"));
+                            ((MyApplication) Login.this.getApplication()).setUsername(username);
 
-                        SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor e = s.edit();
-                        e.clear();
-                        e.commit();
-                        e.putString("username", username);
-                        e.putString("token",((MyApplication) Login.this.getApplication()).getToken());
-                        e.putString("refreshToken",((MyApplication) Login.this.getApplication()).getRefreshToken());
-                        e.commit();
+                            jsonObject = jsonObject.getJSONObject("User");
 
+                            ((MyApplication) Login.this.getApplication()).setUserType(jsonObject.getInt("Role"));
+
+
+                            SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor e = s.edit();
+                            e.clear();
+                            e.commit();
+                            e.putString("username", username);
+                            e.putString("token", ((MyApplication) Login.this.getApplication()).getToken());
+                            e.putString("refreshToken", ((MyApplication) Login.this.getApplication()).getRefreshToken());
+                            e.putInt("userType", jsonObject.getInt("Role"));
+                            e.commit();
+
+
+                            Intent data = new Intent();
+                            setResult(RESULT_OK,data);
+                            finish();
+                        }
+                        else{
+                            Toast toast = Toast.makeText(Login.this, "User doesn't exist", Toast.LENGTH_LONG);
+                            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                            tv.setTextColor(Color.RED);
+
+                            toast.show();
+                        }
                     } catch (Exception e){
                         e.printStackTrace();
                     }
 
-                    Intent data = new Intent();
-                    data.putExtra("username", username);
 
-                    setResult(RESULT_OK, data);
-                    finish();
                 } else {
                     try {
+                        Log.e("", "onResponse: " + response.code());
                         Toast toast = Toast.makeText(Login.this, "User doesn't exist", Toast.LENGTH_LONG);
                         TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                         tv.setTextColor(Color.RED);

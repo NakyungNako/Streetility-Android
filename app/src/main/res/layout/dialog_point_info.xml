@@ -59,12 +59,22 @@
             android:paddingLeft="15dp"
             android:textColor="#000" />
 
+        <TextView
+            android:id="@+id/tv_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_name_of_place"
+            android:layout_marginTop="15dp"
+            android:padding="10dp"
+            android:textColor="#000"
+            android:visibility="gone" />
+
         <RatingBar
             android:id="@+id/ratingBar"
             style="?android:attr/ratingBarStyleIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_address"
+            android:layout_below="@id/tv_note"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="5dp"
             android:isIndicator="true"
@@ -79,7 +89,7 @@
             android:id="@+id/tv_average_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_address"
+            android:layout_below="@id/tv_note"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="6dp"
             android:layout_toRightOf="@id/ratingBar"
@@ -91,7 +101,7 @@
             android:id="@+id/tv_num_of_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_address"
+            android:layout_below="@id/tv_note"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="6dp"
             android:layout_toRightOf="@id/tv_average_rating"

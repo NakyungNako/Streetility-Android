@@ -26,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.streetlity_android.MapAPI;
 import com.example.streetlity_android.MyApplication;
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -72,9 +74,9 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
 
     Marker currentPosition;
 
-    ArrayList<FuelObject> items = new ArrayList<>();
+    ArrayList<MaintenanceObject> items = new ArrayList<>();
 
-    ArrayList<MarkerOptions> mMarkers = new ArrayList<MarkerOptions>();
+    ArrayList<Marker> mMarkers = new ArrayList<Marker>();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -154,18 +156,18 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
 
                 final android.view.View dialogView2 = inflater2.inflate(R.layout.dialog_broadcast, null);
 
-                EditText edtName = dialogView2.findViewById(R.id.edt_name);
-                EditText edtPhone = dialogView2.findViewById(R.id.edt_phone);
-                EditText edtAddress = dialogView2.findViewById(R.id.edt_address);
-                EditText edtNote = dialogView2.findViewById(R.id.edt_note);
-                EditText edtTime = dialogView2.findViewById(R.id.edt_time);
+                final EditText edtName = dialogView2.findViewById(R.id.edt_name);
+                final EditText edtPhone = dialogView2.findViewById(R.id.edt_phone);
+                final EditText edtReason = dialogView2.findViewById(R.id.edt_reason);
+                final EditText edtNote = dialogView2.findViewById(R.id.edt_note);
 
                 Button btnConfirm = dialogView2.findViewById(R.id.btn_broadcast);
 
                 btnConfirm.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        sendBroadcast(dialogOrder, edtReason.getText().toString(), edtName.getText().toString(),
+                                edtPhone.getText().toString(),edtNote.getText().toString(), latitude, longitude);
                     }
                 });
 
@@ -259,65 +261,27 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
 
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Location location = locationManager.getLastKnownLocation(locationManager
                     .NETWORK_PROVIDER);
-            if(location == null){
+            if (location == null) {
                 Log.e("", "onMapReady: MULL");
             }
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            Log.e("", "onMapReady: " + latitude+" , " + longitude );
+            Log.e("", "onMapReady: " + latitude + " , " + longitude);
         }
 
-//        if (type == 1) {
-        callMaintenance(latitude,longitude,1);
-//        }
-//        else if (type == 2) {
-//            callATM(latitude,longitude);
-//        }
-//        else if (type == 3) {
-//            //callFuel(latitude,longitude);
-//        }
-//        else if (type == 4) {
-//            callWC(latitude,longitude);
-//        }
-
-        // Add a marker in Sydney and move the camera
-//        MarkerOptions option = new MarkerOptions();
-//        MarkerOptions option2 = new MarkerOptions();
-//        MarkerOptions option3 = new MarkerOptions();
-//
-//        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option.title("Marker in Sydney");
-//        option.position(sydney);
-//        markList.add(option);
-//
-//        sydney = new LatLng(-34, 161);
-//        option2.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option2.title("Marker in awaswa");
-//        option2.position(sydney);
-//        markList.add(option2);
-//
-//        sydney = new LatLng(-54, 161);
-//        option3.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option3.title("Marker in awaswa");
-//        option3.position(sydney);
-//        markList.add(option3);
-//
-//        for (int i = 0; i < markList.size(); i++) {
-//            mMap.addMarker(markList.get(i));
-//            Log.e("abc", "aa" );
-//        }
+        callMaintenance(latitude, longitude, 1);
 
         MarkerOptions curPositionMark = new MarkerOptions();
-        curPositionMark.position(new LatLng(latitude,longitude));
+        curPositionMark.position(new LatLng(latitude, longitude));
         curPositionMark.title("You are here");
 
         currentPosition = mMap.addMarker(curPositionMark);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 10.0f ) );
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(10.0f));
     }
 
     public static boolean hasPermissions(Context context, String... permissions) {
@@ -336,6 +300,16 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
 
         if(!marker.equals(currentPosition)) {
 
+            MaintenanceObject maintenanceObject = new MaintenanceObject(-1,"",0,0,
+                    "","");
+
+            for (int i = 0; i<mMarkers.size(); i++){
+                if(mMarkers.get(i).equals(marker)){
+                    maintenanceObject = items.get(i);
+                    break;
+                }
+            }
+
             final LayoutInflater inflater = LayoutInflater.from(getActivity().getApplicationContext());
 
             final android.view.View dialogView = inflater.inflate(R.layout.dialog_point_info, null);
@@ -349,6 +323,18 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
             final ReviewAdapter adapter = new ReviewAdapter(getActivity(), R.layout.review_item, items);
 
             lv.setAdapter(adapter);
+
+            TextView tvName = dialogView.findViewById(R.id.tv_name_of_place);
+            TextView tvAddress = dialogView.findViewById(R.id.tv_address);
+            TextView tvNote = dialogView.findViewById(R.id.tv_note);
+
+            tvName.setText(maintenanceObject.getName());
+            tvAddress.setText(maintenanceObject.getAddress());
+            tvNote.setText(maintenanceObject.getNote());
+
+            if(!maintenanceObject.getNote().equals("")){
+                tvNote.setVisibility(View.VISIBLE);
+            }
 
             final Button btnLeaveComment = dialogView.findViewById(R.id.btn_leave_comment);
 
@@ -448,10 +434,148 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
         option.title(name);
         option.icon(BitmapDescriptorFactory.fromResource(R.drawable.fix_icon));
         option.position(pos);
-        mMarkers.add(option);
+
+        Marker marker = mMap.addMarker(option);
+
+        mMarkers.add(marker);
+
     }
 
     public void callMaintenance(double lat, double lon, float range){
+        mMap.clear();
+        mMarkers.removeAll(mMarkers);
+        items.removeAll(items);
+        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+        Call<ResponseBody> call = tour.getMaintenanceInRange("1.0.0",(float)lat,(float)lon,(float)range + 1);
+        //Call<ResponseBody> call = tour.getAllATM();
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    JSONArray jsonArray;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+                        jsonArray = jsonObject.getJSONArray("Maintenances");
+
+                        for (int i = 0; i< jsonArray.length();i++){
+                            JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                            Log.e("", "onResponse: " + jsonObject1.toString());
+                            addMaintenanceMarkerToList((float)jsonObject1.getDouble("Lat"),
+                                    (float)jsonObject1.getDouble("Lon"),jsonObject1.getString("Name"));
+
+                            MaintenanceObject maintenanceObject = new MaintenanceObject(jsonObject1.getInt("Id"),
+                                    jsonObject1.getString("Name"), (float)jsonObject1.getDouble("Lat"),
+                                    (float)jsonObject1.getDouble("Lon"), jsonObject1.getString("Note"),
+                                    jsonObject1.getString("Address"));
+
+                            items.add(maintenanceObject);
+                        }
+
+                        MarkerOptions curPositionMark = new MarkerOptions();
+                        curPositionMark.position(new LatLng(latitude,longitude));
+                        curPositionMark.title("You are here");
+
+                        currentPosition = mMap.addMarker(curPositionMark);
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    try {
+                        Log.e(", ",response.errorBody().toString() + response.code());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
+    }
+
+    public void sendBroadcast(final Dialog dialog, final String reason, final String name, final String phone, final String note, double lat, double lon){
+        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+        Call<ResponseBody> call = tour.getMaintenanceInRange("1.0.0",(float)lat,(float)lon,(float)15);
+        //Call<ResponseBody> call = tour.getAllATM();
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    final JSONArray jsonArray;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+                        jsonArray = jsonObject.getJSONArray("Maintenances");
+                        JSONArray newJsonArray = new JSONArray();
+
+                        for (int i = 0; i< jsonArray.length();i++){
+                            JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                            JsonObject jsonObject2 = new JsonObject();
+                            jsonObject2.addProperty("Id", jsonObject1.getInt("Id"));
+                            newJsonArray.put(jsonObject2);
+                        }
+
+                        Call<ResponseBody> call2 = tour.broadcast("1.0.0", reason, name, phone, note, newJsonArray);
+                        call2.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                JSONObject jsonObject;
+                                if(response.code() == 200) {
+                                    try{
+                                        jsonObject = new JSONObject(response.body().string());
+                                        Log.e("", "onResponse: " + jsonObject.toString());
+                                        if (jsonObject.getBoolean("Status")){
+                                            dialog.cancel();
+                                        }
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                                else{
+                                    try{ ;
+                                        Log.e("", "onResponse: " + response.code());
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                Log.e("", "onFailure: " + t.toString());
+                            }
+                        });
+
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    try {
+                        Log.e(", ",response.errorBody().toString() + response.code());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
 
     }
 }

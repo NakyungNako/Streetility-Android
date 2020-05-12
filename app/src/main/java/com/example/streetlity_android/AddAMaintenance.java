@@ -25,6 +25,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.streetlity_android.User.SignupAsMaintainer;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -48,8 +49,8 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
 
     boolean firstClick = false;
 
-    double latToAdd;
-    double lonToAdd;
+    double latToAdd = -500;
+    double lonToAdd = -500;
 
     EditText edtAddress;
 
@@ -84,24 +85,39 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        EditText edtNote = findViewById(R.id.edt_note);
-        EditText edtName = findViewById(R.id.edt_name);
+        final EditText edtNote = findViewById(R.id.edt_note);
+        final EditText edtName = findViewById(R.id.edt_name);
 
         ImageButton imgSearch = findViewById(R.id.img_btn_search_address);
         edtAddress = findViewById(R.id.edt_address);
+
+        final Button btnConfirmAdding = findViewById(R.id.btn_confirm_adding);
+
+        btnConfirmAdding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkField(edtName.getText().toString(), edtAddress.getText().toString())) {
+                    addMaintenance(edtName.getText().toString(), edtNote.getText().toString(), edtAddress.getText().toString());
+                }
+            }
+        });
 
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 callGeocoding(edtAddress.getText().toString());
+
+                if (firstClick == false) {
+                    firstClick = true;
+                    btnConfirmAdding.setVisibility(View.VISIBLE);
+                }
+
                 if (getCurrentFocus() != null) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 }
             }
         });
-
-
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
@@ -265,14 +281,14 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
         });
     }
 
-    public void addMaintenance(){
+    public void addMaintenance(String name, String note, String address){
         Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
 
         String token = ((MyApplication) this.getApplication()).getToken();
 
-        Call<ResponseBody> call = tour.addMaintenance(token,(float)latToAdd,(float)lonToAdd);
+        Call<ResponseBody> call = tour.addMaintenance("1.0.0",token,(float)latToAdd,(float)lonToAdd, address, name, note);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -283,6 +299,8 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
 
+                        Intent data = new Intent();
+                        setResult(RESULT_OK, data);
                         finish();
                     } catch (Exception e){
                         e.printStackTrace();
@@ -290,8 +308,7 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
                 }
                 else{
                     try {
-                        Log.e(", ",response.errorBody().toString());
-
+                        Log.e(", ",response.errorBody().toString() + response.code());
                     }catch (Exception e){
                         e.printStackTrace();
                     }
@@ -303,5 +320,36 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
                 Log.e("", "onFailure: " + t.toString());
             }
         });
+    }
+
+    boolean checkField(String name, String address){
+        if(name.equals("")){
+            Toast toast = Toast.makeText(AddAMaintenance.this, "Name is empty", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+
+        if(address.equals("")){
+            Toast toast = Toast.makeText(AddAMaintenance.this, "Address is empty", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+
+        if(latToAdd == -500 || lonToAdd == -500){
+            Toast toast = Toast.makeText(AddAMaintenance.this, "Please select a location", Toast.LENGTH_LONG);
+            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+            tv.setTextColor(Color.RED);
+
+            toast.show();
+            return false;
+        }
+
+        return true;
     }
 }

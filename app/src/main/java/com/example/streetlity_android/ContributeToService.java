@@ -1,13 +1,21 @@
 package com.example.streetlity_android;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import com.example.streetlity_android.User.Login;
+import com.example.streetlity_android.User.Maintainer.Works;
+import com.example.streetlity_android.User.UserInfo;
 
 public class ContributeToService extends AppCompatActivity {
 
@@ -40,7 +48,7 @@ public class ContributeToService extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent t = new Intent(ContributeToService.this, AddAnATM.class);
-                startActivity(t);
+                startActivityForResult(t,2);
             }
         });
 
@@ -48,7 +56,7 @@ public class ContributeToService extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent t = new Intent(ContributeToService.this, AddAMaintenance.class);
-                startActivity(t);
+                startActivityForResult(t, 1);
             }
         });
 
@@ -74,5 +82,22 @@ public class ContributeToService extends AppCompatActivity {
         this.finish();
 
         return true;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
+                Toast toast = Toast.makeText(ContributeToService.this, "Location added successfully", Toast.LENGTH_LONG);
+                toast.show();
+            }else if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
+                Toast toast = Toast.makeText(ContributeToService.this, "Location added successfully", Toast.LENGTH_LONG);
+                toast.show();
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+        }
+
     }
 }

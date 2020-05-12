@@ -203,7 +203,7 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
         Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.addFuel(((MyApplication) this.getApplication()).getToken(),
+        Call<ResponseBody> call = tour.addFuel("1.0.0",((MyApplication) this.getApplication()).getToken(),
                 (float)latToAdd,(float)lonToAdd);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -244,7 +244,7 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
 
         String token = ((MyApplication) this.getApplication()).getToken();
 
-        Call<ResponseBody> call = tour.addWC(token,(float)latToAdd,(float)lonToAdd);
+        Call<ResponseBody> call = tour.addWC("1.0.0",token,(float)latToAdd,(float)lonToAdd);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

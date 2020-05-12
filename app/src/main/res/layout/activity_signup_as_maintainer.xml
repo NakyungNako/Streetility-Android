@@ -34,22 +34,25 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
+        android:id="@+id/scrollview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/appbarlayout">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appbarlayout"
+        android:layout_above="@id/btn_signup">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:focusable="true" android:focusableInTouchMode="true">
 
             <EditText
                 android:id="@+id/edt_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
                 android:hint="@string/username"
                 android:inputType="textPersonName"
                 android:paddingLeft="10dp"
@@ -59,7 +62,9 @@
                 android:id="@+id/edt_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
                 android:hint="@string/email"
                 android:inputType="textPersonName"
                 android:paddingLeft="10dp"
@@ -69,7 +74,9 @@
                 android:id="@+id/edt_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
                 android:hint="@string/address"
                 android:inputType="textPersonName"
                 android:paddingLeft="10dp"
@@ -79,7 +86,9 @@
                 android:id="@+id/edt_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
                 android:hint="@string/phone"
                 android:inputType="number"
                 android:paddingLeft="10dp"
@@ -89,7 +98,9 @@
                 android:id="@+id/edt_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
                 android:ems="10"
                 android:hint="@string/password"
                 android:inputType="textPassword"
@@ -100,26 +111,56 @@
                 android:id="@+id/edt_cfpassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
                 android:ems="10"
                 android:hint="@string/cfpassword"
                 android:inputType="textPassword"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp" />
 
-            <Button
-                android:id="@+id/btn_signup"
+            <EditText
+                android:id="@+id/edt_shop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/button_background"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:text="@string/signup" />
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:ems="10"
+                android:focusable="false"
+                android:hint="@string/find_your_shop"
+                android:inputType="none"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.example.streetlity_android.WorkaroundMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    tools:context=".SignUpAsMaintainer" />
+            </RelativeLayout>
 
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/btn_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/button_background"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:text="@string/signup" />
 
 </RelativeLayout>

@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 import com.example.streetlity_android.R;
 
+import org.json.JSONObject;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,17 +68,33 @@ public class SignUpAsCommon extends AppCompatActivity {
                     final MapAPI tour = retro.create(MapAPI.class);
 
                     Call<ResponseBody> call = tour.signupCommon(edtUsername.getText().toString(), edtPassword.getText().toString(),
-                            edtMail.getText().toString());
+                            edtMail.getText().toString(),edtPhone.getText().toString(),edtAddress.getText().toString());
 
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             if (response.code() == 200) {
-                                Intent data = new Intent();
-                                setResult(RESULT_OK, data);
-                                finish();
+                                try {
+                                    JSONObject jsonObject = new JSONObject(response.body().string());
+                                    Log.e("", "onResponse: " + jsonObject.toString());
+                                    if (jsonObject.getBoolean("Status")) {
+                                        Intent data = new Intent();
+                                        setResult(RESULT_OK, data);
+                                        finish();
+                                    }
+                                    else{
+                                        Toast toast = Toast.makeText(SignUpAsCommon.this, jsonObject.getString("Message"), Toast.LENGTH_LONG);
+                                        TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                                        tv.setTextColor(Color.RED);
+
+                                        toast.show();
+                                    }
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
                             } else {
                                 try {
+                                    Log.e("", "onResponse: " + response.code() );
                                     Toast toast = Toast.makeText(SignUpAsCommon.this, "Username or Email existed", Toast.LENGTH_LONG);
                                     TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                                     tv.setTextColor(Color.RED);
@@ -167,12 +185,12 @@ public class SignUpAsCommon extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (getCurrentFocus() != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        }
-        return super.dispatchTouchEvent(ev);
-    }
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        if (getCurrentFocus() != null) {
+//            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+//        }
+//        return super.dispatchTouchEvent(ev);
+//    }
 }

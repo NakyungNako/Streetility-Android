@@ -223,45 +223,7 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
             Log.e("", "onMapReady: " + latitude+" , " + longitude );
         }
 
-//        if (type == 1) {
         callWC(latitude,longitude,1);
-//        }
-//        else if (type == 2) {
-//            callATM(latitude,longitude);
-//        }
-//        else if (type == 3) {
-//            //callFuel(latitude,longitude);
-//        }
-//        else if (type == 4) {
-//            callWC(latitude,longitude);
-//        }
-
-        // Add a marker in Sydney and move the camera
-//        MarkerOptions option = new MarkerOptions();
-//        MarkerOptions option2 = new MarkerOptions();
-//        MarkerOptions option3 = new MarkerOptions();
-//
-//        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option.title("Marker in Sydney");
-//        option.position(sydney);
-//        markList.add(option);
-//
-//        sydney = new LatLng(-34, 161);
-//        option2.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option2.title("Marker in awaswa");
-//        option2.position(sydney);
-//        markList.add(option2);
-//
-//        sydney = new LatLng(-54, 161);
-//        option3.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option3.title("Marker in awaswa");
-//        option3.position(sydney);
-//        markList.add(option3);
-//
-//        for (int i = 0; i < markList.size(); i++) {
-//            mMap.addMarker(markList.get(i));
-//            Log.e("abc", "aa" );
-//        }
 
         MarkerOptions curPositionMark = new MarkerOptions();
         curPositionMark.position(new LatLng(latitude,longitude));
@@ -333,7 +295,7 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
         Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.getWCInRange((float)lat,(float)lon,(float)range + 1);
+        Call<ResponseBody> call = tour.getWCInRange("1.0.0",(float)lat,(float)lon,(float)range + 1);
         //Call<ResponseBody> call = tour.getAllWC();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -344,7 +306,7 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
                     try {
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
-                        jsonArray = jsonObject.getJSONArray("Fuels");
+                        jsonArray = jsonObject.getJSONArray("Toilets");
 
                         for (int i = 0; i< jsonArray.length();i++){
                             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
@@ -357,6 +319,13 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
                             Log.e("", mMarkers.get(i).getTitle());
                             mMap.addMarker(mMarkers.get(i));
                         }
+
+                        MarkerOptions curPositionMark = new MarkerOptions();
+                        curPositionMark.position(new LatLng(latitude,longitude));
+                        curPositionMark.title("You are here");
+
+                        currentPosition = mMap.addMarker(curPositionMark);
+
                     } catch (Exception e){
                         e.printStackTrace();
                     }

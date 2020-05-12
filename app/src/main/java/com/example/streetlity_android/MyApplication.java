@@ -2,9 +2,12 @@ package com.example.streetlity_android;
 
 import android.app.Application;
 
-
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTQ0NDUzMzIsImlkIjoibXJYWVpaemFidiJ9.0Hd4SpIELulSuTxGAeuCPl_A33X-KoPUpRmgK4dTphk
 
 //401 refresh
+
+//1:common
+//7:maintenance
 
 public class MyApplication extends Application { //35.240.232.218 auth server
 
@@ -12,13 +15,15 @@ public class MyApplication extends Application { //35.240.232.218 auth server
 
     private String refreshToken = "";
 
+    private String deviceToken = "";
+
     private int userType;
 
     private String username="";
 
-    private int userId;
+    private String userId;
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -66,7 +71,15 @@ public class MyApplication extends Application { //35.240.232.218 auth server
         this.refreshToken = refreshToken;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 }

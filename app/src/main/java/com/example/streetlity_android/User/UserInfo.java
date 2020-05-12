@@ -56,7 +56,8 @@ public class UserInfo extends AppCompatActivity {
                         .addConverterFactory(GsonConverterFactory.create()).build();
                 final MapAPI tour = retro.create(MapAPI.class);
                 String token = ((MyApplication) UserInfo.this.getApplication()).getToken();
-                Call<ResponseBody> call = tour.logout(token, source.getStringExtra("username"));
+                Call<ResponseBody> call = tour.logout(token, source.getStringExtra("username"),
+                        ((MyApplication) getApplication()).getDeviceToken());
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
