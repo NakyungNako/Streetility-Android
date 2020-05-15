@@ -1,28 +1,21 @@
 package com.example.streetlity_android;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.example.streetlity_android.User.Login;
-import com.example.streetlity_android.User.Maintainer.Works;
-import com.example.streetlity_android.User.UserInfo;
 
 public class ContributeToService extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contribute_to_service);
+        setContentView(R.layout.fragment_contribute_to_service);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

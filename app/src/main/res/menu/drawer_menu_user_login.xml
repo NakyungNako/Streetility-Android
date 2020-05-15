@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/user_info"
+        android:icon="@drawable/user"
+        android:title="@string/user_info"
+        />
+
+    <item
+        android:id="@+id/change_pass"
+        android:icon="@drawable/change_pass"
+        android:title="@string/change_pass" />
+
+    <item
+        android:id="@+id/works"
+        android:icon="@drawable/work"
+        android:title="@string/my_works" />
+
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/about"
+        android:title="@string/about_us" />
+
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/logout"
+        android:title="@string/logout" />
+</menu>

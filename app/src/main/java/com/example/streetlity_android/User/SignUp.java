@@ -12,7 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -31,7 +30,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SignUpAsCommon extends AppCompatActivity {
+public class SignUp extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +82,7 @@ public class SignUpAsCommon extends AppCompatActivity {
                                         finish();
                                     }
                                     else{
-                                        Toast toast = Toast.makeText(SignUpAsCommon.this, jsonObject.getString("Message"), Toast.LENGTH_LONG);
+                                        Toast toast = Toast.makeText(SignUp.this, jsonObject.getString("Message"), Toast.LENGTH_LONG);
                                         TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                                         tv.setTextColor(Color.RED);
 
@@ -95,7 +94,7 @@ public class SignUpAsCommon extends AppCompatActivity {
                             } else {
                                 try {
                                     Log.e("", "onResponse: " + response.code() );
-                                    Toast toast = Toast.makeText(SignUpAsCommon.this, "Username or Email existed", Toast.LENGTH_LONG);
+                                    Toast toast = Toast.makeText(SignUp.this, "Username or Email existed", Toast.LENGTH_LONG);
                                     TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                                     tv.setTextColor(Color.RED);
 
@@ -126,7 +125,7 @@ public class SignUpAsCommon extends AppCompatActivity {
 
     public boolean checkFields(String username, String pass, String cfPass, String email, String phoneNumber, String address){
         if(username.equals("")){
-            Toast toast = Toast.makeText(SignUpAsCommon.this, "Username is empty", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUp.this, "Username is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
@@ -134,7 +133,7 @@ public class SignUpAsCommon extends AppCompatActivity {
             return false;
         }
         else if(pass.equals("")){
-            Toast toast = Toast.makeText(SignUpAsCommon.this, "Password is empty", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUp.this, "Password is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
@@ -142,7 +141,7 @@ public class SignUpAsCommon extends AppCompatActivity {
             return false;
         }
         else if(cfPass.equals("")){
-            Toast toast = Toast.makeText(SignUpAsCommon.this, "Confirm password is empty", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUp.this, "Confirm password is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
@@ -150,7 +149,7 @@ public class SignUpAsCommon extends AppCompatActivity {
             return false;
         }
         else if(email.equals("")){
-            Toast toast = Toast.makeText(SignUpAsCommon.this, "Email is empty", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUp.this, "Email is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
@@ -158,7 +157,7 @@ public class SignUpAsCommon extends AppCompatActivity {
             return false;
         }
         else if(!pass.equals(cfPass)){
-            Toast toast = Toast.makeText(SignUpAsCommon.this, "Password mismatch", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUp.this, "Password mismatch", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
@@ -166,7 +165,7 @@ public class SignUpAsCommon extends AppCompatActivity {
             return false;
         }
         else if(phoneNumber.equals("")){
-            Toast toast = Toast.makeText(SignUpAsCommon.this, "Phone number is empty", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUp.this, "Phone number is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 
@@ -174,7 +173,7 @@ public class SignUpAsCommon extends AppCompatActivity {
             return false;
         }
         else if(address.equals("")){
-            Toast toast = Toast.makeText(SignUpAsCommon.this, "Address is empty", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(SignUp.this, "Address is empty", Toast.LENGTH_LONG);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             tv.setTextColor(Color.RED);
 

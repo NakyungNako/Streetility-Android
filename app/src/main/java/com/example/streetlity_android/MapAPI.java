@@ -2,9 +2,12 @@ package com.example.streetlity_android;
 
 import org.json.JSONArray;
 
+import java.util.HashMap;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -87,9 +90,9 @@ public interface MapAPI {
 
     @FormUrlEncoded
     @POST("service/maintain/order")
-    Call<ResponseBody> broadcast(@Header("Version") String version,@Field("reason") String reason, @Field("name") String name,
+    Call<ResponseBody> broadcast(@Header("Version") String version, @Field("reason") String reason, @Field("name") String name,
                                  @Field("phone") String phone, @Field("note") String note,
-                                 @Field("id") JSONArray idArray);
+                                 @Field("id") int[] id, @Field("address") String address, @Field("preferTime") String time);
 
     @FormUrlEncoded
     @POST("user/device")

@@ -105,4 +105,24 @@
     <string name="why">Why?</string>
     <string name="cancel">Cancel</string>
     <string name="find_your_shop">Find your work place from the map</string>
+    <string name="title_activity_main_navigation_holder">MainNavigationHolder</string>
+    <string name="home">Home</string>
+    <string name="title_activity_navigaiton_drawer">NavigaitonDrawer</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="sign_in"><u>Sign in?</u></string>
+
+    <string name="about_us">About us</string>
+
+<string name="not_login">Not logged in</string>
 </resources>

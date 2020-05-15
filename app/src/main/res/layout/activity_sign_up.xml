@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#BDBDBD"
-    tools:context=".User.SignUpAsCommon">
+    android:background="@color/colorBackground"
+    tools:context=".User.SignUp">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarlayout"
@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#84CF98"
+            android:background="@color/colorPrimary"
             android:theme="@style/Theme.BlackBackArrow"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 

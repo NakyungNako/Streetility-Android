@@ -68,6 +68,7 @@ public class UserInfo extends AppCompatActivity {
                                 ((MyApplication) UserInfo.this.getApplication()).setToken("");
                                 ((MyApplication) UserInfo.this.getApplication()).setRefreshToken("");
                                 ((MyApplication) UserInfo.this.getApplication()).setUsername("");
+                                ((MyApplication) UserInfo.this.getApplication()).setUserType(-1);
 
                                 SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor e = s.edit();

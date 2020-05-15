@@ -27,12 +27,23 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.AvoidType;
+import com.akexorcist.googledirection.constant.RequestResult;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Leg;
+import com.akexorcist.googledirection.model.Route;
+import com.akexorcist.googledirection.util.DirectionConverter;
+import com.example.streetlity_android.MainActivity;
 import com.example.streetlity_android.MapAPI;
 import com.example.streetlity_android.MyApplication;
 import com.example.streetlity_android.R;
 import com.example.streetlity_android.Review;
 import com.example.streetlity_android.ReviewAdapter;
+import com.example.streetlity_android.User.Login;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,6 +52,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonObject;
@@ -49,6 +61,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -300,15 +314,17 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
 
         if(!marker.equals(currentPosition)) {
 
-            MaintenanceObject maintenanceObject = new MaintenanceObject(-1,"",0,0,
+            MaintenanceObject temp = new MaintenanceObject(-1,"",0,0,
                     "","");
 
             for (int i = 0; i<mMarkers.size(); i++){
                 if(mMarkers.get(i).equals(marker)){
-                    maintenanceObject = items.get(i);
+                    temp = items.get(i);
                     break;
                 }
             }
+
+            final MaintenanceObject maintenanceObject = temp;
 
             final LayoutInflater inflater = LayoutInflater.from(getActivity().getApplicationContext());
 
@@ -336,62 +352,12 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
                 tvNote.setVisibility(View.VISIBLE);
             }
 
+            //leave review
             final Button btnLeaveComment = dialogView.findViewById(R.id.btn_leave_comment);
 
             if(!((MyApplication)getActivity().getApplication()).getToken().equals("")){
                 btnLeaveComment.setVisibility(View.VISIBLE);
             }
-
-            final Button btnOrder = dialogView.findViewById(R.id.btn_order);
-            btnOrder.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final Dialog dialogOrder = new Dialog(getActivity());
-
-                    final LayoutInflater inflater2 = LayoutInflater.from(getActivity().getApplicationContext());
-
-                    final android.view.View dialogView2 = inflater2.inflate(R.layout.dialog_order, null);
-
-                    EditText edtName = dialogView2.findViewById(R.id.edt_name);
-                    EditText edtPhone = dialogView2.findViewById(R.id.edt_phone);
-                    EditText edtAddress = dialogView2.findViewById(R.id.edt_address);
-                    EditText edtNote = dialogView2.findViewById(R.id.edt_note);
-                    EditText edtTime = dialogView2.findViewById(R.id.edt_time);
-
-                    Button btnConfirm = dialogView2.findViewById(R.id.btn_order);
-
-                    btnConfirm.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-
-                    Button btnCancel = dialogView2.findViewById(R.id.btn_cancel);
-
-                    btnCancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialogOrder.cancel();
-                        }
-                    });
-
-                    dialogOrder.setContentView(dialogView2);
-
-                    dialogOrder.show();
-                }
-            });
-
-            Log.e("", "onMarkerClick: mapclick");
-            marker.showInfoWindow();
-
-            final BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
-            dialog.setContentView(dialogView);
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.setCancelable(true);
-
-            dialog.show();
 
             btnLeaveComment.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -421,6 +387,119 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
                     dialogComment.show();
                 }
             });
+
+            //end leave review
+            //order
+            final Button btnOrder = dialogView.findViewById(R.id.btn_order);
+            btnOrder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog dialogOrder = new Dialog(getActivity());
+
+                    final LayoutInflater inflater2 = LayoutInflater.from(getActivity().getApplicationContext());
+
+                    final android.view.View dialogView2 = inflater2.inflate(R.layout.dialog_order, null);
+
+                    final EditText edtName = dialogView2.findViewById(R.id.edt_name);
+                    final EditText edtPhone = dialogView2.findViewById(R.id.edt_phone);
+                    final EditText edtAddress = dialogView2.findViewById(R.id.edt_address);
+                    final EditText edtNote = dialogView2.findViewById(R.id.edt_note);
+                    final EditText edtTime = dialogView2.findViewById(R.id.edt_time);
+
+                    Button btnConfirm = dialogView2.findViewById(R.id.btn_order);
+
+                    btnConfirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int[] id = new int[1];
+                            id[0] = maintenanceObject.getId();
+                            order(dialogOrder, edtName.getText().toString(), edtAddress.getText().toString(),
+                                    edtPhone.getText().toString(), edtNote.getText().toString(), edtTime.getText().toString(),
+                                    id);
+                        }
+                    });
+
+                    Button btnCancel = dialogView2.findViewById(R.id.btn_cancel);
+
+                    btnCancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialogOrder.cancel();
+                        }
+                    });
+
+                    dialogOrder.setContentView(dialogView2);
+
+                    dialogOrder.show();
+                }
+            });
+
+            //end order
+
+
+            Log.e("", "onMarkerClick: mapclick");
+            marker.showInfoWindow();
+
+            final BottomSheetDialog dialog = new BottomSheetDialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+            dialog.setContentView(dialogView);
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.setCancelable(true);
+
+            //go
+            Button btnGo = dialogView.findViewById(R.id.btn_go_to);
+
+            btnGo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String serverKey = "AIzaSyB56CeF7ccQ9ZeMn0O4QkwlAQVX7K97-Ss";
+                    LatLng origin = new LatLng(latitude, longitude);
+                    LatLng destination = new LatLng(maintenanceObject.getLat(), maintenanceObject.getLon());
+                    GoogleDirection.withServerKey(serverKey)
+                            .from(origin)
+                            .to(destination)
+
+                            .execute(new DirectionCallback() {
+                                @Override
+                                public void onDirectionSuccess(Direction direction) {
+
+                                    String status = direction.getStatus();
+                                    Log.e("", "onDirectionSuccess: " + status);
+                                    if(status.equals(RequestResult.OK)) {
+
+                                        Route route = direction.getRouteList().get(0);
+                                        Leg leg = route.getLegList().get(0);
+                                        ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
+                                        PolylineOptions polylineOptions = DirectionConverter.createPolyline(getActivity(), directionPositionList, 5, Color.RED);
+                                        mMap.addPolyline(polylineOptions);
+                                        dialog.cancel();
+
+                                    } else if(status.equals(RequestResult.NOT_FOUND)) {
+                                        Toast toast = Toast.makeText(getActivity(), "Can't go to destination from here", Toast.LENGTH_LONG);
+                                        TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                                        tv.setTextColor(Color.RED);
+
+                                        toast.show();
+                                    }
+                                }
+
+                                @Override
+                                public void onDirectionFailure(Throwable t) {
+                                    Log.e("", "onDirectionFailure: ");
+                                    Toast toast = Toast.makeText(getActivity(), "Something went wrong when trying to find direction", Toast.LENGTH_LONG);
+                                    TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                                    tv.setTextColor(Color.RED);
+
+                                    toast.show();
+                                }
+                            });
+                }
+            });
+            //end go
+
+            dialog.show();
+
+
         }
 
         marker.showInfoWindow();
@@ -517,26 +596,35 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
                         jsonArray = jsonObject.getJSONArray("Maintenances");
-                        JSONArray newJsonArray = new JSONArray();
+
+                        final ArrayList<Integer> idList = new ArrayList<>();
 
                         for (int i = 0; i< jsonArray.length();i++){
                             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                            JsonObject jsonObject2 = new JsonObject();
-                            jsonObject2.addProperty("Id", jsonObject1.getInt("Id"));
-                            newJsonArray.put(jsonObject2);
+                            idList.add(jsonObject1.getInt("Id"));
                         }
 
-                        Call<ResponseBody> call2 = tour.broadcast("1.0.0", reason, name, phone, note, newJsonArray);
+                        int[] id = new int[idList.size()];
+
+                        for(int i =0; i< idList.size();i++){
+                            id[i] = idList.get(i);
+                        }
+
+                        Call<ResponseBody> call2 = tour.broadcast("1.0.0", reason, name, phone, note, id, "", "");
                         call2.enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 JSONObject jsonObject;
                                 if(response.code() == 200) {
+                                    Log.e("", "onResponse: " + response.raw().request());
                                     try{
                                         jsonObject = new JSONObject(response.body().string());
                                         Log.e("", "onResponse: " + jsonObject.toString());
                                         if (jsonObject.getBoolean("Status")){
                                             dialog.cancel();
+
+                                            Toast toast = Toast.makeText(getActivity(), "Contacted " + idList.size() + " nearest stores", Toast.LENGTH_LONG);
+                                            toast.show();
                                         }
                                     }catch (Exception e){
                                         e.printStackTrace();
@@ -577,5 +665,45 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
             }
         });
 
+    }
+
+    public void order(final Dialog dialog, String name, String address, String phone, String note, String time, int[] id){
+        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+        Call<ResponseBody> call = tour.broadcast("1.0.0", "", name, phone, note, id, address, time);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                JSONObject jsonObject;
+                if(response.code() == 200) {
+                    Log.e("", "onResponse: " + response.raw().request());
+                    try{
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+                        if (jsonObject.getBoolean("Status")){
+                            dialog.cancel();
+
+                            Toast toast = Toast.makeText(getActivity(), "Ordered", Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    try{
+                        Log.e("", "onResponse: " + response.code());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
     }
 }

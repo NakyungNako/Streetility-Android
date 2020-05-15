@@ -63,9 +63,11 @@
             android:id="@+id/tv_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_name_of_place"
+            android:layout_below="@id/tv_address"
             android:layout_marginTop="15dp"
             android:padding="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:textColor="#000"
             android:visibility="gone" />
 

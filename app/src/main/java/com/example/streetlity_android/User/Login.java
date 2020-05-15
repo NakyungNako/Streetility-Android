@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.example.streetlity_android.MyApplication;
 import com.example.streetlity_android.R;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import okhttp3.ResponseBody;
@@ -85,7 +84,7 @@ public class Login extends AppCompatActivity {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 }
-                Intent t = new Intent(Login.this, SignUpAsCommon.class);
+                Intent t = new Intent(Login.this, SignUp.class);
                 startActivityForResult(t, 1);
             }
         });
@@ -137,30 +136,64 @@ public class Login extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject);
                         if(jsonObject.getBoolean("Status")) {
+
                             //((MyApplication) Login.this.getApplication()).setToken(jsonObject.getString("AccessToken"));
                             ((MyApplication) Login.this.getApplication()).setToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTQ0NDUzMzIsImlkIjoibXJYWVpaemFidiJ9.0Hd4SpIELulSuTxGAeuCPl_A33X-KoPUpRmgK4dTphk");
                             ((MyApplication) Login.this.getApplication()).setRefreshToken(jsonObject.getString("RefreshToken"));
                             ((MyApplication) Login.this.getApplication()).setUsername(username);
 
                             jsonObject = jsonObject.getJSONObject("User");
-
-                            ((MyApplication) Login.this.getApplication()).setUserType(jsonObject.getInt("Role"));
-
-
-                            SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor e = s.edit();
-                            e.clear();
-                            e.commit();
-                            e.putString("username", username);
-                            e.putString("token", ((MyApplication) Login.this.getApplication()).getToken());
-                            e.putString("refreshToken", ((MyApplication) Login.this.getApplication()).getRefreshToken());
-                            e.putInt("userType", jsonObject.getInt("Role"));
-                            e.commit();
+                            if (jsonObject.getInt("Role") != -1) {
+                                ((MyApplication) Login.this.getApplication()).setUserType(jsonObject.getInt("Role"));
 
 
-                            Intent data = new Intent();
-                            setResult(RESULT_OK,data);
-                            finish();
+                                SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor e = s.edit();
+                                e.clear();
+                                e.commit();
+                                e.putString("username", username);
+                                e.putString("token", ((MyApplication) Login.this.getApplication()).getToken());
+                                e.putString("refreshToken", ((MyApplication) Login.this.getApplication()).getRefreshToken());
+                                e.putInt("userType", jsonObject.getInt("Role"));
+                                e.commit();
+
+                                Call<ResponseBody> call2 = tour.addDevice("1.0.0", ((MyApplication) Login.this.getApplication()).getToken(),
+                                        username);
+                                call2.enqueue(new Callback<ResponseBody>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                        if (response.code() == 200) {
+                                            try {
+                                                JSONObject jsonObject1 = new JSONObject(response.body().string());
+                                                if (jsonObject1.getBoolean("Status")) {
+                                                    Log.e("", "onResponse: " + jsonObject1.toString());
+                                                } else {
+                                                    Log.e("", "onResponse: " + jsonObject1.toString());
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        } else {
+                                            Log.e("", "onResponse: " + response.code());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                    }
+                                });
+
+                                Intent data = new Intent();
+                                setResult(RESULT_OK, data);
+                                finish();
+                            } else {
+                                Toast toast = Toast.makeText(Login.this, "User is waiting for approval", Toast.LENGTH_LONG);
+                                TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                                tv.setTextColor(Color.RED);
+
+                                toast.show();
+                            }
                         }
                         else{
                             Toast toast = Toast.makeText(Login.this, "User doesn't exist", Toast.LENGTH_LONG);
