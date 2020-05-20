@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 
+import com.akexorcist.googledirection.model.Line;
 import com.example.streetlity_android.AddAMaintenance;
 import com.example.streetlity_android.AddAnATM;
 import com.example.streetlity_android.ConfirmLocations;
@@ -76,10 +78,10 @@ public class ContributeFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_contribute_to_service, container, false);
 
-        Button btnFuel = rootView.findViewById(R.id.btn_fuel);
-        Button btnATM = rootView.findViewById(R.id.btn_atm);
-        Button btnMaintenance = rootView.findViewById(R.id.btn_maintenance);
-        Button btnWC = rootView.findViewById(R.id.btn_wc);
+        LinearLayout btnFuel = rootView.findViewById(R.id.btn_fuel);
+        LinearLayout btnATM = rootView.findViewById(R.id.btn_atm);
+        LinearLayout btnMaintenance = rootView.findViewById(R.id.btn_maintenance);
+        LinearLayout btnWC = rootView.findViewById(R.id.btn_wc);
         Button btnConfirming = rootView.findViewById(R.id.btn_confirm_location);
 
         btnFuel.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +89,7 @@ public class ContributeFragment extends Fragment {
             public void onClick(View v) {
                 Intent t = new Intent(getActivity(), SelectFromMap.class);
                 t.putExtra("type", 1);
-                startActivity(t);
+                startActivityForResult(t, 2);
             }
         });
 
@@ -112,7 +114,7 @@ public class ContributeFragment extends Fragment {
             public void onClick(View v) {
                 Intent t = new Intent(getActivity(), SelectFromMap.class);
                 t.putExtra("type", 2);
-                startActivity(t);
+                startActivityForResult(t, 2);
             }
         });
 

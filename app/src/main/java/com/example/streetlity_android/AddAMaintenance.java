@@ -10,9 +10,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,11 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
-import com.example.streetlity_android.User.SignupAsMaintainer;
+import com.example.streetlity_android.User.SignUp;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -35,6 +37,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -49,20 +53,26 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
 
     boolean firstClick = false;
 
-    double latToAdd = -500;
-    double lonToAdd = -500;
+    double mLat = -500;
+    double mLon = -500;
+
+    String mName = "";
+    String mNote= "";
+    String mAddress = "";
+
+    private ViewPager mPager;
+    private AddAMaintenance.MyViewPagerAdapter myViewPagerAdapter;
+    private ArrayList<Integer> layouts;
+    private Button btnPrevious, btnNext;
 
     EditText edtAddress;
+
+    int step = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_a_maintenance);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
 
         String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
         if (!hasPermissions(this, Permissions)) {
@@ -81,49 +91,99 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
             return;
         }
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        btnNext = findViewById(R.id.btn_next);
+        btnPrevious = findViewById(R.id.btn_previous);
+        mPager = findViewById(R.id.view_pager);
+        mPager.setOffscreenPageLimit(3);
 
-        final EditText edtNote = findViewById(R.id.edt_note);
-        final EditText edtName = findViewById(R.id.edt_name);
+        layouts = new ArrayList<>();
+        layouts.add(R.layout.vp_maintenance_store_info);
+        layouts.add(R.layout.vp_maintenance_store_location);
+        layouts.add(R.layout.vp_maintenance_success);
 
-        ImageButton imgSearch = findViewById(R.id.img_btn_search_address);
-        edtAddress = findViewById(R.id.edt_address);
+        myViewPagerAdapter = new AddAMaintenance.MyViewPagerAdapter();
+        mPager.setAdapter(myViewPagerAdapter);
+        mPager.addOnPageChangeListener(mPagerPageChangeListener);
 
-        final Button btnConfirmAdding = findViewById(R.id.btn_confirm_adding);
-
-        btnConfirmAdding.setOnClickListener(new View.OnClickListener() {
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkField(edtName.getText().toString(), edtAddress.getText().toString())) {
-                    addMaintenance(edtName.getText().toString(), edtNote.getText().toString(), edtAddress.getText().toString());
+                int current = getItem(-1);
+                if (current < layouts.size()) {
+                    // move to next screen
+                    mPager.setCurrentItem(current);
+                    step--;
+                } else {
+
                 }
             }
         });
 
-        imgSearch.setOnClickListener(new View.OnClickListener() {
+        btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callGeocoding(edtAddress.getText().toString());
+                boolean isPass = false;
 
-                if (firstClick == false) {
-                    firstClick = true;
-                    btnConfirmAdding.setVisibility(View.VISIBLE);
+                if(step == 0){
+                    EditText edtName = mPager.findViewById(R.id.edt_store_name);
+                    if(edtName.getText().toString() == ("")){
+                        Toast toast = Toast.makeText(AddAMaintenance.this,  R.string.empty_name, Toast.LENGTH_LONG);
+                        TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                        tv.setTextColor(Color.RED);
+
+                        toast.show();
+                    }
+                    else{
+                        mName = edtName.getText().toString();
+                        EditText edtNote = findViewById(R.id.edt_store_note);
+                        mNote = edtNote.toString();
+                        isPass = true;
+                    }
+                }
+                else if(step == 1){
+                    edtAddress = findViewById(R.id.edt_store_address);
+                    if(edtAddress.getText().toString().equals("")){
+                        Toast toast = Toast.makeText(AddAMaintenance.this,  R.string.empty_address, Toast.LENGTH_LONG);
+                        TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                        tv.setTextColor(Color.RED);
+
+                        toast.show();
+                    } else if(mLon == -500 || mLat == -500){
+                        Toast toast = Toast.makeText(AddAMaintenance.this,  R.string.please_select_location, Toast.LENGTH_LONG);
+                        TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                        tv.setTextColor(Color.RED);
+
+                        toast.show();
+                    } else{
+                        mAddress = edtAddress.getText().toString();
+                        addMaintenance();
+                    }
+
+                }
+                else if(step == 2){
+                    finish();
                 }
 
-                if (getCurrentFocus() != null) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
+                if(isPass){
+                    if (getCurrentFocus() != null) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    }
+                    int current = getItem(+1);
+                    if (current < layouts.size()) {
+                        // move to next screen
+                        mPager.setCurrentItem(current);
+                        step++;
+                    } else {
+
+                    }
                 }
             }
+
+
         });
-    }
 
-    public boolean onOptionsItemSelected(MenuItem item){
-        this.finish();
-
-        return true;
     }
 
     public static boolean hasPermissions(Context context, String... permissions) {
@@ -167,26 +227,14 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
             public void onMapClick(LatLng latLng) {
                 MarkerOptions opt = new MarkerOptions().position(latLng).title("Here");
 
-                if (firstClick == true) {
-                    mMap.clear();
-                }
+                mMap.clear();
 
                 mMap.addMarker(opt);
 
-                if (firstClick == false) {
-                    firstClick = true;
-                    Button confirm = findViewById(R.id.btn_confirm_adding);
-                    confirm.setVisibility(View.VISIBLE);
-                }
 
-                EditText edtLat = findViewById(R.id.edt_lat);
-                EditText edtLon = findViewById(R.id.edt_lon);
 
-                edtLat.setText(Double.toString(latLng.latitude));
-                edtLon.setText(Double.toString(latLng.longitude));
-
-                latToAdd = latLng.latitude;
-                lonToAdd = latLng.longitude;
+                mLat = latLng.latitude;
+                mLon = latLng.longitude;
             }
         });
     }
@@ -234,16 +282,10 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
                             JSONObject jsonObjectGeomertry = jsonObject1.getJSONObject("geometry");
                             JSONObject jsonLatLng = jsonObjectGeomertry.getJSONObject("location");
 
-                            latToAdd = jsonLatLng.getDouble("lat");
-                            lonToAdd = jsonLatLng.getDouble("lng");
+                            mLat = jsonLatLng.getDouble("lat");
+                            mLon = jsonLatLng.getDouble("lng");
 
-                            EditText edtLat = findViewById(R.id.edt_lat);
-                            EditText edtLon = findViewById(R.id.edt_lon);
-
-                            edtLat.setText(Double.toString(latToAdd));
-                            edtLon.setText(Double.toString(lonToAdd));
-
-                            LatLng location = new LatLng(latToAdd,lonToAdd);
+                            LatLng location = new LatLng(mLat, mLon);
 
                             MarkerOptions opt = new MarkerOptions().position(location).title("Here");
 
@@ -281,27 +323,39 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
         });
     }
 
-    public void addMaintenance(String name, String note, String address){
+    public void addMaintenance(){
         Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
 
         String token = ((MyApplication) this.getApplication()).getToken();
 
-        Call<ResponseBody> call = tour.addMaintenance("1.0.0",token,(float)latToAdd,(float)lonToAdd, address, name, note);
+        Call<ResponseBody> call = tour.addMaintenance("1.0.0",token,(float) mLat,(float) mLon, mAddress, mName, mNote);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.code() == 200) {
                     final JSONObject jsonObject;
-                    JSONArray jsonArray;
                     try {
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
 
-                        Intent data = new Intent();
-                        setResult(RESULT_OK, data);
-                        finish();
+                        if(jsonObject.getBoolean("Status")) {
+                            btnNext.setText(R.string.finish);
+
+                            int current = getItem(+1);
+                            if (current < layouts.size()) {
+                                // move to next screen
+                                mPager.setCurrentItem(current);
+                                step++;
+                            }
+                        }else{
+                            Toast toast = Toast.makeText(AddAMaintenance.this, "Something went wrong", Toast.LENGTH_LONG);
+                            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                            tv.setTextColor(Color.RED);
+
+                            toast.show();
+                        }
                     } catch (Exception e){
                         e.printStackTrace();
                     }
@@ -322,34 +376,85 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
         });
     }
 
-    boolean checkField(String name, String address){
-        if(name.equals("")){
-            Toast toast = Toast.makeText(AddAMaintenance.this, "Name is empty", Toast.LENGTH_LONG);
-            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
-            tv.setTextColor(Color.RED);
+    ViewPager.OnPageChangeListener mPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
-            toast.show();
-            return false;
+        @Override
+        public void onPageSelected(int position) {
+            // changing the next button text 'NEXT' / 'GOT IT'
+            if (position == 0 || position == layouts.size()-1) {
+                btnPrevious.setVisibility(View.GONE);
+            } else {
+                btnPrevious.setVisibility(View.VISIBLE);
+            }
         }
 
-        if(address.equals("")){
-            Toast toast = Toast.makeText(AddAMaintenance.this, "Address is empty", Toast.LENGTH_LONG);
-            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
-            tv.setTextColor(Color.RED);
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
 
-            toast.show();
-            return false;
         }
 
-        if(latToAdd == -500 || lonToAdd == -500){
-            Toast toast = Toast.makeText(AddAMaintenance.this, "Please select a location", Toast.LENGTH_LONG);
-            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
-            tv.setTextColor(Color.RED);
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
 
-            toast.show();
-            return false;
+        }
+    };
+
+    public class MyViewPagerAdapter extends PagerAdapter {
+        private LayoutInflater layoutInflater;
+
+        public MyViewPagerAdapter() {
         }
 
-        return true;
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            View view = layoutInflater.inflate(layouts.get(position), container, false);
+
+            if(layouts.get(position) == R.layout.vp_maintenance_store_location){
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
+                mapFragment.getMapAsync(AddAMaintenance.this);
+
+                edtAddress = view.findViewById(R.id.edt_store_address);
+
+                ImageButton imgBtnSearch = view.findViewById(R.id.img_btn_search_address);
+                imgBtnSearch.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (getCurrentFocus() != null) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        }
+                        callGeocoding(edtAddress.getText().toString());
+                    }
+                });
+            }
+
+            container.addView(view);
+
+            return view;
+        }
+
+        @Override
+        public int getCount() {
+            return layouts.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object obj) {
+            return view == obj;
+        }
+
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            View view = (View) object;
+            container.removeView(view);
+        }
+    }
+
+    private int getItem(int i) {
+        return mPager.getCurrentItem() + i;
     }
 }

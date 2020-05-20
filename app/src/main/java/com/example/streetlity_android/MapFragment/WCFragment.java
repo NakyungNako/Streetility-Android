@@ -284,7 +284,7 @@ public class WCFragment extends Fragment implements OnMapReadyCallback, GoogleMa
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title("WC");
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.wc_icon));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.destination_icon));
         option.position(pos);
         mMarkers.add(option);
     }

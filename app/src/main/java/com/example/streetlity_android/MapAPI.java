@@ -49,15 +49,18 @@ public interface MapAPI {
 
     @FormUrlEncoded
     @POST("service/fuel/add")
-    Call<ResponseBody> addFuel(@Header("Version") String version, @Field("rtoken") String token, @Field("location") float lat, @Field("location" )float lon);
+    Call<ResponseBody> addFuel(@Header("Version") String version, @Field("rtoken") String token, @Field("location") float lat, @Field("location" )float lon,
+                               @Field("address") String address, @Field("note") String note);
 
     @FormUrlEncoded
     @POST("service/atm/add")
-    Call<ResponseBody> addATM(@Header("Version") String version, @Field("rtoken") String token,@Field("location") float lat, @Field("location" )float lon);
+    Call<ResponseBody> addATM(@Header("Version") String version, @Field("rtoken") String token,@Field("location") float lat, @Field("location" )float lon,
+                              @Field("type") String type, @Field("address") String address, @Field("note") String note);
 
     @FormUrlEncoded
     @POST("service/toilet/add")
-    Call<ResponseBody> addWC(@Header("Version") String version, @Field("rtoken") String token,@Field("location") float lat, @Field("location" )float lon);
+    Call<ResponseBody> addWC(@Header("Version") String version, @Field("rtoken") String token,@Field("location") float lat, @Field("location" )float lon,
+                             @Field("address") String address, @Field("note") String note);
 
     @FormUrlEncoded
     @POST("service/maintain/add")

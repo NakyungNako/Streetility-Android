@@ -9,9 +9,11 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +29,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,7 +38,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,24 +53,33 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
+    ArrayList<String> arrBank = new ArrayList<>();
+
     private GoogleMap mMap;
 
     boolean firstClick = false;
 
-    double latToAdd;
-    double lonToAdd;
+    double mLat;
+    double mLon;
+
+    String mType = "";
+    String mNote = "";
+    String mAddress = "";
+    boolean isOther = false;
+
+    private ViewPager mPager;
+    private AddAnATM.MyViewPagerAdapter myViewPagerAdapter;
+    private ArrayList<Integer> layouts;
+    private Button btnPrevious, btnNext;
 
     EditText edtAddress;
+
+    int step = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_an_atm);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
 
         String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
         if (!hasPermissions(this, Permissions)) {
@@ -86,58 +98,104 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
             return;
         }
 
-        EditText edtNote = findViewById(R.id.edt_note);
+        btnNext = findViewById(R.id.btn_next);
+        btnPrevious = findViewById(R.id.btn_previous);
+        mPager = findViewById(R.id.view_pager);
+        mPager.setOffscreenPageLimit(3);
 
-        final Spinner atmType= findViewById(R.id.spinner_type);
+        layouts = new ArrayList<>();
+        layouts.add(R.layout.vp_atm_info);
+        layouts.add(R.layout.vp_atm_location);
+        layouts.add(R.layout.vp_atm_success);
 
-        String[] arraySpinner = new String[] {
-                "Agribank", "BIDV", "VietcomBank", "Other"
-        };
+        myViewPagerAdapter = new AddAnATM.MyViewPagerAdapter();
+        mPager.setAdapter(myViewPagerAdapter);
+        mPager.addOnPageChangeListener(mPagerPageChangeListener);
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item,
-                 arraySpinner);
-
-        spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-
-        atmType.setAdapter(spinnerAdapter);
-
-        atmType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(atmType.getSelectedItem().toString().equals("Other")){
-                    LinearLayout other = findViewById(R.id.layout_other);
-                    other.setVisibility(View.VISIBLE);
+            public void onClick(View v) {
+                int current = getItem(-1);
+                if (current < layouts.size()) {
+                    // move to next screen
+                    mPager.setCurrentItem(current);
+                    step--;
+                } else {
+
                 }
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
         });
 
-        Button confirm = findViewById(R.id.btn_confirm_adding);
-        confirm.setOnClickListener(new View.OnClickListener() {
+        btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean isPass = false;
 
-            }
-        });
+                if(step == 0){
+                    Spinner spnType = mPager.findViewById(R.id.spinner_type);
+                    if(isOther){
+                        EditText edtOther = mPager.findViewById(R.id.edt_atm_other);
+                        if(!edtOther.getText().toString().equals("")) {
+                            mType = edtOther.getText().toString();
+                            isPass = true;
+                        }else{
+                            Toast toast = Toast.makeText(AddAnATM.this, R.string.please_select_bank, Toast.LENGTH_LONG);
+                            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                            tv.setTextColor(Color.RED);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+                            toast.show();
+                        }
+                    }else{
+                        if(spnType.getSelectedItemPosition()!=0) {
+                            mType = spnType.getSelectedItem().toString();
+                            isPass = true;
+                        }else{
+                            Toast toast = Toast.makeText(AddAnATM.this, R.string.please_select_bank, Toast.LENGTH_LONG);
+                            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                            tv.setTextColor(Color.RED);
 
-        ImageButton imgSearch = findViewById(R.id.img_btn_search_address);
-        edtAddress = findViewById(R.id.edt_address);
+                            toast.show();
+                        }
+                    }
+                }
+                else if(step == 1){
+                    edtAddress = mPager.findViewById(R.id.edt_atm_address);
+                    if(edtAddress.getText().toString().equals("")){
+                        Toast toast = Toast.makeText(AddAnATM.this, R.string.empty_address, Toast.LENGTH_LONG);
+                        TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                        tv.setTextColor(Color.RED);
 
-        imgSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callGeocoding(edtAddress.getText().toString());
-                if (getCurrentFocus() != null) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        toast.show();
+                    }
+                    else if(mLat == -500 || mLon == -500){
+                        Toast toast = Toast.makeText(AddAnATM.this, R.string.please_select_location, Toast.LENGTH_LONG);
+                        TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                        tv.setTextColor(Color.RED);
+
+                        toast.show();
+                    }else{
+                        mAddress = edtAddress.getText().toString();
+
+                        addATM();
+                    }
+                }
+                else if(step == 2){
+                    finish();
+                }
+
+                if(isPass) {
+                    if (getCurrentFocus() != null) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    }
+                    int current = getItem(+1);
+                    if (current < layouts.size()) {
+                        // move to next screen
+                        mPager.setCurrentItem(current);
+                        step++;
+                    } else {
+
+                    }
                 }
             }
         });
@@ -179,26 +237,14 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
             public void onMapClick(LatLng latLng) {
                 MarkerOptions opt = new MarkerOptions().position(latLng).title("Here");
 
-                if (firstClick == true) {
-                    mMap.clear();
-                }
+                mMap.clear();
+
 
                 mMap.addMarker(opt);
 
-                if (firstClick == false) {
-                    firstClick = true;
-                    Button confirm = findViewById(R.id.btn_confirm_adding);
-                    confirm.setVisibility(View.VISIBLE);
-                }
 
-                EditText edtLat = findViewById(R.id.edt_lat);
-                EditText edtLon = findViewById(R.id.edt_lon);
-
-                edtLat.setText(Double.toString(latLng.latitude));
-                edtLon.setText(Double.toString(latLng.longitude));
-
-                latToAdd = latLng.latitude;
-                lonToAdd = latLng.longitude;
+                mLat = latLng.latitude;
+                mLon = latLng.longitude;
             }
         });
     }
@@ -248,16 +294,10 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
                             JSONObject jsonObjectGeomertry = jsonObject1.getJSONObject("geometry");
                             JSONObject jsonLatLng = jsonObjectGeomertry.getJSONObject("location");
 
-                            latToAdd = jsonLatLng.getDouble("lat");
-                            lonToAdd = jsonLatLng.getDouble("lng");
+                            mLat = jsonLatLng.getDouble("lat");
+                            mLon = jsonLatLng.getDouble("lng");
 
-                            EditText edtLat = findViewById(R.id.edt_lat);
-                            EditText edtLon = findViewById(R.id.edt_lon);
-
-                            edtLat.setText(Double.toString(latToAdd));
-                            edtLon.setText(Double.toString(lonToAdd));
-
-                            LatLng location = new LatLng(latToAdd,lonToAdd);
+                            LatLng location = new LatLng(mLat, mLon);
 
                             MarkerOptions opt = new MarkerOptions().position(location).title("Here");
 
@@ -311,7 +351,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
         String token = ((MyApplication) this.getApplication()).getToken();
 
-        Call<ResponseBody> call = tour.addATM("1.0.0",token,(float)latToAdd,(float)lonToAdd);
+        Call<ResponseBody> call = tour.addATM("1.0.0",token,(float) mLat,(float) mLon, mType, mAddress, mNote);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -321,8 +361,17 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
                     try {
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
+                        if(jsonObject.getBoolean("Status")) {
+                            btnNext.setText(R.string.finish);
 
-                        finish();
+                            int current = getItem(+1);
+                            if (current < layouts.size()) {
+                                // move to next screen
+                                mPager.setCurrentItem(current);
+                                step++;
+                            }
+                        }
+                        //finish();
                     } catch (Exception e){
                         e.printStackTrace();
                     }
@@ -342,5 +391,123 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
                 Log.e("", "onFailure: " + t.toString());
             }
         });
+    }
+
+    ViewPager.OnPageChangeListener mPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
+
+        @Override
+        public void onPageSelected(int position) {
+            // changing the next button text 'NEXT' / 'GOT IT'
+            if (position == 0 || position == layouts.size()-1) {
+                btnPrevious.setVisibility(View.GONE);
+            } else {
+                btnPrevious.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+
+        }
+    };
+
+    public class MyViewPagerAdapter extends PagerAdapter {
+        private LayoutInflater layoutInflater;
+
+        public MyViewPagerAdapter() {
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            View view = layoutInflater.inflate(layouts.get(position), container, false);
+
+            if(layouts.get(position) == R.layout.vp_atm_location){
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
+                mapFragment.getMapAsync(AddAnATM.this);
+                edtAddress = view.findViewById(R.id.edt_atm_address );
+
+                ImageButton imgBtnSearch = view.findViewById(R.id.img_btn_search_address);
+                imgBtnSearch.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (getCurrentFocus() != null) {
+                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        }
+                        callGeocoding(edtAddress.getText().toString());
+                    }
+                });
+            }
+
+            if(layouts.get(position) == R.layout.vp_atm_info){
+                Spinner spinner = view.findViewById(R.id.spinner_type);
+
+                arrBank.add("- Select a bank -");
+                arrBank.add("Agribank");
+                arrBank.add("BiDV");
+                arrBank.add("VietcomBank");
+                arrBank.add("Other");
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(AddAnATM.this,
+                        android.R.layout.simple_spinner_item, arrBank);
+
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                spinner.setAdapter(adapter);
+
+                final EditText edtOther = view.findViewById(R.id.edt_atm_other);
+
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if(spinner.getSelectedItem().toString().equals("Other")){
+                            edtOther.setVisibility(View.VISIBLE);
+                            isOther = true;
+
+                        }else{
+                            isOther = false;
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+            }
+
+            container.addView(view);
+
+            return view;
+        }
+
+        @Override
+        public int getCount() {
+            return layouts.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object obj) {
+            return view == obj;
+        }
+
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            View view = (View) object;
+            container.removeView(view);
+        }
+    }
+
+    private int getItem(int i) {
+        return mPager.getCurrentItem() + i;
     }
 }

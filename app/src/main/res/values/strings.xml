@@ -104,7 +104,7 @@
     <string name="decline_order">Decline order?</string>
     <string name="why">Why?</string>
     <string name="cancel">Cancel</string>
-    <string name="find_your_shop">Find your work place from the map</string>
+    <string name="find_your_store">Find your work place from the map</string>
     <string name="title_activity_main_navigation_holder">MainNavigationHolder</string>
     <string name="home">Home</string>
     <string name="title_activity_navigaiton_drawer">NavigaitonDrawer</string>
@@ -124,5 +124,44 @@
 
     <string name="about_us">About us</string>
 
-<string name="not_login">Not logged in</string>
+    <string name="login_to_app">Login into Streetlity</string>
+
+    <string name="not_login">Not logged in</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="finish">Finish</string>
+    <string name="additional_info">Additional information</string>
+    <string name="user_type">What kind of user are you?</string>
+    <string name="user_common">I just want to help expanding the locations</string>
+    <string name="user_owner">I\'m an owner of a store</string>
+    <string name="user_store_state">Is your store on the map?</string>
+    <string name="user_store_yes">Yes, it is already on the map</string>
+    <string name="user_store_no">No, i want to add it</string>
+
+    <string name="signup_success">Sign up successfully</string>
+    <string name="signup_success_owner">Sign up successfully\n Please wait for verification</string>
+    <string name="please_select_type">Please select user type</string>
+    <string name="empty_user_name">Empty username</string>
+    <string name="empty_user_mail">Empty email</string>
+    <string name="empty_pass">Empty password</string>
+    <string name="empty_cf_pass">Empty confirm password</string>
+    <string name="password_mismatch">Password mismatch</string>
+    <string name="please_select_option">Please select an option</string>
+    <string name="account_info">Account information</string>
+    <string name="store_info">Store information</string>
+    <string name="store_location">Where is your store located?</string>
+    <string name="store_select">Select your store</string>
+    <string name="please_select_store">Please select a store</string>
+    <string name="username_short">Username too short</string>
+    <string name="pass_short">Password too short</string>
+    <string name="empty_address">Empty address</string>
+    <string name="please_select_location">Please select a location</string>
+    <string name="empty_name">Empty name</string>
+    <string name="store_success">Store added successfully</string>
+    <string name="atm_info">ATM information</string>
+    <string name="atm_location">Where is the ATM located?</string>
+    <string name="store_location_not_owner">Where is the store located?</string>
+    <string name="atm_success">ATM added successfully</string>
+    <string name="please_select_bank">Please select a bank</string>
+    <string name="location_added">Location added</string>
 </resources>

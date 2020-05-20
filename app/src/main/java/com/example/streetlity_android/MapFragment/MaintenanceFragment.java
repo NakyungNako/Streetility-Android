@@ -511,7 +511,7 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title(name);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.fix_icon));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.destination_icon));
         option.position(pos);
 
         Marker marker = mMap.addMarker(option);

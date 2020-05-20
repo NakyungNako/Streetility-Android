@@ -7,31 +7,17 @@
     android:background="#DBDBDB"
     tools:context=".MapNavigationHolder">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarlayout"
+    <TextView
+        android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:theme="@style/Theme.BlackBackArrow"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-
-            <TextView
-                android:id="@+id/tv_toolbar_tittle"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingLeft="-50dp"
-                android:textColor="#000000"
-                android:textSize="30sp"></TextView>
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/atm_location"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <fragment
         android:id="@+id/map"
@@ -41,58 +27,24 @@
         android:layout_below="@id/layout_note" />
 
     <LinearLayout
-        android:id="@+id/layout_note"
+        android:id="@+id/layout_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/appbarlayout"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.25"
-            android:paddingLeft="10dp"
-            android:text="@string/note"
-            android:textColor="#000"
-            android:textSize="18sp" />
-
-        <EditText
-            android:id="@+id/edt_note"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_weight="0.75"
-            android:ems="10"
-            android:hint="@string/note_hint"
-            android:inputType="text"
-            android:paddingLeft="5dp"
-            android:paddingRight="10dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layout_note"
+        android:layout_below="@id/tv_title"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
-        android:background="#EEEEEE"
-        android:elevation="3dp"
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/edt_address"
+            android:id="@+id/edt_store_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
-            android:ems="10"
-            android:hint="Go to address"
-            android:inputType="textPersonName"
-            android:maxLines="1"
+            android:hint="@string/address_short"
+            android:inputType="text"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textColor="#000" />
+            android:paddingRight="10dp" />
 
         <ImageButton
             android:id="@+id/img_btn_search_address"
@@ -101,8 +53,30 @@
             android:background="@null"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:src="@android:drawable/ic_menu_search" />
+            android:visibility="visible"
+            app:srcCompat="@drawable/search" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_search"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edt_note"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:ems="10"
+            android:hint="@string/note_without"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
     </LinearLayout>
 
     <Button

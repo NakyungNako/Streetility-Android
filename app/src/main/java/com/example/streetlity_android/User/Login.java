@@ -39,11 +39,6 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        toolbar.setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final EditText edtUser = findViewById(R.id.edt_username);
         final EditText edtPass = findViewById(R.id.edt_password);
@@ -85,7 +80,8 @@ public class Login extends AppCompatActivity {
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 }
                 Intent t = new Intent(Login.this, SignUp.class);
-                startActivityForResult(t, 1);
+                t.putExtra("from", 2);
+                startActivity(t);
             }
         });
 
@@ -99,19 +95,6 @@ public class Login extends AppCompatActivity {
                 }
                 Intent t = new Intent(Login.this, ForgotPassword.class);
                 startActivityForResult(t, 2);
-            }
-        });
-
-        Button btnSignupMaintainer = findViewById(R.id.btn_to_signup_as_maintainer);
-        btnSignupMaintainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getCurrentFocus() != null) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                }
-                Intent t = new Intent(Login.this, SignupAsMaintainer.class);
-                startActivityForResult(t, 3);
             }
         });
 
@@ -227,27 +210,6 @@ public class Login extends AppCompatActivity {
                 Log.e("", "onFailure: " + t.toString());
             }
         });
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
-            if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
-                Toast toast = Toast.makeText(Login.this, "Sign up successfully", Toast.LENGTH_LONG);
-                toast.show();
-            }
-            if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
-                Toast toast = Toast.makeText(Login.this, "Password resetted", Toast.LENGTH_LONG);
-                toast.show();
-            }
-            if (requestCode == 3 && resultCode == RESULT_OK && null != data) {
-                Toast toast = Toast.makeText(Login.this, "Sign up successfully, please wait for verification", Toast.LENGTH_LONG);
-                toast.show();
-            }
-        } catch (Exception e) {
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
-        }
-
     }
 
     @Override

@@ -121,7 +121,7 @@
                 android:paddingRight="10dp" />
 
             <EditText
-                android:id="@+id/edt_shop"
+                android:id="@+id/edt_store"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
@@ -129,7 +129,7 @@
                 android:layout_marginRight="15dp"
                 android:ems="10"
                 android:focusable="false"
-                android:hint="@string/find_your_shop"
+                android:hint="@string/find_your_store"
                 android:inputType="none"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp" />

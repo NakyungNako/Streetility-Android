@@ -52,26 +52,23 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
 
     EditText edtAddress;
 
+    String mNote, mAddress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_from_map);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
-
         Intent t = getIntent();
         final int type = t.getIntExtra("type", -1);
-        TextView tvToolbar = findViewById(R.id.tv_toolbar_tittle);
+
+        TextView tvTittle = findViewById(R.id.tv_title);
 
         if (type == 1){
-            tvToolbar.setText(getString(R.string.add_fuel));
+            tvTittle.setText(getString(R.string.add_fuel));
         }
         else if (type == 2){
-            tvToolbar.setText(getString(R.string.add_wc));
+            tvTittle.setText(getString(R.string.add_wc));
         }
 
         String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -115,7 +112,7 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
 
         ImageButton imgSearch = findViewById(R.id.img_btn_search_address);
-        edtAddress = findViewById(R.id.edt_address);
+        edtAddress = findViewById(R.id.edt_store_address);
 
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,7 +201,7 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
         Call<ResponseBody> call = tour.addFuel("1.0.0",((MyApplication) this.getApplication()).getToken(),
-                (float)latToAdd,(float)lonToAdd);
+                (float)latToAdd,(float)lonToAdd, mAddress, mNote);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -215,7 +212,9 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
 
-                        finish();
+                        if(jsonObject.getBoolean("Status")) {
+                            finish();
+                        }
                     } catch (Exception e){
                         e.printStackTrace();
                     }
@@ -244,7 +243,7 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
 
         String token = ((MyApplication) this.getApplication()).getToken();
 
-        Call<ResponseBody> call = tour.addWC("1.0.0",token,(float)latToAdd,(float)lonToAdd);
+        Call<ResponseBody> call = tour.addWC("1.0.0",token,(float)latToAdd,(float)lonToAdd, mAddress, mNote);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -255,7 +254,9 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
 
-                        finish();
+                        if(jsonObject.getBoolean("Status")) {
+                            finish();
+                        }
                     } catch (Exception e){
                         e.printStackTrace();
                     }

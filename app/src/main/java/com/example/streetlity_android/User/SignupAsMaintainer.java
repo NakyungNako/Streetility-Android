@@ -285,8 +285,8 @@ public class SignupAsMaintainer extends AppCompatActivity implements OnMapReadyC
         for (int i = 0; i<mMarkers.size();i++){
             if(marker.equals(mMarkers.get(i))){
                 id = items.get(i).getId();
-                EditText edtShop = findViewById(R.id.edt_shop);
-                edtShop.setText(items.get(i).getName());
+                EditText edtStore = findViewById(R.id.edt_store);
+                edtStore.setText(items.get(i).getName());
                 EditText edtAddress = findViewById(R.id.edt_address);
                 edtAddress.setText(items.get(i).getAddress());
                 break;

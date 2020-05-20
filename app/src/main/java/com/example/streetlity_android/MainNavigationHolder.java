@@ -137,7 +137,8 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
                 tvUsername.setText(((MyApplication) this.getApplication()).getUsername());
 
             }else if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
-
+                Toast toast = Toast.makeText(MainNavigationHolder.this, R.string.location_added, Toast.LENGTH_LONG);
+                toast.show();
             }
 
         } catch (Exception e) {
@@ -206,7 +207,9 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
                         startActivityForResult(new Intent(MainNavigationHolder.this, Login.class),1);
                         break;
                     case  R.id.signup:
-                        startActivity(new Intent(MainNavigationHolder.this, SignUp.class));
+                        Intent t = new Intent(MainNavigationHolder.this, SignUp.class);
+                        t.putExtra("from", 1);
+                        startActivityForResult(t, 1);
                         break;
                 }
 
