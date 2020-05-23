@@ -12,7 +12,7 @@
         android:layout_gravity="center|center_horizontal"
         android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="@string/store_success"
+        android:text="@string/atm_success"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="30sp"
         android:textStyle="bold" />

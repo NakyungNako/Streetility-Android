@@ -47,8 +47,8 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
 
     boolean firstClick = false;
 
-    double latToAdd;
-    double lonToAdd;
+    double latToAdd=-500;
+    double lonToAdd=-500;
 
     EditText edtAddress;
 
@@ -89,17 +89,39 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
         }
 
         EditText edtNote = findViewById(R.id.edt_note);
+        edtAddress = findViewById(R.id.edt_store_address);
 
         Button confirm = findViewById(R.id.btn_confirm_adding);
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (type == 1){
-                    addFuel();
-                }
-                if (type == 2){
-                    addWC();
+                if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+                if (edtAddress.getText().toString().equals("")) {
+                    Toast toast = Toast.makeText(SelectFromMap.this, R.string.empty_address, Toast.LENGTH_LONG);
+                    TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                    tv.setTextColor(Color.RED);
+
+                    toast.show();
+                }else if(latToAdd == -500 || lonToAdd == -500){
+                    Toast toast = Toast.makeText(SelectFromMap.this, R.string.please_select_location, Toast.LENGTH_LONG);
+                    TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                    tv.setTextColor(Color.RED);
+
+                    toast.show();
+                } else {
+
+                    mNote = edtNote.getText().toString();
+                    mAddress = edtAddress.getText().toString();
+                    if (type == 1) {
+                        addFuel();
+                    }
+                    if (type == 2) {
+                        addWC();
+                    }
                 }
             }
         });
@@ -112,7 +134,7 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
 
         ImageButton imgSearch = findViewById(R.id.img_btn_search_address);
-        edtAddress = findViewById(R.id.edt_store_address);
+
 
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,7 +188,6 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onMapClick(LatLng latLng) {
                 MarkerOptions opt = new MarkerOptions().position(latLng).title("Here");
-
                 if (firstClick == true) {
                     mMap.clear();
                 }
@@ -213,6 +234,8 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
                         Log.e("", "onResponse: " + jsonObject.toString());
 
                         if(jsonObject.getBoolean("Status")) {
+                            Intent data = new Intent();
+                            setResult(RESULT_OK, data);
                             finish();
                         }
                     } catch (Exception e){
@@ -255,6 +278,8 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
                         Log.e("", "onResponse: " + jsonObject.toString());
 
                         if(jsonObject.getBoolean("Status")) {
+                            Intent data = new Intent();
+                            setResult(RESULT_OK, data);
                             finish();
                         }
                     } catch (Exception e){
@@ -353,13 +378,13 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
         });
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (getCurrentFocus() != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        }
-        return super.dispatchTouchEvent(ev);
-    }
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        if (getCurrentFocus() != null) {
+//            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+//        }
+//        return super.dispatchTouchEvent(ev);
+//    }
 
 }

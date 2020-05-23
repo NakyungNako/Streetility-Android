@@ -120,7 +120,7 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
         super.onActivityResult(requestCode, resultCode, data);
         try {
             if (requestCode == 1 && resultCode == RESULT_OK) {
-                Toast toast = Toast.makeText(MainNavigationHolder.this, "Logged out", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(MainNavigationHolder.this, R.string.logged_in, Toast.LENGTH_LONG);
                 toast.show();
                 View bottomNavigationView = findViewById(R.id.navigation);
                 bottomNavigationView.setVisibility(View.VISIBLE);
@@ -136,13 +136,13 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
                 TextView tvUsername = findViewById(R.id.tv_username);
                 tvUsername.setText(((MyApplication) this.getApplication()).getUsername());
 
-            }else if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
+            }else if (requestCode == 2 && resultCode == RESULT_OK) {
                 Toast toast = Toast.makeText(MainNavigationHolder.this, R.string.location_added, Toast.LENGTH_LONG);
                 toast.show();
             }
 
         } catch (Exception e) {
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
         }
 
     }
@@ -279,7 +279,7 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
 
         setDrawerForNonUser(navView);
 
-        Toast toast = Toast.makeText(MainNavigationHolder.this, "Logged out", Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(MainNavigationHolder.this, R.string.logged_out, Toast.LENGTH_LONG);
         toast.show();
     }
 }

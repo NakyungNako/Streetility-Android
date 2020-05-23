@@ -279,7 +279,7 @@ public class ATMFragment extends Fragment implements OnMapReadyCallback, GoogleM
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title(type);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.destination_icon));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_atm));
         option.position(pos);
         mMarkers.add(option);
     }

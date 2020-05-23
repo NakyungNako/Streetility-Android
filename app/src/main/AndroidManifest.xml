@@ -52,12 +52,13 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".User.ChangePassword"
-            android:label=""
+            android:label="@string/change_password"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".User.UserInfo"
-            android:label=""
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/user_info"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -72,10 +73,10 @@
 
         <activity
             android:name=".ConfirmLocations"
-            android:label="" />
+            android:label="@string/location_confirm_activity_label" />
         <activity
             android:name=".User.SignUp"
-            android:label=""
+            android:label="@string/signup"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity

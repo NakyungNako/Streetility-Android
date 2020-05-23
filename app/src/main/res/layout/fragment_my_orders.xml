@@ -28,7 +28,6 @@
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:padding="10dp"
-                    android:text="@string/normal_order"
                     android:textColor="#000"
                     android:textSize="18sp"
                     android:textStyle="bold" />

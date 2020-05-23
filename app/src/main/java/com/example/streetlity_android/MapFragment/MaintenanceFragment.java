@@ -20,12 +20,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +48,7 @@ import com.example.streetlity_android.R;
 import com.example.streetlity_android.Review;
 import com.example.streetlity_android.ReviewAdapter;
 import com.example.streetlity_android.User.Login;
+import com.example.streetlity_android.User.SignupAsMaintainer;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -52,6 +57,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -91,6 +97,11 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
     ArrayList<MaintenanceObject> items = new ArrayList<>();
 
     ArrayList<Marker> mMarkers = new ArrayList<Marker>();
+    ArrayList<String> arrReason = new ArrayList<String>();
+
+    Polyline polyline;
+    boolean isOther = false;
+    boolean first = true;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -172,16 +183,74 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
 
                 final EditText edtName = dialogView2.findViewById(R.id.edt_name);
                 final EditText edtPhone = dialogView2.findViewById(R.id.edt_phone);
+                final Spinner spnReason = dialogView2.findViewById(R.id.spn_reason);
                 final EditText edtReason = dialogView2.findViewById(R.id.edt_reason);
                 final EditText edtNote = dialogView2.findViewById(R.id.edt_note);
 
                 Button btnConfirm = dialogView2.findViewById(R.id.btn_broadcast);
 
+                if(first) {
+                    first = false;
+                    arrReason.add(getString(R.string.select_reason_spinner));
+                    arrReason.add("Vehicle broke down");
+                    arrReason.add("Tires are flat");
+                    arrReason.add(getString(R.string.other));
+                }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                        R.layout.spinner_item_broadcast, arrReason);
+
+                spnReason.setAdapter(adapter);
+
+                ImageButton imgAdd = dialogView2.findViewById(R.id.img_add);
+                ImageButton imgRemove = dialogView2.findViewById(R.id.img_add);
+                LinearLayout layoutOther = dialogView2.findViewById(R.id.layout_other_reason);
+
+                spnReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if(spnReason.getSelectedItem().toString().equals(getString(R.string.other))) {
+                            isOther = true;
+                            layoutOther.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            isOther = false;
+                            layoutOther.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
                 btnConfirm.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        sendBroadcast(dialogOrder, edtReason.getText().toString(), edtName.getText().toString(),
-                                edtPhone.getText().toString(),edtNote.getText().toString(), latitude, longitude);
+                        if(isOther){
+                            if(edtReason.getText().toString().equals("")){
+                                Toast toast = Toast.makeText(getActivity(), R.string.please_select_reason, Toast.LENGTH_LONG);
+                                TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                                tv.setTextColor(Color.RED);
+
+                                toast.show();
+                            }else{
+                                sendBroadcast(dialogOrder, edtReason.getText().toString(), edtName.getText().toString(),
+                                        edtPhone.getText().toString(),edtNote.getText().toString(), latitude, longitude);
+                            }
+                        }else {
+                            if(spnReason.getSelectedItemPosition() == 0){
+                                Toast toast = Toast.makeText(getActivity(), R.string.please_select_reason, Toast.LENGTH_LONG);
+                                TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                                tv.setTextColor(Color.RED);
+
+                                toast.show();
+                            }else {
+                                sendBroadcast(dialogOrder, spnReason.getSelectedItem().toString(), edtName.getText().toString(),
+                                        edtPhone.getText().toString(), edtNote.getText().toString(), latitude, longitude);
+                            }
+                        }
                     }
                 });
 
@@ -466,12 +535,14 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
                                     String status = direction.getStatus();
                                     Log.e("", "onDirectionSuccess: " + status);
                                     if(status.equals(RequestResult.OK)) {
-
+                                        if(polyline != null){
+                                            polyline.remove();
+                                        }
                                         Route route = direction.getRouteList().get(0);
                                         Leg leg = route.getLegList().get(0);
                                         ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
                                         PolylineOptions polylineOptions = DirectionConverter.createPolyline(getActivity(), directionPositionList, 5, Color.RED);
-                                        mMap.addPolyline(polylineOptions);
+                                        polyline = mMap.addPolyline(polylineOptions);
                                         dialog.cancel();
 
                                     } else if(status.equals(RequestResult.NOT_FOUND)) {
@@ -511,7 +582,7 @@ public class MaintenanceFragment extends Fragment implements OnMapReadyCallback,
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title(name);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.destination_icon));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_maintenance));
         option.position(pos);
 
         Marker marker = mMap.addMarker(option);

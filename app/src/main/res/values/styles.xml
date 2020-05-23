@@ -24,4 +24,18 @@
         <!-- Customize color of navigation drawer icon and back arrow -->
         <item name="colorControlNormal">@color/black</item>
     </style>
+
+    <style name="Theme.EditTextDisabled" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!-- Customize color of navigation drawer icon and back arrow -->
+        <item name="colorControlNormal">@color/colorBackground</item>
+        <item name="colorControlActivated">@color/colorBackground</item>
+        <item name="colorControlHighlight">@color/colorBackground</item>
+    </style>
+
+    <style name="Theme.EditTextEnabled" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!-- Customize color of navigation drawer icon and back arrow -->
+        <item name="colorControlNormal">@color/tint</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+    </style>
 </resources>

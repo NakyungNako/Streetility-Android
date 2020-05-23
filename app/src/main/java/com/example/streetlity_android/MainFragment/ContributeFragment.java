@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -17,9 +18,12 @@ import com.akexorcist.googledirection.model.Line;
 import com.example.streetlity_android.AddAMaintenance;
 import com.example.streetlity_android.AddAnATM;
 import com.example.streetlity_android.ConfirmLocations;
+import com.example.streetlity_android.MainNavigationHolder;
 import com.example.streetlity_android.MapNavigationHolder;
 import com.example.streetlity_android.R;
 import com.example.streetlity_android.SelectFromMap;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,7 +93,7 @@ public class ContributeFragment extends Fragment {
             public void onClick(View v) {
                 Intent t = new Intent(getActivity(), SelectFromMap.class);
                 t.putExtra("type", 1);
-                startActivityForResult(t, 2);
+                getActivity().startActivityForResult(t, 2);
             }
         });
 
@@ -114,7 +118,7 @@ public class ContributeFragment extends Fragment {
             public void onClick(View v) {
                 Intent t = new Intent(getActivity(), SelectFromMap.class);
                 t.putExtra("type", 2);
-                startActivityForResult(t, 2);
+                getActivity().startActivityForResult(t, 2);
             }
         });
 
@@ -167,4 +171,5 @@ public class ContributeFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

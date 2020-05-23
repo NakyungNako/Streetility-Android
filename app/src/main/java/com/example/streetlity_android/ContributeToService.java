@@ -80,16 +80,13 @@ public class ContributeToService extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
-                Toast toast = Toast.makeText(ContributeToService.this, "Location added successfully", Toast.LENGTH_LONG);
-                toast.show();
-            }else if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
-                Toast toast = Toast.makeText(ContributeToService.this, "Location added successfully", Toast.LENGTH_LONG);
+            if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
+                Toast toast = Toast.makeText(ContributeToService.this, R.string.added_successfully, Toast.LENGTH_LONG);
                 toast.show();
             }
 
         } catch (Exception e) {
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
         }
 
     }

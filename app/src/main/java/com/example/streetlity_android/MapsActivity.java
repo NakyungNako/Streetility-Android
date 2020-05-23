@@ -198,7 +198,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title(type);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.atm_icon));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_atm));
         option.position(pos);
         mMarkers.add(option);
     }
@@ -207,7 +207,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title(name);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.fix_icon));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_maintenance));
         option.position(pos);
         mMarkers.add(option);
     }
@@ -216,7 +216,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title("WC");
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.wc_icon));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_wc));
         option.position(pos);
         mMarkers.add(option);
     }

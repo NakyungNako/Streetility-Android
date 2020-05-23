@@ -54,6 +54,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
     ArrayList<String> arrBank = new ArrayList<>();
+    ArrayAdapter<String> spinnerAdapter;
 
     private GoogleMap mMap;
 
@@ -62,7 +63,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
     double mLat;
     double mLon;
 
-    String mType = "";
+    int mBankId = -1;
     String mNote = "";
     String mAddress = "";
     boolean isOther = false;
@@ -136,8 +137,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
                     if(isOther){
                         EditText edtOther = mPager.findViewById(R.id.edt_atm_other);
                         if(!edtOther.getText().toString().equals("")) {
-                            mType = edtOther.getText().toString();
-                            isPass = true;
+                            addBank(edtOther.getText().toString());
                         }else{
                             Toast toast = Toast.makeText(AddAnATM.this, R.string.please_select_bank, Toast.LENGTH_LONG);
                             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
@@ -147,7 +147,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
                         }
                     }else{
                         if(spnType.getSelectedItemPosition()!=0) {
-                            mType = spnType.getSelectedItem().toString();
+                            mBankId = spnType.getSelectedItemPosition();
                             isPass = true;
                         }else{
                             Toast toast = Toast.makeText(AddAnATM.this, R.string.please_select_bank, Toast.LENGTH_LONG);
@@ -277,7 +277,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
                         Log.e("", "onResponse: " + jsonObject.toString());
 
                         if(jsonObject.getString("status").equals("ZERO_RESULTS")){
-                            Toast toast = Toast.makeText(AddAnATM.this, "Address not found", Toast.LENGTH_LONG);
+                            Toast toast = Toast.makeText(AddAnATM.this, R.string.address_not_found, Toast.LENGTH_LONG);
                             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                             tv.setTextColor(Color.RED);
 
@@ -302,12 +302,6 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
                             MarkerOptions opt = new MarkerOptions().position(location).title("Here");
 
                             edtAddress.setText(jsonObject1.getString("formatted_address"));
-
-                            if(firstClick == false){
-                                firstClick =true;
-                                Button confirm = findViewById(R.id.btn_confirm_adding);
-                                confirm.setVisibility(View.VISIBLE);
-                            }
 
                             mMap.addMarker(opt);
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
@@ -351,7 +345,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
         String token = ((MyApplication) this.getApplication()).getToken();
 
-        Call<ResponseBody> call = tour.addATM("1.0.0",token,(float) mLat,(float) mLon, mType, mAddress, mNote);
+        Call<ResponseBody> call = tour.addATM("1.0.0",token,(float) mLat,(float) mLon, mBankId, mAddress, mNote);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -448,40 +442,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
             }
 
             if(layouts.get(position) == R.layout.vp_atm_info){
-                Spinner spinner = view.findViewById(R.id.spinner_type);
-
-                arrBank.add("- Select a bank -");
-                arrBank.add("Agribank");
-                arrBank.add("BiDV");
-                arrBank.add("VietcomBank");
-                arrBank.add("Other");
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(AddAnATM.this,
-                        android.R.layout.simple_spinner_item, arrBank);
-
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                spinner.setAdapter(adapter);
-
-                final EditText edtOther = view.findViewById(R.id.edt_atm_other);
-
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if(spinner.getSelectedItem().toString().equals("Other")){
-                            edtOther.setVisibility(View.VISIBLE);
-                            isOther = true;
-
-                        }else{
-                            isOther = false;
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                });
+                initBank(view);
             }
 
             container.addView(view);
@@ -509,5 +470,157 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
     private int getItem(int i) {
         return mPager.getCurrentItem() + i;
+    }
+
+    public void initBank(View view){
+        Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+
+        String token = ((MyApplication) this.getApplication()).getToken();
+
+        Call<ResponseBody> call = tour.getBank("1.0.0",token);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+
+                        if(jsonObject.getBoolean("Status")) {
+                            Spinner spinner = view.findViewById(R.id.spinner_type);
+                            arrBank.add(getString(R.string.select_bank_spinner));
+
+                            JSONArray jsonArray = jsonObject.getJSONArray("Banks");
+
+                            for(int i = 0; i< jsonArray.length(); i ++){
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                arrBank.add(jsonObject1.getString("Name"));
+                            }
+                            arrBank.add(getString(R.string.other));
+
+                            spinnerAdapter = new ArrayAdapter<String>(AddAnATM.this,
+                                    android.R.layout.simple_spinner_item, arrBank);
+
+                            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                            spinner.setAdapter(spinnerAdapter);
+
+                            final EditText edtOther = view.findViewById(R.id.edt_atm_other);
+
+                            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                    if(spinner.getSelectedItem().toString().equals(getString(R.string.other))){
+                                        edtOther.setVisibility(View.VISIBLE);
+                                        isOther = true;
+
+                                    }else{
+                                        isOther = false;
+                                    }
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> parent) {
+
+                                }
+                            });
+                        }else{
+                            Toast toast = Toast.makeText(AddAnATM.this, "Something went wrong", Toast.LENGTH_LONG);
+                            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                            tv.setTextColor(Color.RED);
+
+                            toast.show();
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    try {
+                        Log.e(", ",response.errorBody().toString() + response.code());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
+    }
+
+    public  void addBank(String name){
+        Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+
+        String token = ((MyApplication) this.getApplication()).getToken();
+
+        Call<ResponseBody> call = tour.addBank("1.0.0",token, name);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+
+                        if(jsonObject.getBoolean("Status")) {
+                            mBankId = arrBank.size()-1;
+
+                            arrBank.set(arrBank.size()-1 ,name);
+                            arrBank.add(getString(R.string.other));
+                            spinnerAdapter.notifyDataSetChanged();
+
+                            Spinner spinner = mPager.findViewById(R.id.spinner_type);
+                            spinner.setSelection(arrBank.size()-2);
+
+                            final EditText edtOther = mPager.findViewById(R.id.edt_atm_other);
+                            edtOther.setVisibility(View.GONE);
+
+                            if (getCurrentFocus() != null) {
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                            }
+                            int current = getItem(+1);
+                            if (current < layouts.size()) {
+                                // move to next screen
+                                mPager.setCurrentItem(current);
+                                step++;
+                            } else {
+
+                            }
+
+                        }else{
+                            Toast toast = Toast.makeText(AddAnATM.this, "Something went wrong", Toast.LENGTH_LONG);
+                            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                            tv.setTextColor(Color.RED);
+
+                            toast.show();
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    try {
+                        Log.e(", ",response.errorBody().toString() + response.code());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
     }
 }

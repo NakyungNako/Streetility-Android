@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -16,18 +17,64 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/edt_reason"
+    <LinearLayout
+        android:id="@+id/layout_reason"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:ems="10"
-        android:hint="@string/reason"
-        android:inputType="textPersonName"
-        android:textColor="#000"
-        android:textColorHint="#A3A3A3" />
+        android:layout_marginRight="10dp">
+
+        <Spinner
+            android:id="@+id/spn_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#8F8F8F"
+            android:popupBackground="#fff"
+            android:textColor="#000" />
+
+        <ImageButton
+            android:id="@+id/img_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            app:srcCompat="@drawable/remove" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/layout_other_reason"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp">
+
+        <EditText
+            android:id="@+id/edt_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/reason"
+            android:inputType="textPersonName"
+            android:textColor="#000"
+            android:textColorHint="#A3A3A3"
+            android:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/img_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            app:srcCompat="@drawable/add" />
+    </LinearLayout>
+
+
 
     <EditText
         android:id="@+id/edt_name"
@@ -81,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:background="@null"
-            android:text="@android:string/cancel"
+            android:text="@string/cancel"
             android:textColor="#8B8B8B" />
 
         <Button
@@ -92,7 +139,8 @@
             android:foreground="?android:attr/selectableItemBackground"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:text="@string/broadcast" />
+            android:text="@string/broadcast"
+            android:textColor="@color/black" />
 
     </LinearLayout>
 

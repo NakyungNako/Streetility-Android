@@ -265,7 +265,7 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
                         Log.e("", "onResponse: " + jsonObject.toString());
 
                         if(jsonObject.getString("status").equals("ZERO_RESULTS")){
-                            Toast toast = Toast.makeText(AddAMaintenance.this, "Address not found", Toast.LENGTH_LONG);
+                            Toast toast = Toast.makeText(AddAMaintenance.this, R.string.address_not_found, Toast.LENGTH_LONG);
                             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                             tv.setTextColor(Color.RED);
 
@@ -290,12 +290,6 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
                             MarkerOptions opt = new MarkerOptions().position(location).title("Here");
 
                             edtAddress.setText(jsonObject1.getString("formatted_address"));
-
-                            if(firstClick == false){
-                                firstClick =true;
-                                Button confirm = findViewById(R.id.btn_confirm_adding);
-                                confirm.setVisibility(View.VISIBLE);
-                            }
 
                             mMap.addMarker(opt);
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
@@ -350,7 +344,7 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
                                 step++;
                             }
                         }else{
-                            Toast toast = Toast.makeText(AddAMaintenance.this, "Something went wrong", Toast.LENGTH_LONG);
+                            Toast toast = Toast.makeText(AddAMaintenance.this, R.string.something_wrong, Toast.LENGTH_LONG);
                             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                             tv.setTextColor(Color.RED);
 

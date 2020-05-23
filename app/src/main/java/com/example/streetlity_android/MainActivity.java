@@ -192,12 +192,12 @@ public class MainActivity extends AppCompatActivity {
                 Button btnWork = findViewById(R.id.btn_works);
                 btnWork.setVisibility(View.GONE);
 
-                Toast toast = Toast.makeText(MainActivity.this, "Logged out", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(MainActivity.this, R.string.logged_out, Toast.LENGTH_LONG);
                 toast.show();
             }
 
         } catch (Exception e) {
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
         }
 
     }

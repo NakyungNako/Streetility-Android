@@ -39,7 +39,7 @@ public interface MapAPI {
     Call<ResponseBody> getWCInRange(@Header("Version") String version, @Query("location") float lat, @Query("location") float lon,
                                       @Query("range") float range);
 
-    @GET("service/maintain/range")
+    @GET("service/maintenance/range")
     Call<ResponseBody> getMaintenanceInRange(@Header("Version") String version, @Query("location") float lat, @Query("location") float lon,
                                     @Query("range") float range);
 
@@ -49,22 +49,22 @@ public interface MapAPI {
 
     @FormUrlEncoded
     @POST("service/fuel/add")
-    Call<ResponseBody> addFuel(@Header("Version") String version, @Field("rtoken") String token, @Field("location") float lat, @Field("location" )float lon,
+    Call<ResponseBody> addFuel(@Header("Version") String version, @Header("Auth") String token, @Field("location") float lat, @Field("location" )float lon,
                                @Field("address") String address, @Field("note") String note);
 
     @FormUrlEncoded
     @POST("service/atm/add")
-    Call<ResponseBody> addATM(@Header("Version") String version, @Field("rtoken") String token,@Field("location") float lat, @Field("location" )float lon,
-                              @Field("type") String type, @Field("address") String address, @Field("note") String note);
+    Call<ResponseBody> addATM(@Header("Version") String version, @Header("Auth") String token,@Field("location") float lat, @Field("location" )float lon,
+                              @Field("bank") int bankId, @Field("address") String address, @Field("note") String note);
 
     @FormUrlEncoded
     @POST("service/toilet/add")
-    Call<ResponseBody> addWC(@Header("Version") String version, @Field("rtoken") String token,@Field("location") float lat, @Field("location" )float lon,
+    Call<ResponseBody> addWC(@Header("Version") String version, @Header("Auth") String token,@Field("location") float lat, @Field("location" )float lon,
                              @Field("address") String address, @Field("note") String note);
 
     @FormUrlEncoded
-    @POST("service/maintain/add")
-    Call<ResponseBody> addMaintenance(@Header("Version") String version, @Field("rtoken") String token,@Field("location") float lat, @Field("location" )float lon,
+    @POST("service/maintenance/add")
+    Call<ResponseBody> addMaintenance(@Header("Version") String version, @Header("Auth") String token,@Field("location") float lat, @Field("location" )float lon,
                                       @Field("address") String address, @Field("name") String name, @Field("note") String note);
 
     @GET("json")
@@ -77,22 +77,22 @@ public interface MapAPI {
 
     @FormUrlEncoded
     @POST("user/common/register")
-    Call<ResponseBody> signupCommon(@Field("username") String username, @Field("passwd") String password,
+    Call<ResponseBody> signUpCommon(@Field("username") String username, @Field("passwd") String password,
                                     @Field("email") String email, @Field("phone") String phone, @Field("address") String address);
 
     @FormUrlEncoded
     @POST("user/maintenance/register")
-    Call<ResponseBody> signupMaintainer(@Field("username") String username, @Field("passwd") String password,
-                                    @Field("email") String email, @Field("phone") String phone,
-                                    @Field("address") String address, @Field("serviceId") int id);
+    Call<ResponseBody> signUpMaintainer(@Field("username") String username, @Field("passwd") String password,
+                                        @Field("email") String email, @Field("phone") String phone,
+                                        @Field("address") String address, @Field("serviceId") int id);
 
     @FormUrlEncoded
     @POST("user/logout")
-    Call<ResponseBody> logout(@Field("rtoken") String token, @Field("username") String username,
+    Call<ResponseBody> logout(@Header("Auth") String token, @Field("username") String username,
                               @Field("deviceToken") String deviceToken);
 
     @FormUrlEncoded
-    @POST("service/maintain/order")
+    @POST("service/maintenance/order")
     Call<ResponseBody> broadcast(@Header("Version") String version, @Field("reason") String reason, @Field("name") String name,
                                  @Field("phone") String phone, @Field("note") String note,
                                  @Field("id") int[] id, @Field("address") String address, @Field("preferTime") String time);
@@ -100,4 +100,11 @@ public interface MapAPI {
     @FormUrlEncoded
     @POST("user/device")
     Call<ResponseBody> addDevice(@Header("Version") String version ,@Field("token") String token, @Field("user") String username);
+
+    @FormUrlEncoded
+    @POST("service/atm/bank/add")
+    Call<ResponseBody> addBank(@Header("Version") String version ,@Field("token") String token, @Field("name") String name);
+
+    @GET("service/atm/bank/all")
+    Call<ResponseBody> getBank(@Header("Version") String version ,@Query("token") String token);
 }

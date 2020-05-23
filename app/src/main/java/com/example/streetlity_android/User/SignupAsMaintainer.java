@@ -101,7 +101,7 @@ public class SignupAsMaintainer extends AppCompatActivity implements OnMapReadyC
                             .addConverterFactory(GsonConverterFactory.create()).build();
                     final MapAPI tour = retro.create(MapAPI.class);
 
-                    Call<ResponseBody> call = tour.signupMaintainer(edtUsername.getText().toString(), edtPassword.getText().toString(),
+                    Call<ResponseBody> call = tour.signUpMaintainer(edtUsername.getText().toString(), edtPassword.getText().toString(),
                             edtMail.getText().toString(), edtPhone.getText().toString(), edtAddress.getText().toString(), id);
 
                     call.enqueue(new Callback<ResponseBody>() {
@@ -272,7 +272,7 @@ public class SignupAsMaintainer extends AppCompatActivity implements OnMapReadyC
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title(name);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.fix_icon));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_maintenance));
         option.position(pos);
         Marker marker = mMap.addMarker(option);
         mMarkers.add(marker);

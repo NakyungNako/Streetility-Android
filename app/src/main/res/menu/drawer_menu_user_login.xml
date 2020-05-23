@@ -10,7 +10,7 @@
     <item
         android:id="@+id/change_pass"
         android:icon="@drawable/change_pass"
-        android:title="@string/change_pass" />
+        android:title="@string/change_password" />
 
     <item
         android:id="@+id/works"

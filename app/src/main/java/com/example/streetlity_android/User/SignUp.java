@@ -9,11 +9,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-import com.example.streetlity_android.AddAMaintenance;
 import com.example.streetlity_android.MapAPI;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
@@ -21,7 +19,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -46,7 +43,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -56,9 +52,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import static androidx.viewpager.widget.PagerAdapter.POSITION_NONE;
-import static androidx.viewpager.widget.PagerAdapter.POSITION_UNCHANGED;
 
 public class SignUp extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -273,7 +266,7 @@ public class SignUp extends AppCompatActivity implements OnMapReadyCallback, Goo
                             .addConverterFactory(GsonConverterFactory.create()).build();
                     final MapAPI tour = retro.create(MapAPI.class);
 
-                    Call<ResponseBody> call = tour.signupCommon(username,pass,mail,address,phone);
+                    Call<ResponseBody> call = tour.signUpCommon(username,pass,mail,address,phone);
 
                     call.enqueue(new Callback<ResponseBody>() {
                         @Override
@@ -728,7 +721,7 @@ public class SignUp extends AppCompatActivity implements OnMapReadyCallback, Goo
         LatLng pos = new LatLng(lat,lon);
         MarkerOptions option = new MarkerOptions();
         option.title(name);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.destination_icon));
+        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_maintenance));
         option.position(pos);
         Marker marker = mMap.addMarker(option);
         mMarkers.add(marker);
@@ -826,7 +819,7 @@ public class SignUp extends AppCompatActivity implements OnMapReadyCallback, Goo
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
 
-        Call<ResponseBody> call = tour.signupMaintainer(username, pass, mail,phone,address, id);
+        Call<ResponseBody> call = tour.signUpMaintainer(username, pass, mail,phone,address, id);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override

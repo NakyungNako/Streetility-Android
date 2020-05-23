@@ -10,6 +10,15 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="TextView"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+        <TextView
             android:id="@+id/tv_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,7 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@drawable/button_background"
-            android:text="@string/go" />
+            android:text="@string/go"
+            android:textColor="@color/black" />
     </LinearLayout>
 
 </LinearLayout>
