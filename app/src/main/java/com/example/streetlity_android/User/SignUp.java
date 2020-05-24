@@ -1,12 +1,14 @@
 package com.example.streetlity_android.User;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.streetlity_android.MapAPI;
@@ -44,6 +46,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import okhttp3.ResponseBody;
@@ -57,6 +60,9 @@ public class SignUp extends AppCompatActivity implements OnMapReadyCallback, Goo
 
     ArrayList<Marker> mMarkers = new ArrayList<>();
     ArrayList<MaintenanceObject> items = new ArrayList<>();
+    ArrayList<File> arrImg = new ArrayList<>();
+
+    boolean hasImg = false;
 
     private GoogleMap mMap;
     String username = "";
@@ -582,6 +588,20 @@ public class SignUp extends AppCompatActivity implements OnMapReadyCallback, Goo
                 }
             }
 
+            if(layouts.get(position) == R.layout.vp_signup_store_info){
+                EditText edtImg = view.findViewById(R.id.edt_select_img);
+                edtImg.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent();
+                        intent.setType("image/*");
+                        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(Intent.createChooser(intent,"Select Picture"), 1);
+                    }
+                });
+            }
+
             container.addView(view);
 
             return view;
@@ -926,5 +946,52 @@ public class SignUp extends AppCompatActivity implements OnMapReadyCallback, Goo
             }
         }
         return true;
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
+                if(data.getData()!=null){
+
+                    Uri mImageUri=data.getData();
+                    File file = new File(mImageUri.getPath());
+
+                    arrImg.add(file);
+
+                    Log.e("", "onActivityResult: " + arrImg.size() );
+
+                    EditText edtSelectImg = mPager.findViewById(R.id.edt_select_img);
+                    String temp = getString(R.string.selected);
+                    temp = temp + " 1 " +getString(R.string.images);
+                    edtSelectImg.setHint(temp);
+                    hasImg = true;
+                } else{
+                    if (data.getClipData() != null) {
+                        ClipData mClipData = data.getClipData();
+                        ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+                        for (int i = 0; i < mClipData.getItemCount(); i++) {
+
+                            ClipData.Item item = mClipData.getItemAt(i);
+                            Uri uri = item.getUri();
+                            File file = new File(uri.getPath());
+
+                            arrImg.add(file);
+                        }
+
+                        Log.e("", "onActivityResult: " + arrImg.size() );
+
+                        EditText edtSelectImg = mPager.findViewById(R.id.edt_select_img);
+                        String temp = getString(R.string.selected);
+                        temp = temp + " " +arrImg.size()+ " " +getString(R.string.images);
+                        edtSelectImg.setHint(temp);
+                        hasImg = true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
+        }
+
     }
 }

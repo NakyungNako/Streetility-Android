@@ -24,7 +24,8 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_note" />
+        android:layout_below="@id/layout_note"
+        android:layout_marginTop="10dp" />
 
     <LinearLayout
         android:id="@+id/layout_search"
@@ -65,18 +66,33 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/edt_note"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.75"
             android:ems="10"
             android:hint="@string/note_without"
             android:inputType="text"
             android:paddingLeft="10dp"
             android:paddingRight="10dp" />
+
+        <EditText
+            android:id="@+id/edt_select_img"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/dashed_background"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="center"
+            android:hint="@string/select_img"
+            android:inputType="textPersonName"
+            android:longClickable="false"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColorHint="@color/colorPrimaryDark" />
     </LinearLayout>
 
     <Button

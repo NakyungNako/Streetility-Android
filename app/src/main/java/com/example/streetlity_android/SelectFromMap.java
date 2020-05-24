@@ -1,6 +1,7 @@
 package com.example.streetlity_android;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -34,6 +36,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +47,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallback {
+
+    ArrayList<File> arrImg = new ArrayList<>();
+    boolean hasImg = false;
 
     private GoogleMap mMap;
 
@@ -92,6 +100,18 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
         edtAddress = findViewById(R.id.edt_store_address);
 
         Button confirm = findViewById(R.id.btn_confirm_adding);
+
+        EditText edtImg = findViewById(R.id.edt_select_img);
+        edtImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select Picture"), 1);
+            }
+        });
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -376,6 +396,53 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
 
             }
         });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
+                if(data.getData()!=null){
+
+                    Uri mImageUri=data.getData();
+                    File file = new File(mImageUri.getPath());
+
+                    arrImg.add(file);
+
+                    Log.e("", "onActivityResult: " + arrImg.size() );
+
+                    EditText edtSelectImg = findViewById(R.id.edt_select_img);
+                    String temp = getString(R.string.selected);
+                    temp = temp + " 1 " +getString(R.string.images);
+                    edtSelectImg.setHint(temp);
+                    hasImg = true;
+                } else{
+                    if (data.getClipData() != null) {
+                        ClipData mClipData = data.getClipData();
+                        ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+                        for (int i = 0; i < mClipData.getItemCount(); i++) {
+
+                            ClipData.Item item = mClipData.getItemAt(i);
+                            Uri uri = item.getUri();
+                            File file = new File(uri.getPath());
+
+                            arrImg.add(file);
+                        }
+
+                        Log.e("", "onActivityResult: " + arrImg.size() );
+
+                        EditText edtSelectImg = findViewById(R.id.edt_select_img);
+                        String temp = getString(R.string.selected);
+                        temp = temp + " " +arrImg.size()+ " " +getString(R.string.images);
+                        edtSelectImg.setHint(temp);
+                        hasImg = true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.something_wrong, Toast.LENGTH_LONG).show();
+        }
+
     }
 
 //    @Override

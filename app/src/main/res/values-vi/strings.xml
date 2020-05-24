@@ -71,7 +71,7 @@
     <string name="normal_order">Yêu cầu</string>
     <string name="not_login">Chưa đăng nhập</string>
     <string name="note">Ghi chú:</string>
-    <string name="note_without">Ghi chú</string>
+    <string name="note_without">Ghi chú (không bắt buộc)</string>
     <string name="old_pass">Mật khẩu cũ</string>
     <string name="order">Yêu cầu</string>
     <string name="order_info">Thông tin yêu cầu</string>
@@ -132,4 +132,7 @@
     <string name="select_reason_spinner">- Chọn lí do -</string>
     <string name="select_bank_spinner">- Chọn ngân hàng -</string>
     <string name="other">Khác</string>
+    <string name="select_img">Chọn ảnh (không bắt buộc)</string>
+    <string name="selected">Đã chọn </string>
+    <string name="images"> ảnh</string>
 </resources>

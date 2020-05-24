@@ -67,7 +67,7 @@
     <string name="order">Order</string>
     <string name="name_order">Name</string>
     <string name="prefer_time" translatable="false">Prefer time</string>
-    <string name="note_without">Note</string>
+    <string name="note_without">Note (optional)</string>
     <string name="alert">Alert! This will notify nearby maintenance stores about your location. ONLY USE IN CASE OF EMERGENCY</string>
     <string name="reason">Reason</string>
     <string name="broadcast">Broadcast</string>
@@ -141,4 +141,7 @@
     <string name="select_bank_spinner">- Select a bank -</string>
     <string name="select_reason_spinner">- Select a reason -</string>
     <string name="other">Other</string>
+    <string name="select_img">Select images (optional)</string>
+    <string name="selected">Selected </string>
+    <string name="images"> images</string>
 </resources>
