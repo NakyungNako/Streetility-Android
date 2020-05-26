@@ -34,6 +34,10 @@
             android:label="@string/title_activity_order_info"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".MapsActivity"
+            android:label="@string/find_direction"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".User.Maintainer.Works"
             android:label="@string/title_activity_works"
             android:theme="@style/AppTheme.NoActionBar" />

@@ -79,23 +79,6 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
             tvTittle.setText(getString(R.string.add_wc));
         }
 
-        String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
-        if (!hasPermissions(this, Permissions)) {
-            ActivityCompat.requestPermissions(this, Permissions, 4);
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
-            this.finish();
-            return;
-        }
-
         EditText edtNote = findViewById(R.id.edt_note);
         edtAddress = findViewById(R.id.edt_store_address);
 
@@ -224,17 +207,6 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
                 lonToAdd = latLng.longitude;
             }
         });
-    }
-
-    public static boolean hasPermissions(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public void addFuel(){

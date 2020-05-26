@@ -1,6 +1,8 @@
 package com.example.streetlity_android;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -19,9 +21,20 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.RequestResult;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Leg;
+import com.akexorcist.googledirection.model.Route;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.example.streetlity_android.Firebase.StreetlityFirebaseMessagingService;
+import com.example.streetlity_android.MainFragment.MapObject;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,8 +42,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -49,7 +65,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener  {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -62,30 +78,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
-        if (!hasPermissions(this, Permissions)) {
-            ActivityCompat.requestPermissions(this, Permissions, 4);
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
-            this.finish();
-            return;
-        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
     }
 
 
@@ -101,68 +103,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setOnMarkerClickListener((GoogleMap.OnMarkerClickListener) this);
         //ArrayList<MarkerOptions> markList = new ArrayList<MarkerOptions>();
 
-        LocationManager locationManager = (LocationManager)
-                getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
+        float latitude = getIntent().getFloatExtra("currLat", 0);
+        float longitude = getIntent().getFloatExtra("currLon", 0);
 
-        double latitude = 0;
-        double longitude = 0;
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Location location = locationManager.getLastKnownLocation(locationManager
-                    .NETWORK_PROVIDER);
-            if(location == null){
-                Log.e("", "onMapReady: MULL");
-            }
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            Log.e("", "onMapReady: " + latitude+" , " + longitude );
-        }
-        Intent oldIntent = this.getIntent();
-        int type = oldIntent.getIntExtra("type", -1);
-
-        if (type == 1) {
-            callFuel(latitude,longitude);
-        }
-        else if (type == 2) {
-            callATM(latitude,longitude);
-        }
-        else if (type == 3) {
-            //callFuel(latitude,longitude);
-        }
-        else if (type == 4) {
-            callWC(latitude,longitude);
-        }
-
-        // Add a marker in Sydney and move the camera
-//        MarkerOptions option = new MarkerOptions();
-//        MarkerOptions option2 = new MarkerOptions();
-//        MarkerOptions option3 = new MarkerOptions();
-//
-//        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option.title("Marker in Sydney");
-//        option.position(sydney);
-//        markList.add(option);
-//
-//        sydney = new LatLng(-34, 161);
-//        option2.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option2.title("Marker in awaswa");
-//        option2.position(sydney);
-//        markList.add(option2);
-//
-//        sydney = new LatLng(-54, 161);
-//        option3.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-//        option3.title("Marker in awaswa");
-//        option3.position(sydney);
-//        markList.add(option3);
-//
-//        for (int i = 0; i < markList.size(); i++) {
-//            mMap.addMarker(markList.get(i));
-//            Log.e("abc", "aa" );
-//        }
+        MapObject item = (MapObject) getIntent().getSerializableExtra("item");
 
         MarkerOptions curPositionMark = new MarkerOptions();
         curPositionMark.position(new LatLng(latitude,longitude));
@@ -170,226 +116,77 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         currentPosition = mMap.addMarker(curPositionMark);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 10.0f ) );
-    }
+        String serverKey = "AIzaSyB56CeF7ccQ9ZeMn0O4QkwlAQVX7K97-Ss";
+        LatLng origin = new LatLng(latitude, longitude);
+        LatLng destination = new LatLng(item.getLat(), item.getLon());
+        GoogleDirection.withServerKey(serverKey)
+                .from(origin)
+                .to(destination)
 
-    public static boolean hasPermissions(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
+                .execute(new DirectionCallback() {
+                    @Override
+                    public void onDirectionSuccess(Direction direction) {
 
-    public void addFuelMarkerToList(float lat, float lon){
-        LatLng pos = new LatLng(lat,lon);
-        MarkerOptions option = new MarkerOptions();
-        option.title("Fuel");
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
-        option.position(pos);
-        mMarkers.add(option);
-    }
+                        String status = direction.getStatus();
+                        Log.e("", "onDirectionSuccess: " + status);
+                        if(status.equals(RequestResult.OK)) {
+                            Route route = direction.getRouteList().get(0);
+                            Leg leg = route.getLegList().get(0);
+                            ArrayList<LatLng> directionPositionList = leg.getDirectionPoint();
+                            PolylineOptions polylineOptions = DirectionConverter.createPolyline(MapsActivity.this, directionPositionList, 5, Color.RED);
+                            mMap.addPolyline(polylineOptions);
 
-    public void addATMMarkerToList(float lat, float lon, String type){
-        LatLng pos = new LatLng(lat,lon);
-        MarkerOptions option = new MarkerOptions();
-        option.title(type);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_atm));
-        option.position(pos);
-        mMarkers.add(option);
-    }
+                        } else if(status.equals(RequestResult.NOT_FOUND)) {
+                            Toast toast = Toast.makeText(MapsActivity.this, R.string.cant_go, Toast.LENGTH_LONG);
+                            TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                            tv.setTextColor(Color.RED);
 
-    public void addMaintenanceMarkerToList(float lat, float lon, String name){
-        LatLng pos = new LatLng(lat,lon);
-        MarkerOptions option = new MarkerOptions();
-        option.title(name);
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_maintenance));
-        option.position(pos);
-        mMarkers.add(option);
-    }
-
-    public void addWCMarkerToList(float lat, float lon){
-        LatLng pos = new LatLng(lat,lon);
-        MarkerOptions option = new MarkerOptions();
-        option.title("WC");
-        option.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_wc));
-        option.position(pos);
-        mMarkers.add(option);
-    }
-
-    public void callFuel(double lat, double lon){
-        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
-                .addConverterFactory(GsonConverterFactory.create()).build();
-        final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.getAllFuel();
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.code() == 200) {
-                    final JSONObject jsonObject;
-                    JSONArray jsonArray;
-                    try {
-                        jsonObject = new JSONObject(response.body().string());
-                        Log.e("", "onResponse: " + jsonObject.toString());
-                        if(jsonObject.getJSONArray("Fuels") != null) {
-                            jsonArray = jsonObject.getJSONArray("Fuels");
-
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                                Log.e("", "onResponse: " + jsonObject1.toString());
-                                addFuelMarkerToList((float) jsonObject1.getDouble("Lat"),
-                                        (float) jsonObject1.getDouble("Lon"));
-                            }
-
-                            for (int i = 0; i < mMarkers.size(); i++) {
-                                Log.e("", mMarkers.get(i).getTitle());
-                                mMap.addMarker(mMarkers.get(i));
-                            }
+                            toast.show();
                         }
-                    } catch (Exception e){
-                        e.printStackTrace();
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("", "onFailure: " + t.toString());
-            }
-        });
-    }
+                    @Override
+                    public void onDirectionFailure(Throwable t) {
+                        Log.e("", "onDirectionFailure: ");
+                        Toast toast = Toast.makeText(MapsActivity.this, "Something went wrong when trying to find direction", Toast.LENGTH_LONG);
+                        TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
+                        tv.setTextColor(Color.RED);
 
-    public void callATM(double lat, double lon){
-        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
-                .addConverterFactory(GsonConverterFactory.create()).build();
-        final MapAPI tour = retro.create(MapAPI.class);
-        //Call<ResponseBody> call = tour.getATMInRange((float)lat,(float)lon,(float)0.1);
-        Call<ResponseBody> call = tour.getAllATM();
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.code() == 200) {
-                    final JSONObject jsonObject;
-                    JSONArray jsonArray;
-                    try {
-                        jsonObject = new JSONObject(response.body().string());
-                        Log.e("", "onResponse: " + jsonObject.toString());
-                        jsonArray = jsonObject.getJSONArray("Fuels");
-
-                        for (int i = 0; i< jsonArray.length();i++){
-                            JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                            Log.e("", "onResponse: " + jsonObject1.toString());
-                            addATMMarkerToList((float)jsonObject1.getDouble("Lat"),
-                                    (float)jsonObject1.getDouble("Lon"),"atm type here");
-                        }
-
-                        for (int i = 0; i < mMarkers.size(); i++){
-                            Log.e("", mMarkers.get(i).getTitle());
-                            mMap.addMarker(mMarkers.get(i));
-                        }
-                    } catch (Exception e){
-                        e.printStackTrace();
+                        toast.show();
                     }
-                }
-            }
+                });
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("", "onFailure: " + t.toString());
-            }
-        });
+        MarkerOptions currOption = new MarkerOptions();
+        currOption.position(new LatLng(latitude,longitude));
+        currOption.title(getString(R.string.you_r_here));
+        Marker currMarker = mMap.addMarker(currOption);
+
+        MarkerOptions desOption = new MarkerOptions();
+        desOption.position(new LatLng(item.getLat(),item.getLon()));
+        if(item.getType() == 1)
+            desOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_fuel));
+        if(item.getType() == 2)
+            desOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_wc));
+        if(item.getType() == 3)
+            desOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_maintenance));
+        if(item.getType() == 4)
+            desOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_atm));
+        desOption.title(getString(R.string.destination));
+
+        Marker desMarker = mMap.addMarker(desOption);
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(currMarker.getPosition());
+        builder.include(desMarker.getPosition());
+        LatLngBounds bounds = builder.build();
+
+        int padding = 15; // offset from edges of the map in pixels
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        googleMap.animateCamera(cu);
     }
 
-    public void callMaintenance(double lat, double lon){
-
-    }
-
-
-    public void callWC(double lat, double lon){
-        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
-                .addConverterFactory(GsonConverterFactory.create()).build();
-    
-        final MapAPI tour = retro.create(MapAPI.class);
-        //Call<ResponseBody> call = tour.getWCInRange((float)lat,(float)lon,(float)0.1);
-        Call<ResponseBody> call = tour.getAllWC();
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.code() == 200) {
-                    final JSONObject jsonObject;
-                    JSONArray jsonArray;
-                    try {
-                        jsonObject = new JSONObject(response.body().string());
-                        Log.e("", "onResponse: " + jsonObject.toString());
-                        jsonArray = jsonObject.getJSONArray("Fuels");
-
-                        for (int i = 0; i< jsonArray.length();i++){
-                            JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                            Log.e("", "onResponse: " + jsonObject1.toString());
-                            addWCMarkerToList((float)jsonObject1.getDouble("Lat"),
-                                    (float)jsonObject1.getDouble("Lon"));
-                        }
-
-                        for (int i = 0; i < mMarkers.size(); i++){
-                            Log.e("", mMarkers.get(i).getTitle());
-                            mMap.addMarker(mMarkers.get(i));
-                        }
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("", "onFailure: " + t.toString());
-            }
-        });
-    }
-
-    public void onLocationChanged(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12.0f);
-        mMap.animateCamera(cameraUpdate);
-    }
-
-    @Override
-    public boolean onMarkerClick(final Marker marker) {
-
-        if(!marker.equals(currentPosition)) {
-
-            final LayoutInflater inflater = LayoutInflater.from(this.getApplicationContext());
-
-            final android.view.View dialogView = inflater.inflate(R.layout.dialog_point_info, null);
-
-            ListView lv = dialogView.findViewById(R.id.lv_review);
-
-            ArrayList<Review> items = new ArrayList<Review>();
-
-            items.add(new Review("nhut", "i donek know kaahfeeefffffffeijkla jkl ja klj akljfklajj kajkljw klj lkaj eklwaj elkjwa kljela ej l", (float)2.5));
-
-            final ReviewAdapter adapter = new ReviewAdapter(this, R.layout.review_item, items);
-
-            lv.setAdapter(adapter);
-
-            Log.e("", "onMarkerClick: mapclick");
-            marker.showInfoWindow();
-
-            BottomSheetDialog dialog = new BottomSheetDialog(MapsActivity.this, android.R.style.Theme_Black_NoTitleBar);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
-            dialog.setContentView(dialogView);
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.setCancelable(true);
-
-            dialog.show();
-
-        }
-
-        marker.showInfoWindow();
+    public boolean onOptionsItemSelected(MenuItem item){
+        this.finish();
 
         return true;
     }

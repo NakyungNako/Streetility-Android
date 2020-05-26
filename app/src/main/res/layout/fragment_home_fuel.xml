@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_range"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10sp">
+
+        </ListView>
+
+        <LinearLayout
+            android:id="@+id/layout_range"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:text="@string/range"
+                android:textColor="#000"
+                android:textSize="18sp" />
+
+            <SeekBar
+                android:id="@+id/sb_range"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_weight="0.9"
+                android:max="9"
+                android:progress="0"
+                android:progressBackgroundTint="#000"
+                android:progressTint="#2F6840"
+                android:thumbTint="#2F6840" />
+
+            <ImageButton
+                android:id="@+id/img_btn_confirm_range"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:padding="10dp"
+                android:src="@drawable/checkmark" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

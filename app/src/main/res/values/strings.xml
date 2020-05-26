@@ -144,4 +144,9 @@
     <string name="select_img">Select images (optional)</string>
     <string name="selected">Selected </string>
     <string name="images"> images</string>
+    <string name="cant_go">Can\'t go to destination from here</string>
+    <string name="error_direction">Can\'t find direction</string>
+    <string name="destination">Destination</string>
+    <string name="you_r_here">You are here</string>
+    <string name="find_direction">Find direction</string>
 </resources>

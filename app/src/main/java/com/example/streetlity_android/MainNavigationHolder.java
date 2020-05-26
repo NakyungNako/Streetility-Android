@@ -1,13 +1,17 @@
 package com.example.streetlity_android;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.example.streetlity_android.MainFragment.ContributeFragment;
-import com.example.streetlity_android.MainFragment.HomeFragment;
+import com.example.streetlity_android.MainFragment.ATMFragment;
+import com.example.streetlity_android.MainFragment.FuelFragment;
+import com.example.streetlity_android.MainFragment.MaintnanceFragment;
+import com.example.streetlity_android.MainFragment.WCFragment;
 import com.example.streetlity_android.User.ChangePassword;
 import com.example.streetlity_android.User.Login;
 import com.example.streetlity_android.User.Maintainer.Works;
@@ -20,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -32,7 +38,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -41,8 +46,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainNavigationHolder extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener,
-        ContributeFragment.OnFragmentInteractionListener {
+public class MainNavigationHolder extends AppCompatActivity implements FuelFragment.OnFragmentInteractionListener,
+        ATMFragment.OnFragmentInteractionListener, MaintnanceFragment.OnFragmentInteractionListener,
+        WCFragment.OnFragmentInteractionListener{
     Fragment fragment;
     @Override
     public void onFragmentInteraction(Uri uri){
@@ -58,6 +64,23 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+        if (!hasPermissions(this, Permissions)) {
+            ActivityCompat.requestPermissions(this, Permissions, 4);
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    Activity#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for Activity#requestPermissions for more details.
+            this.finish();
+            return;
+        }
+
         drawer = findViewById(R.id.drawer_layout);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -71,8 +94,6 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
 
         SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
         if (s.contains("token")){
-            View bottomNavigationView = findViewById(R.id.navigation);
-            bottomNavigationView.setVisibility(View.VISIBLE);
 
             navView.getMenu().clear();
             navView.inflateMenu(R.menu.drawer_menu_user_login);
@@ -92,7 +113,7 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
             setDrawerForNonUser(navView);
         }
 
-        fragment = new HomeFragment();
+        fragment = new FuelFragment();
         loadFragment(fragment);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -105,11 +126,17 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.home:
-                    fragment = new HomeFragment();
+                case R.id.navigation_fuel:
+                    fragment = new FuelFragment();
                     break;
-                case R.id.contribute:
-                    fragment = new ContributeFragment();
+                case R.id.nav_atm:
+                    fragment = new ATMFragment();
+                    break;
+                case R.id.navigation_wc:
+                    fragment = new WCFragment();
+                    break;
+                case R.id.navigation_maintenance:
+                    fragment = new MaintnanceFragment();
                     break;
             }
             return loadFragment(fragment);
@@ -122,8 +149,6 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
             if (requestCode == 1 && resultCode == RESULT_OK) {
                 Toast toast = Toast.makeText(MainNavigationHolder.this, R.string.logged_in, Toast.LENGTH_LONG);
                 toast.show();
-                View bottomNavigationView = findViewById(R.id.navigation);
-                bottomNavigationView.setVisibility(View.VISIBLE);
 
                 NavigationView navView = findViewById(R.id.nav_view);
 
@@ -185,6 +210,9 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
                         break;
                     case R.id.works:
                         startActivity(new Intent(MainNavigationHolder.this, Works.class));
+                        break;
+                    case R.id.contribute:
+                        startActivity(new Intent(MainNavigationHolder.this, ContributeToService.class));
                         break;
                     case R.id.about:
                         break;
@@ -265,9 +293,6 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
             }
         });
 
-        View bottomNavigationView = findViewById(R.id.navigation);
-        bottomNavigationView.setVisibility(View.GONE);
-
         navView.getMenu().clear();
         navView.inflateMenu(R.menu.drawer_menu_user_not_login);
 
@@ -282,4 +307,16 @@ public class MainNavigationHolder extends AppCompatActivity implements HomeFragm
         Toast toast = Toast.makeText(MainNavigationHolder.this, R.string.logged_out, Toast.LENGTH_LONG);
         toast.show();
     }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }

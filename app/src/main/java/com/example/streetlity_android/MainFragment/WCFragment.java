@@ -7,33 +7,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.akexorcist.googledirection.model.Line;
-import com.example.streetlity_android.AddAMaintenance;
-import com.example.streetlity_android.AddAnATM;
-import com.example.streetlity_android.ConfirmLocations;
-import com.example.streetlity_android.MainNavigationHolder;
 import com.example.streetlity_android.MapNavigationHolder;
 import com.example.streetlity_android.R;
-import com.example.streetlity_android.SelectFromMap;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ContributeFragment.OnFragmentInteractionListener} interface
+ * {@link WCFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ContributeFragment#newInstance} factory method to
+ * Use the {@link WCFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ContributeFragment extends Fragment {
+public class WCFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,7 +34,7 @@ public class ContributeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public ContributeFragment() {
+    public WCFragment() {
         // Required empty public constructor
     }
 
@@ -58,8 +47,8 @@ public class ContributeFragment extends Fragment {
      * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ContributeFragment newInstance(String param1, String param2) {
-        ContributeFragment fragment = new ContributeFragment();
+    public static WCFragment newInstance(String param1, String param2) {
+        WCFragment fragment = new WCFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -80,53 +69,14 @@ public class ContributeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_contribute_to_service, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        LinearLayout btnFuel = rootView.findViewById(R.id.btn_fuel);
-        LinearLayout btnATM = rootView.findViewById(R.id.btn_atm);
-        LinearLayout btnMaintenance = rootView.findViewById(R.id.btn_maintenance);
-        LinearLayout btnWC = rootView.findViewById(R.id.btn_wc);
-        Button btnConfirming = rootView.findViewById(R.id.btn_confirm_location);
+        ImageButton btnFind = rootView.findViewById(R.id.btn_find);
 
-        btnFuel.setOnClickListener(new View.OnClickListener() {
+        btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent t = new Intent(getActivity(), SelectFromMap.class);
-                t.putExtra("type", 1);
-                getActivity().startActivityForResult(t, 2);
-            }
-        });
-
-        btnATM.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent t = new Intent(getActivity(), AddAnATM.class);
-                startActivity(t);
-            }
-        });
-
-        btnMaintenance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent t = new Intent(getActivity(), AddAMaintenance.class);
-                startActivity(t);
-            }
-        });
-
-        btnWC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent t = new Intent(getActivity(), SelectFromMap.class);
-                t.putExtra("type", 2);
-                getActivity().startActivityForResult(t, 2);
-            }
-        });
-
-        btnConfirming.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent t = new Intent(getActivity(), ConfirmLocations.class);
-                startActivity(t);
+                startActivity(new Intent(getActivity(), MapNavigationHolder.class));
             }
         });
 
@@ -171,5 +121,4 @@ public class ContributeFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
 }

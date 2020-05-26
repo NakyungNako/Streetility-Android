@@ -155,23 +155,6 @@ public class ATMFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if (context instanceof FuelFragment.OnFragmentInteractionListener) {
             mListener = (FuelFragment.OnFragmentInteractionListener) context;
 
-            String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
-            if (!hasPermissions(getActivity(), Permissions)) {
-                ActivityCompat.requestPermissions(getActivity(), Permissions, 4);
-            }
-
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    Activity#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for Activity#requestPermissions for more details.
-                getActivity().finish();
-                return;
-            }
-
             // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 //            SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
 //                    .findFragmentById(R.id.map);
@@ -230,16 +213,6 @@ public class ATMFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 10.0f ) );
     }
 
-    public static boolean hasPermissions(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
     @Override
     public boolean onMarkerClick(final Marker marker) {

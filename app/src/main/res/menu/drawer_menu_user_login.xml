@@ -18,6 +18,11 @@
         android:title="@string/my_works" />
 
     <item
+        android:id="@+id/contribute"
+        android:icon="@drawable/contribute"
+        android:title="@string/contribute" />
+
+    <item
         android:id="@+id/about"
         android:icon="@drawable/about"
         android:title="@string/about_us" />

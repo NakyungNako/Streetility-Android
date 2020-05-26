@@ -2,12 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/home"
-        android:icon="@drawable/home"
-        android:title="@string/home" />
+        android:id="@+id/navigation_fuel"
+        android:icon="@drawable/fuel_big_icon"
+        android:title="@string/fuel" />
 
     <item
-        android:id="@+id/contribute"
-        android:icon="@drawable/contribute"
-        android:title="@string/contribute" />
+        android:id="@+id/nav_atm"
+        android:icon="@drawable/atm_big_icon"
+        android:title="@string/atm" />
+
+    <item
+        android:id="@+id/navigation_wc"
+        android:icon="@drawable/wc_big_icon"
+        android:title="@string/wc" />
+
+    <item
+        android:id="@+id/navigation_maintenance"
+        android:icon="@drawable/fix_big_icon"
+        android:title="@string/fix" />
 </menu>

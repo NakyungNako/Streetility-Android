@@ -135,4 +135,9 @@
     <string name="select_img">Chọn ảnh (không bắt buộc)</string>
     <string name="selected">Đã chọn </string>
     <string name="images"> ảnh</string>
+    <string name="cant_go">Không thể đến đích từ vị trí hiện tại</string>
+    <string name="error_direction">Không tim được đường</string>
+    <string name="destination">Đích đến</string>
+    <string name="you_r_here">Địa điểm hiện tại</string>
+    <string name="find_direction">Tìm đường</string>
 </resources>

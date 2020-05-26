@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,17 +16,17 @@ public class ContributeToService extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_contribute_to_service);
+        setContentView(R.layout.activity_contribute_to_service);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
-        Button btnFuel = findViewById(R.id.btn_fuel);
-        Button btnATM = findViewById(R.id.btn_atm);
-        Button btnMaintenance = findViewById(R.id.btn_maintenance);
-        Button btnWC = findViewById(R.id.btn_wc);
+        LinearLayout btnFuel = findViewById(R.id.btn_fuel);
+        LinearLayout btnATM = findViewById(R.id.btn_atm);
+        LinearLayout btnMaintenance = findViewById(R.id.btn_maintenance);
+        LinearLayout btnWC = findViewById(R.id.btn_wc);
         Button btnConfirming = findViewById(R.id.btn_confirm_location);
 
         btnFuel.setOnClickListener(new View.OnClickListener() {

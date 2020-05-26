@@ -89,23 +89,6 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_an_atm);
 
-        String[] Permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
-        if (!hasPermissions(this, Permissions)) {
-            ActivityCompat.requestPermissions(this, Permissions, 4);
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
-            this.finish();
-            return;
-        }
-
         btnNext = findViewById(R.id.btn_next);
         btnPrevious = findViewById(R.id.btn_previous);
         mPager = findViewById(R.id.view_pager);
@@ -254,17 +237,6 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
                 mLon = latLng.longitude;
             }
         });
-    }
-
-    public static boolean hasPermissions(Context context, String... permissions) {
-        if (context != null && permissions != null) {
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public void callGeocoding(String address){
