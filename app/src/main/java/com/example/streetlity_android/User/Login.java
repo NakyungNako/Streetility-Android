@@ -133,7 +133,7 @@ public class Login extends AppCompatActivity {
                                 SharedPreferences s = getSharedPreferences("userPref", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor e = s.edit();
                                 e.clear();
-                                e.commit();
+                                e.apply();
                                 e.putString("username", username);
                                 e.putString("token", ((MyApplication) Login.this.getApplication()).getToken());
                                 e.putString("refreshToken", ((MyApplication) Login.this.getApplication()).getRefreshToken());
@@ -167,8 +167,8 @@ public class Login extends AppCompatActivity {
                                     }
                                 });
 
-                                Intent data = new Intent();
-                                setResult(RESULT_OK, data);
+
+                                setResult(RESULT_OK);
                                 finish();
                             } else {
                                 Toast toast = Toast.makeText(Login.this, "User is waiting for approval", Toast.LENGTH_LONG);

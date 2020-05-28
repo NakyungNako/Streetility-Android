@@ -185,7 +185,7 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
         }
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 10.0f ) );
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 15.0f ) );
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -226,8 +226,7 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
                         Log.e("", "onResponse: " + jsonObject.toString());
 
                         if(jsonObject.getBoolean("Status")) {
-                            Intent data = new Intent();
-                            setResult(RESULT_OK, data);
+                            setResult(RESULT_OK);
                             finish();
                         }
                     } catch (Exception e){
@@ -270,8 +269,8 @@ public class SelectFromMap extends AppCompatActivity implements OnMapReadyCallba
                         Log.e("", "onResponse: " + jsonObject.toString());
 
                         if(jsonObject.getBoolean("Status")) {
-                            Intent data = new Intent();
-                            setResult(RESULT_OK, data);
+
+                            setResult(RESULT_OK);
                             finish();
                         }
                     } catch (Exception e){

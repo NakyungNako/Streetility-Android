@@ -113,8 +113,7 @@ public class SignupAsMaintainer extends AppCompatActivity implements OnMapReadyC
                                     jsonObject = new JSONObject(response.body().string());
                                     Log.e("", "onResponse: "+ jsonObject.toString() + response.code());
                                     if(jsonObject.getBoolean("Status")) {
-                                        Intent data = new Intent();
-                                        setResult(RESULT_OK, data);
+                                        setResult(RESULT_OK);
                                         finish();
                                     }else{
                                         Toast toast = Toast.makeText(SignupAsMaintainer.this, jsonObject.getString("Message"), Toast.LENGTH_LONG);

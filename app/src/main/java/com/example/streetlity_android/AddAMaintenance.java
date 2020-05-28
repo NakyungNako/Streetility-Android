@@ -203,7 +203,7 @@ public class AddAMaintenance extends AppCompatActivity implements OnMapReadyCall
         }
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 12.0f ) );
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 15.0f ) );
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override

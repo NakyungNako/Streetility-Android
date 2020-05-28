@@ -140,4 +140,8 @@
     <string name="destination">Đích đến</string>
     <string name="you_r_here">Địa điểm hiện tại</string>
     <string name="find_direction">Tìm đường</string>
+    <string name="all">Tất cả</string>
+    <string name="contacted">Đã liên lạc</string>
+    <string name="nearby_store">cửa hàng gần đây</string>
+    <string name="empty_reason">Lí do rỗng</string>
 </resources>

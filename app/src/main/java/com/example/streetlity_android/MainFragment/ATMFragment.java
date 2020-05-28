@@ -1,22 +1,47 @@
 package com.example.streetlity_android.MainFragment;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.SeekBar;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.streetlity_android.AddAMaintenance;
-import com.example.streetlity_android.AddAnATM;
-import com.example.streetlity_android.ConfirmLocations;
+import com.example.streetlity_android.MapAPI;
+import com.example.streetlity_android.MapsActivity;
+import com.example.streetlity_android.MyApplication;
 import com.example.streetlity_android.R;
-import com.example.streetlity_android.SelectFromMap;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +62,12 @@ public class ATMFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    ArrayList<MapObject> items= new ArrayList<>();
+    ArrayList<String> arrBank = new ArrayList<>();
+    MapObjectAdapter adapter;
+
+    float currLat;
+    float currLon;
 
     public ATMFragment() {
         // Required empty public constructor
@@ -73,53 +104,51 @@ public class ATMFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.activity_contribute_to_service, container, false);
 
-        LinearLayout btnFuel = rootView.findViewById(R.id.btn_fuel);
-        LinearLayout btnATM = rootView.findViewById(R.id.btn_atm);
-        LinearLayout btnMaintenance = rootView.findViewById(R.id.btn_maintenance);
-        LinearLayout btnWC = rootView.findViewById(R.id.btn_wc);
-        Button btnConfirming = rootView.findViewById(R.id.btn_confirm_location);
+        View rootView = inflater.inflate(R.layout.fragment_atm, container, false);
+        getBank(rootView);
+        ListView lv = rootView.findViewById(R.id.list_view);
 
-        btnFuel.setOnClickListener(new View.OnClickListener() {
+        adapter = new MapObjectAdapter(getActivity(), R.layout.lv_item_map_object, items);
+        lv.setAdapter(adapter);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent t = new Intent(getActivity(), SelectFromMap.class);
-                t.putExtra("type", 1);
-                getActivity().startActivityForResult(t, 2);
-            }
-        });
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent t = new Intent(getActivity(), MapsActivity.class);
+                t.putExtra("currLat", currLat);
+                t.putExtra("currLon", currLon);
+                t.putExtra("item", items.get(position));
 
-        btnATM.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent t = new Intent(getActivity(), AddAnATM.class);
                 startActivity(t);
             }
         });
 
-        btnMaintenance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent t = new Intent(getActivity(), AddAMaintenance.class);
-                startActivity(t);
-            }
-        });
+        LocationManager locationManager = (LocationManager)
+                getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-        btnWC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent t = new Intent(getActivity(), SelectFromMap.class);
-                t.putExtra("type", 2);
-                getActivity().startActivityForResult(t, 2);
-            }
-        });
 
-        btnConfirming.setOnClickListener(new View.OnClickListener() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Location location = locationManager.getLastKnownLocation(locationManager
+                    .NETWORK_PROVIDER);
+            if(location == null){
+                Log.e("", "onMapReady: MULL");
+            }
+            currLat = (float)location.getLatitude();
+            currLon = (float)location.getLongitude();
+            Log.e("", "onMapReady: " + currLat+" , " + currLon );
+        }
+
+        callATM(currLat,currLon,(float)0);
+
+        final SeekBar sb = rootView.findViewById(R.id.sb_range);
+        ImageButton imgSearch = rootView.findViewById(R.id.img_btn_confirm_range);
+
+        imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent t = new Intent(getActivity(), ConfirmLocations.class);
-                startActivity(t);
+                callATM(currLat,currLon,sb.getProgress());
             }
         });
 
@@ -165,4 +194,148 @@ public class ATMFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    public void callATM(double lat, double lon, float range){
+        items.removeAll(items);
+        Log.e("", "callATM: " + range );
+        Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+        Call<ResponseBody> call = tour.getATMInRange("1.0.0",(float)lat, (float)lon,(range+1)/100);
+        //Call<ResponseBody> call = tour.getAllFuel();
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    JSONArray jsonArray;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+                        if(jsonObject.getJSONArray("Atms").toString() != "null") {
+                            jsonArray = jsonObject.getJSONArray("Atms");
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                Log.e("", "onResponse: " + jsonObject1.toString());
+                                MapObject item = new MapObject(jsonObject1.getInt("Id"), arrBank.get(jsonObject1.getInt("BankId")), 3,
+                                        jsonObject1.getString("Address"), (float)jsonObject1.getDouble("Lat"),
+                                        (float)jsonObject1.getDouble("Lon"), jsonObject1.getString("Note"),4);
+
+                                item.setBankId(jsonObject1.getInt("BankId"));
+
+                                float distance = distance(item.getLat(), item.getLon(), currLat, currLon);
+
+                                item.setDistance(distance);
+                                items.add(item);
+                            }
+
+                            adapter.notifyDataSetChanged();
+
+                            Collections.sort(items, new Comparator<MapObject>() {
+                                @Override
+                                public int compare(MapObject o1, MapObject o2) {
+                                    return Float.compare(o1.getDistance(),o2.getDistance());
+                                }
+                            });
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
+    }
+
+    public static float distance(float lat1, float lng1, float lat2, float lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        float dist = (float) (earthRadius * c);
+
+        return dist;
+    }
+
+    public void getBank(View view){
+        Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) getActivity().getApplication()).getServiceURL())
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        final MapAPI tour = retro.create(MapAPI.class);
+
+        String token = ((MyApplication) getActivity().getApplication()).getToken();
+
+        Call<ResponseBody> call = tour.getBank("1.0.0",token);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.code() == 200) {
+                    final JSONObject jsonObject;
+                    try {
+                        jsonObject = new JSONObject(response.body().string());
+                        Log.e("", "onResponse: " + jsonObject.toString());
+
+                        if(jsonObject.getBoolean("Status")) {
+                            JSONArray jsonArray = jsonObject.getJSONArray("Banks");
+                            arrBank.add(getString(R.string.all));
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                arrBank.add(jsonObject1.getString("Name"));
+                                Log.e("", "onResponse: "+ jsonObject1.getString("Name") + getString(R.string.all) );
+                            }
+
+                            AutoCompleteTextView atcpBank = view.findViewById(R.id.actv_bank);
+
+                            ArrayAdapter adapter1 = new ArrayAdapter(getActivity(), android.R.layout.simple_dropdown_item_1line, arrBank);
+
+                            atcpBank.setAdapter(adapter1);
+
+                            atcpBank.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                    if(position == 0){
+                                        adapter.getFilter().filter(String.valueOf(position));
+                                    }
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> parent) {
+
+                                }
+                            });
+
+                            atcpBank.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                @Override
+                                public void onFocusChange(View v, boolean hasFocus) {
+                                    if(hasFocus){
+                                        atcpBank.showDropDown();
+                                    }
+                                }
+                            });
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    try {
+                        Log.e(", ",response.errorBody().toString() + response.code());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("", "onFailure: " + t.toString());
+            }
+        });
+    }
 }

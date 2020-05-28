@@ -81,7 +81,7 @@ public class ContributeToService extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (requestCode == 2 && resultCode == RESULT_OK && null != data) {
+            if (requestCode == 2 && resultCode == RESULT_OK) {
                 Toast toast = Toast.makeText(ContributeToService.this, R.string.added_successfully, Toast.LENGTH_LONG);
                 toast.show();
             }

@@ -149,4 +149,9 @@
     <string name="destination">Destination</string>
     <string name="you_r_here">You are here</string>
     <string name="find_direction">Find direction</string>
+    <string name="all">All</string>
+    <string name="title_activity_broadcast" translatable="false">BroadcastActivity</string>
+    <string name="contacted">Contacted</string>
+    <string name="nearby_store">nearby store</string>
+    <string name="empty_reason">Empty reason</string>
 </resources>

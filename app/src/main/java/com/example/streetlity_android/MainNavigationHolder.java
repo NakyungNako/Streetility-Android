@@ -10,7 +10,7 @@ import android.os.Bundle;
 
 import com.example.streetlity_android.MainFragment.ATMFragment;
 import com.example.streetlity_android.MainFragment.FuelFragment;
-import com.example.streetlity_android.MainFragment.MaintnanceFragment;
+import com.example.streetlity_android.MainFragment.MaintenanceFragment;
 import com.example.streetlity_android.MainFragment.WCFragment;
 import com.example.streetlity_android.User.ChangePassword;
 import com.example.streetlity_android.User.Login;
@@ -33,7 +33,9 @@ import androidx.fragment.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +49,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainNavigationHolder extends AppCompatActivity implements FuelFragment.OnFragmentInteractionListener,
-        ATMFragment.OnFragmentInteractionListener, MaintnanceFragment.OnFragmentInteractionListener,
+        ATMFragment.OnFragmentInteractionListener, MaintenanceFragment.OnFragmentInteractionListener,
         WCFragment.OnFragmentInteractionListener{
     Fragment fragment;
     @Override
@@ -136,7 +138,7 @@ public class MainNavigationHolder extends AppCompatActivity implements FuelFragm
                     fragment = new WCFragment();
                     break;
                 case R.id.navigation_maintenance:
-                    fragment = new MaintnanceFragment();
+                    fragment = new MaintenanceFragment();
                     break;
             }
             return loadFragment(fragment);
@@ -163,6 +165,13 @@ public class MainNavigationHolder extends AppCompatActivity implements FuelFragm
 
             }else if (requestCode == 2 && resultCode == RESULT_OK) {
                 Toast toast = Toast.makeText(MainNavigationHolder.this, R.string.location_added, Toast.LENGTH_LONG);
+                toast.show();
+            } else if (requestCode == 5 && resultCode == RESULT_OK && null != data) {
+                String temp = getString(R.string.contacted);
+                temp += data.getIntExtra("numStore", 0);
+                temp +=getString(R.string.nearby_store);
+
+                Toast toast = Toast.makeText(MainNavigationHolder.this, temp, Toast.LENGTH_LONG);
                 toast.show();
             }
 
@@ -319,4 +328,12 @@ public class MainNavigationHolder extends AppCompatActivity implements FuelFragm
         return true;
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 }

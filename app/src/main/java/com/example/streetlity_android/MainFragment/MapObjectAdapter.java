@@ -128,15 +128,15 @@ public class MapObjectAdapter extends ArrayAdapter implements Filterable {
                  *  else does the Filtering and returns FilteredArrList(Filtered)
                  *
                  ********/
-                if (constraint == null || constraint.length() == 0) {
+                if (constraint == null || constraint.length() == 0 || Integer.parseInt(constraint.toString()) == 0) {
 
                     // set the Original result to return
                     results.count = mOriginalValues.size();
                     results.values = mOriginalValues;
                 } else {
-                    constraint = constraint.toString().toLowerCase();
+                    int filterNumber = Integer.parseInt(constraint.toString());
                     for (int i = 0; i < mOriginalValues.size(); i++) {
-                        if (mOriginalValues.get(i).getName().toLowerCase().contains(constraint.toString())) {
+                        if (mOriginalValues.get(i).getBankId()== filterNumber) {
                             FilteredArrList.add(mOriginalValues.get(i));
                         }
                     }

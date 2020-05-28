@@ -23,14 +23,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -220,7 +217,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
         }
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
-        mMap.animateCamera( CameraUpdateFactory.zoomTo( 12.0f ) );
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 15.0f ) );
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -437,7 +434,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
 
 
             if(layouts.get(position) == R.layout.vp_atm_info){
-                initBank(view);
+                getBank(view);
             }
 
             container.addView(view);
@@ -467,7 +464,7 @@ public class AddAnATM extends AppCompatActivity implements OnMapReadyCallback {
         return mPager.getCurrentItem() + i;
     }
 
-    public void initBank(View view){
+    public void getBank(View view){
         Retrofit retro = new Retrofit.Builder().baseUrl(((MyApplication) this.getApplication()).getServiceURL())
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);

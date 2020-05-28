@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            if (requestCode == 1 && resultCode == RESULT_OK && null != data) {
+            if (requestCode == 1 && resultCode == RESULT_OK) {
                 Button btnContribute = findViewById(R.id.btn_contribute);
 
                 if(((MyApplication) this.getApplication()).getUserType() == 7) {

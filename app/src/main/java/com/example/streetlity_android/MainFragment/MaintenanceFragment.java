@@ -20,9 +20,11 @@ import android.widget.SeekBar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.streetlity_android.BroadcastActivity;
 import com.example.streetlity_android.MapAPI;
 import com.example.streetlity_android.MapsActivity;
 import com.example.streetlity_android.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,12 +43,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link WCFragment.OnFragmentInteractionListener} interface
+ * {@link MaintenanceFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link WCFragment#newInstance} factory method to
+ * Use the {@link MaintenanceFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WCFragment extends Fragment {
+public class MaintenanceFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -63,7 +65,7 @@ public class WCFragment extends Fragment {
     float currLat;
     float currLon;
 
-    public WCFragment() {
+    public MaintenanceFragment() {
         // Required empty public constructor
     }
 
@@ -76,8 +78,8 @@ public class WCFragment extends Fragment {
      * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WCFragment newInstance(String param1, String param2) {
-        WCFragment fragment = new WCFragment();
+    public static MaintenanceFragment newInstance(String param1, String param2) {
+        MaintenanceFragment fragment = new MaintenanceFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -98,8 +100,8 @@ public class WCFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_home_fuel, container, false);
-
+        View rootView = inflater.inflate(R.layout.fragment_maintenance, container, false);
+        
         ListView lv = rootView.findViewById(R.id.list_view);
 
         adapter = new MapObjectAdapter(getActivity(), R.layout.lv_item_map_object, items);
@@ -133,7 +135,21 @@ public class WCFragment extends Fragment {
             Log.e("", "onMapReady: " + currLat+" , " + currLon );
         }
 
-        callWC(currLat,currLon,(float)0);
+
+        FloatingActionButton fab = rootView.findViewById(R.id.fab_broadcast);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent t = new Intent(getActivity(), BroadcastActivity.class);
+                t.putExtra("currLat", currLat);
+                t.putExtra("currLon", currLon);
+
+                getActivity().startActivityForResult(t, 5);
+            }
+        });
+
+        callMaintenance(currLat,currLon,(float)0);
 
         final SeekBar sb = rootView.findViewById(R.id.sb_range);
         ImageButton imgSearch = rootView.findViewById(R.id.img_btn_confirm_range);
@@ -141,7 +157,7 @@ public class WCFragment extends Fragment {
         imgSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callWC(currLat,currLon,sb.getProgress());
+                callMaintenance(currLat,currLon,sb.getProgress());
             }
         });
 
@@ -187,13 +203,13 @@ public class WCFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void callWC(double lat, double lon, float range){
+    public void callMaintenance(double lat, double lon, float range){
         items.removeAll(items);
-        Log.e("", "callWC: " + range );
+        Log.e("", "callMaintenance: " + range );
         Retrofit retro = new Retrofit.Builder().baseUrl("http://35.240.207.83/")
                 .addConverterFactory(GsonConverterFactory.create()).build();
         final MapAPI tour = retro.create(MapAPI.class);
-        Call<ResponseBody> call = tour.getWCInRange("1.0.0",(float)lat, (float)lon,(range+1)/100);
+        Call<ResponseBody> call = tour.getMaintenanceInRange("1.0.0",(float)lat, (float)lon,(range+1)/100);
         //Call<ResponseBody> call = tour.getAllFuel();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -204,15 +220,15 @@ public class WCFragment extends Fragment {
                     try {
                         jsonObject = new JSONObject(response.body().string());
                         Log.e("", "onResponse: " + jsonObject.toString());
-                        if(jsonObject.getJSONArray("Toilets").toString() != "null") {
-                            jsonArray = jsonObject.getJSONArray("Toilets");
+                        if(jsonObject.getJSONArray("Maintenances").toString() != "null") {
+                            jsonArray = jsonObject.getJSONArray("Maintenances");
 
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                                 Log.e("", "onResponse: " + jsonObject1.toString());
-                                MapObject item = new MapObject(jsonObject1.getInt("Id"), "Public Toilet", 3,
+                                MapObject item = new MapObject(jsonObject1.getInt("Id"), jsonObject1.getString("Name"), 3,
                                         jsonObject1.getString("Address"), (float)jsonObject1.getDouble("Lat"),
-                                        (float)jsonObject1.getDouble("Lon"), jsonObject1.getString("Note"),2);
+                                        (float)jsonObject1.getDouble("Lon"), jsonObject1.getString("Note"),3);
 
                                 float distance = distance(item.getLat(), item.getLon(), currLat, currLon);
 
